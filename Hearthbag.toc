@@ -1,0 +1,7 @@
+## Interface: 20501
+## Author: Keyboardturner
+## Version: 0.0.1
+## Title: Hearthbag
+## Notes: Places a clickable hearthstone over the bag icon of the default backpack.
+
+Hearthbag.lua
