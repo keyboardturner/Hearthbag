@@ -99,6 +99,7 @@ modelThingy:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 modelThingy:SetModel("spells\\arcaneexplosion_base.m2")
 modelThingy:SetModelScale(.5)]]
 
+
 local _G, _M = getfenv(0), {}
 setfenv(1, setmetatable(_M, {__index=_G}))
 
@@ -110,20 +111,25 @@ end
 
 _G.HearthDB = {
 	BAG = {},
-}
+};
 
 BAG = {
-}
+};
 
-_G.SLASH_HEARTHBAG1 = '/hearthbag'
+
+
+-- old slash cmd list
+--[[_G.SLASH_HEARTHBAG1 = "/hearthbag"
+_G.SLASH_HEARTHBAG2 = "/hb"
+
 function _G.SlashCmdList.HEARTHBAG(arg)
 	if UnitAffectingCombat("player") == false then
 		buttonPlacer.key = 'BAG'
 		buttonPlacer:Show()
 	else
-		print("Hearthbag: You can't do that in combat!")
+		print("|T"..hearthDefaultTex..":14|t".."|ThearthDefaultTex|t".."|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r: You can't do that in combat!")
 	end
-end
+end]]
 
 function ADDON_LOADED(_, arg1)
 	if arg1 ~= 'Hearthbag' then
@@ -132,6 +138,7 @@ function ADDON_LOADED(_, arg1)
 
 	CreateButtonPlacer()
 	CreateButton'BAG'
+	CreateButtonResetter()
 end
 
 function ParentButton(parent)
@@ -160,6 +167,8 @@ function CreateButton(key)
 	end)
 end
 
+
+
 function UpdateButton(key)
 	local button, settings = _M[key].button, HearthDB[key]
 	button:SetParent(settings.parent)
@@ -172,6 +181,25 @@ function UpdateButton(key)
 	hearthbag:SetScale(settings.scale)
 	hearthbag:Show()
 end
+
+-- eventually change this to be the ProfileChecker onEvent script for /hb reset
+--[[function ResetProfile(key)
+	local button, settings = _M[key].button, HearthDB[key]
+	--HearthDB.BAG["parent"] = "ContainerFrame1PortraitButton"
+	--HearthDB.BAG["scale"] = 1
+	--HearthDB.BAG["position"] = {-3,2,},
+	print("|T"..hearthDefaultTex..":14|t".."|ThearthDefaultTex|t".."|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r has been reset.")
+	HearthDB.BAG = {parent="ContainerFrame1PortraitButton",scale=1,position={[1]=-3,[2]=2}}
+	button:SetParent(settings.parent)
+	button:SetPoint('CENTER', unpack(settings.position))
+	button:SetScale(settings.scale)
+	button:SetFrameStrata("BACKGROUND")
+	button:Show()
+	hearthbag:SetParent(settings.parent)
+	hearthbag:SetPoint('CENTER', unpack(settings.position))
+	hearthbag:SetScale(settings.scale)
+	hearthbag:Show()
+end]]
 
 function CollectFrames()
 	frames = {}
@@ -244,4 +272,146 @@ function CreateButtonPlacer()
 		local scale, x, y = buttonPreview:GetEffectiveScale(), GetCursorPosition()
 		buttonPreview:SetPoint('CENTER', UIParent, 'BOTTOMLEFT', x/scale, y/scale)
 	end)
+	frame:HookScript('OnUpdate', function()
+		if UnitAffectingCombat("player") == true then
+			self:Hide()
+			print("Cancelling placement due to combat!")
+		end
+	end)
 end
+
+function CreateButtonResetter()
+	local frame = CreateFrame('Frame', nil, UIParent)
+	buttonResetter = frame
+	frame:EnableMouse(true)
+	frame:EnableMouseWheel(true)
+	frame:EnableKeyboard(true)
+	frame:SetFrameStrata'FULLSCREEN_DIALOG'
+	frame:SetAllPoints()
+	frame:Hide()
+	local targetMarker = frame:CreateTexture()
+	targetMarker:SetColorTexture(1, 1, 0, .5)
+
+	local buttonPreview = ParentButton(frame)
+	buttonPreview:EnableMouse(false)
+	buttonPreview:SetAlpha(.5)
+
+	local function target(self)
+		local f = frames[frame.index]
+		frame.target = f
+		local scale, x, y = f:GetEffectiveScale(), GetCursorPosition()
+		targetMarker:SetAllPoints(f)
+		buttonPreview:SetScale(scale * self.scale)
+		RaidNotice_Clear(RaidWarningFrame)
+		RaidNotice_AddMessage(RaidWarningFrame, f:GetName(), ChatTypeInfo["SAY"])
+	end
+
+	frame:SetScript('OnShow', function(self)
+		self:Hide()
+		HearthDB[self.key] = {parent="ContainerFrame1PortraitButton",scale=1,position={[1]=-3,[2]=2}}
+		UpdateButton(self.key)
+	end)
+end
+
+local ProfileChecker = CreateFrame("Frame")
+ProfileChecker:RegisterEvent("ADDON_LOADED")
+
+--{parent=ContainerFrame1PortraitButton, position ={-2.5, 2}, scale=1.2}
+-- handling addon profiles
+
+--	HearthDB.BAG = {parent="ContainerFrame1PortraitButton",scale=1,position={[1]=-3,[2]=2}}
+-- this structure correctly writes preset data, for use with ingame chat cmd like /run
+
+-- test structure with /run print(HearthDB.BAG["parent"]) etc.
+
+
+
+
+ProfileChecker:SetScript("OnEvent", function(self, event, arg1)
+	if event == "ADDON_LOADED" and arg1 == "Hearthbag" then
+		if (HearthDB.BAG["parent"] == nil) and (HearthDB.BAG["scale"] == nil) and (HearthDB.BAG["position"] == nil) then
+			HearthDB.BAG["parent"] = "ContainerFrame1PortraitButton"
+			HearthDB.BAG["scale"] = 1
+			HearthDB.BAG["position"] = {-3,2,}
+			print("|T"..hearthDefaultTex..":14|t".."|ThearthDefaultTex|t".."|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r detects no profile set for this character. Now using default anchor.")
+		end
+	end
+end)
+
+local _dummy, core = ...;
+
+core.commands = {
+	["reset"] = function()
+		if UnitAffectingCombat("player") == false then
+			HearthDB.BAG["parent"] = "ContainerFrame1PortraitButton"
+			HearthDB.BAG["scale"] = 1
+			HearthDB.BAG["position"] = {-3,2,}
+			buttonResetter.key = 'BAG'
+			buttonResetter:Show()
+			print("|T"..hearthDefaultTex..":14|t".."|ThearthDefaultTex|t".."|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r has been reset.")
+			--HearthDB.BAG = {parent="ContainerFrame1PortraitButton",scale=1,position={[1]=-3,[2]=2}}
+			--UpdateButton(HearthDB.BAG)
+		end
+	end,
+
+	["help"] = function()
+		core:Print("Type '/hearthbag' or '/hb' to place the button on a highlighted frame. Use ScrollWheel to cycle through the frames until you select the one of your choosing. Control+ScrollWheel will scale the size of the Hearthbag.")
+	end
+};
+
+local function HandleSlashCommands(str)
+	if (#str == 0) and UnitAffectingCombat("player") == false then
+		-- user entered "/hearthbag" or "/hb" with no additional args
+		buttonPlacer.key = 'BAG'
+		buttonPlacer:Show()
+		core.commands.help();
+		return;	
+	elseif UnitAffectingCombat("player") == true then
+		print("You can't do that in combat!")
+	end
+
+	local args = {};
+	for _dummy, arg in ipairs({ string.split(' ', str) }) do
+		if (#arg > 0) then
+			table.insert(args, arg);
+		end
+	end
+
+	local path = core.commands; -- required for updating found table.
+
+	for id, arg in ipairs(args) do
+
+		if (#arg > 0) then --if string length is greater than 0
+			arg = arg:lower();			
+			if (path[arg]) then
+				if (type(path[arg]) == "function") then				
+					-- all remaining args passed to our function!
+					path[arg](select(id + 1, unpack(args))); 
+					return;					
+				elseif (type(path[arg]) == "table") then				
+					path = path[arg]; -- another sub-table found!
+				end
+			else
+				-- does not exist!
+				core.commands.help();
+				return;
+			end
+		end
+	end
+end
+
+function core:Print(...)
+	local hex = "00ccff";
+	local prefix = string.format("|cff%s%s|r", hex:upper(), "Hearthbag:");
+	DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix, ...));
+end
+
+function core:HearthbagSlash(event, name)
+	if (name ~= "Hearthbag") then return end
+
+	_G.SLASH_HEARTHBAG1 = "/hearthbag"
+	_G.SLASH_HEARTHBAG2 = "/hb"
+	_G.SlashCmdList.HEARTHBAG = HandleSlashCommands;
+end
+
+ProfileChecker:HookScript("OnEvent", core.HearthbagSlash); -- part of 
