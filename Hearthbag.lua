@@ -1,8 +1,9 @@
 local dimensionX = ContainerFrame1PortraitButton:GetWidth()
 local dimensionY = ContainerFrame1PortraitButton:GetHeight()
+
 local hearthbag = CreateFrame("Button", "Hearthbag", ContainerFrame1PortraitButton, "SecureActionButtonTemplate")	-- creates the first frame using a Secure Action Button Template
 hearthbag:SetSize((dimensionX*.85),(dimensionY*.85))	-- makes the size be proportional to the frame in case frame is scaled
-hearthbag:SetPoint("CENTER", ContainerFrame1PortraitButton, "CENTER", -dimensionX*0.09, dimensionY*.05)	-- anchors it proportional to frame in case also scaled
+hearthbag:SetPoint("CENTER", parentHB, "CENTER", -dimensionX*0.09, dimensionY*.05)	-- anchors it proportional to frame in case also scaled
 
 -- texture list
 
@@ -76,11 +77,17 @@ local function hearthDestroyed()	-- this also sets the texture upon login
 	end
 end
 
+local function HearthInfo()
+	GameTooltip:AddLine("Hearthbag Tooltip - currently using: " .. item:GetItemName())
+end
+
+
 -- all the scripts
 
 hearthCD:SetScript("OnEvent", hearthCheck)
 hearthCD:HookScript("OnEvent", hearthDestroyed)
 hearthbag:SetScript("OnEnter", ContainerFramePortraitButton_OnEnter)
+hearthbag:HookScript("OnEnter", HearthInfo)
 hearthbag:SetScript("OnLeave", ContainerFramePortraitButton_OnLeave)
 hearthbag:SetScript("OnMouseDown", hearthBag_OnMouseDown)
 hearthbag:SetScript("OnMouseUp", hearthBag_OnMouseUp)
@@ -91,3 +98,150 @@ modelThingy:SetSize(500,500)
 modelThingy:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 modelThingy:SetModel("spells\\arcaneexplosion_base.m2")
 modelThingy:SetModelScale(.5)]]
+
+local _G, _M = getfenv(0), {}
+setfenv(1, setmetatable(_M, {__index=_G}))
+
+do
+	local f = CreateFrame'Frame'
+	f:SetScript('OnEvent', function(self, event, ...) _M[event](self, ...) end)
+	f:RegisterEvent'ADDON_LOADED'
+end
+
+_G.HearthDB = {
+	BAG = {},
+}
+
+BAG = {
+}
+
+_G.SLASH_HEARTHBAG1 = '/hearthbag'
+function _G.SlashCmdList.HEARTHBAG(arg)
+	if UnitAffectingCombat("player") == false then
+		buttonPlacer.key = 'BAG'
+		buttonPlacer:Show()
+	else
+		print("Hearthbag: You can't do that in combat!")
+	end
+end
+
+function ADDON_LOADED(_, arg1)
+	if arg1 ~= 'Hearthbag' then
+		return
+	end
+
+	CreateButtonPlacer()
+	CreateButton'BAG'
+end
+
+function ParentButton(parent)
+	local button = CreateFrame('Button', "HearthPlacer", parent)
+	button:SetWidth(dimensionX*.85)
+	button:SetHeight(dimensionY*.85)
+	button:SetNormalTexture(hearthDesatTex)
+	button:SetPushedTexture(hearthDesatTex)
+	button:SetHighlightTexture[[Interface\Buttons\ButtonHilight-Square]]
+	button:GetHighlightTexture():ClearAllPoints()
+	button:GetHighlightTexture():SetPoint('CENTER', 0, 0)
+	button:GetHighlightTexture():SetWidth(dimensionX)
+	button:GetHighlightTexture():SetHeight(dimensionY)
+	return button
+end
+
+function CreateButton(key)
+	local settings = HearthDB[key]
+	local button = ParentButton()
+	_M[key].button = button
+	button:SetScript('OnUpdate', function(self)
+		if settings.parent and getglobal(settings.parent) then
+			UpdateButton(key)
+			self:SetScript('OnUpdate', nil)
+		end
+	end)
+end
+
+function UpdateButton(key)
+	local button, settings = _M[key].button, HearthDB[key]
+	button:SetParent(settings.parent)
+	button:SetPoint('CENTER', unpack(settings.position))
+	button:SetScale(settings.scale)
+	button:SetFrameStrata("BACKGROUND")
+	button:Show()
+	hearthbag:SetParent(settings.parent)
+	hearthbag:SetPoint('CENTER', unpack(settings.position))
+	hearthbag:SetScale(settings.scale)
+	hearthbag:Show()
+end
+
+function CollectFrames()
+	frames = {}
+	local f
+	while true do
+		f = EnumerateFrames(f)
+		if not f then break end
+		if f.GetName and f:GetName() and f.IsVisible and f:IsVisible() and f.GetCenter and f:GetCenter() then
+			tinsert(frames, f)
+		end
+	end	
+end
+
+
+function CreateButtonPlacer()
+	local frame = CreateFrame('Frame', nil, UIParent)
+	buttonPlacer = frame
+	frame:EnableMouse(true)
+	frame:EnableMouseWheel(true)
+	frame:EnableKeyboard(true)
+	frame:SetFrameStrata'FULLSCREEN_DIALOG'
+	frame:SetAllPoints()
+	frame:Hide()
+	local targetMarker = frame:CreateTexture()
+	targetMarker:SetColorTexture(1, 1, 0, .5)
+
+	local buttonPreview = ParentButton(frame)
+	buttonPreview:EnableMouse(false)
+	buttonPreview:SetAlpha(.5)
+
+	local function target(self)
+		local f = frames[frame.index]
+		frame.target = f
+		local scale, x, y = f:GetEffectiveScale(), GetCursorPosition()
+		targetMarker:SetAllPoints(f)
+		buttonPreview:SetScale(scale * self.scale)
+		RaidNotice_Clear(RaidWarningFrame)
+		RaidNotice_AddMessage(RaidWarningFrame, f:GetName(), ChatTypeInfo["SAY"])
+	end
+
+	frame:SetScript('OnShow', function(self)
+		self.scale = 1
+		self.index = 1
+		CollectFrames()
+		target(self)
+	end)
+	frame:SetScript('OnKeyDown', function(self, arg1) if arg1 == 'ESCAPE' then self:Hide() end end)
+	frame:SetScript('OnMouseWheel', function(self, arg1)
+		if IsControlKeyDown() then
+			self.scale = max(0, self.scale + arg1 * .05)
+			buttonPreview:SetScale(self.target:GetEffectiveScale() * self.scale)
+		else
+			self.index = self.index + arg1
+			if self.index < 1 then
+				self.index = #frames
+			elseif self.index > #frames then
+				self.index = 1
+			end
+			target(self)
+		end
+	end)
+	frame:SetScript('OnMouseDown', function(self)
+		self:Hide()
+		local x, y = GetCursorPosition()
+		local targetScale, targetX, targetY = self.target:GetEffectiveScale(), self.target:GetCenter()
+		HearthDB[self.key] = {parent=self.target:GetName(), position={(x/targetScale-targetX)/self.scale, (y/targetScale-targetY)/self.scale}, scale=self.scale}
+		UpdateButton(self.key)
+	end)
+	frame:SetScript('OnUpdate', function()
+		local scale, x, y = buttonPreview:GetEffectiveScale(), GetCursorPosition()
+		buttonPreview:SetPoint('CENTER', UIParent, 'BOTTOMLEFT', x/scale, y/scale)
+	end)
+end
