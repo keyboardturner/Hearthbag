@@ -1,3 +1,137 @@
+-- default profile for when no bag addon is loaded
+local DefaultProfile = {
+	["parent"] = "ContainerFrame1PortraitButton",
+	["scale"] = 1,
+	["position"] = {
+		-3, -- [1]
+		2, -- [2]
+	},
+}
+
+-- inventorian
+-- requires special work on right / left click functionality. couldn't find resizing settings
+local InventorianProfile = {
+	["parent"] = "InventorianBagFrameIconButton",
+	["scale"] = 2,
+	["position"] = {
+		0, -- [1]
+		0, -- [2]
+	},
+}
+--local inventorianTest = {parent="InventorianBagFrameIconButton",scale=2,position={[1]=0,[2]=0}}
+
+	--HearthDB.BAG["parent"] = "InventorianBagFrameIconButton"
+	--HearthDB.BAG["scale"] = 2
+	--HearthDB.BAG["position"] = {0,0,}
+
+
+-- baggins
+-- left / right click should be fine - base frame has right click functionality but not the icon. thinner columns setting may break it
+
+local BagginsProfile = {
+	["parent"] = "BagginsBag1Section2",
+	["scale"] = 1.1,
+	["position"] = {
+		-29, -- [1]
+		50, -- [2]
+	},
+}
+
+-- combuctor
+-- both left nad right click are consumed, do not use portrait (this one is neat and has a lot of utility). Settings seem fine.
+
+local CombuctorProfile = {
+	["parent"] = "CombuctorInventoryFrame1",
+	["scale"] = 1.45,
+	["position"] = {
+		-148, -- [1]
+		113, -- [2]
+	},
+}
+
+-- arkinventory
+-- has the same menu for both left / right, so either can be used. scaling and resizing settings seem fine.
+
+local ArkinventoryProfile = {
+	["parent"] = "ARKINV_Frame1TitleActionButton0",
+	["scale"] = 1.75,
+	["position"] = {
+		0, -- [1]
+		0, -- [2]
+	},
+}
+
+-- adibags
+-- this is the bag frame, but don't replace it. It's too small (maybe). Scaling with the bag frame seems to be fine with its settings.
+
+local AdiBagsProfile = {
+	["parent"] = "AdiBagsSimpleLayeredRegion1",
+	["scale"] = 1.65,
+	["position"] = {
+		-25, -- [1]
+		-6, -- [2]
+	},
+}
+
+
+
+-- bagnon
+-- anchored to the money frame because scaling and reshaping the frame breaks the addon.
+
+local BagnonProfile = {
+	["parent"] = "BagnonMoneyFrame1",
+	["scale"] = 1.4,
+	["position"] = {
+		-213, -- [1]
+		237, -- [2]
+	},
+}
+
+-- baudbag
+-- anchoring to the sfirst inventory slot itself because it scales best and is compatible with the background options.
+
+local BaudbagProfile = {
+	["parent"] = "BaudBagSubBag0Item1",
+	["scale"] = 1.3,
+	["position"] = {
+		-10, -- [1]
+		32, -- [2]
+	},
+}
+
+-- sorted
+-- very nice look / feel to it. Left click has settings functionality, will need to inherit it.
+local SortedProfile = {
+	["parent"] = "SortedFramePortraitButton",
+	["scale"] = 1.85,
+	["position"] = {
+		-0, -- [1]
+		-0, -- [2]
+	},
+}
+
+-- elvUI
+-- style doesn't fit very well, have to anchor to bag slot
+local ElvuiProfile = {
+		["parent"] = "ElvUI_ContainerFrameBag0Slot1",
+		["scale"] = 2.5,
+		["position"] = {
+			-25, -- [1]
+			14, -- [2]
+		},
+}
+
+-- GW2 UI
+-- style somewhat fits, anchoring to a bag button that may not exist on retail
+local GW2Profile = {
+	["parent"] = "MainMenuBarBackpackButton",
+	["scale"] = 2,
+	["position"] = {
+		1, -- [1]
+		50, -- [2]
+	},
+}
+
 local dimensionX = ContainerFrame1PortraitButton:GetWidth()
 local dimensionY = ContainerFrame1PortraitButton:GetHeight()
 
@@ -117,6 +251,7 @@ BAG = {
 };
 
 
+local _dummy, core = ...;
 
 -- old slash cmd list
 --[[_G.SLASH_HEARTHBAG1 = "/hearthbag"
@@ -171,15 +306,19 @@ end
 
 function UpdateButton(key)
 	local button, settings = _M[key].button, HearthDB[key]
-	button:SetParent(settings.parent)
-	button:SetPoint('CENTER', unpack(settings.position))
-	button:SetScale(settings.scale)
-	button:SetFrameStrata("BACKGROUND")
-	button:Show()
-	hearthbag:SetParent(settings.parent)
-	hearthbag:SetPoint('CENTER', unpack(settings.position))
-	hearthbag:SetScale(settings.scale)
-	hearthbag:Show()
+	if UnitAffectingCombat("player") == false then
+		button:SetParent(settings.parent)
+		button:SetPoint('CENTER', unpack(settings.position))
+		button:SetScale(settings.scale)
+		button:SetFrameStrata("BACKGROUND")
+		button:Show()
+		hearthbag:SetParent(settings.parent)
+		hearthbag:SetPoint('CENTER', unpack(settings.position))
+		hearthbag:SetScale(settings.scale)
+		hearthbag:Show()
+	else
+		core:Print("Cancelling placement due to combat!")
+	end
 end
 
 -- eventually change this to be the ProfileChecker onEvent script for /hb reset
@@ -215,12 +354,12 @@ end
 
 
 function CreateButtonPlacer()
-	local frame = CreateFrame('Frame', nil, UIParent)
+	local frame = CreateFrame("Frame", nil, UIParent)
 	buttonPlacer = frame
 	frame:EnableMouse(true)
 	frame:EnableMouseWheel(true)
 	frame:EnableKeyboard(true)
-	frame:SetFrameStrata'FULLSCREEN_DIALOG'
+	frame:SetFrameStrata("FULLSCREEN_DIALOG")
 	frame:SetAllPoints()
 	frame:Hide()
 	local targetMarker = frame:CreateTexture()
@@ -240,14 +379,14 @@ function CreateButtonPlacer()
 		RaidNotice_AddMessage(RaidWarningFrame, f:GetName(), ChatTypeInfo["SAY"])
 	end
 
-	frame:SetScript('OnShow', function(self)
+	frame:SetScript("OnShow", function(self)
 		self.scale = 1
 		self.index = 1
 		CollectFrames()
 		target(self)
 	end)
-	frame:SetScript('OnKeyDown', function(self, arg1) if arg1 == 'ESCAPE' then self:Hide() end end)
-	frame:SetScript('OnMouseWheel', function(self, arg1)
+	frame:SetScript("OnKeyDown", function(self, arg1) if arg1 == 'ESCAPE' then self:Hide() end end)
+	frame:SetScript("OnMouseWheel", function(self, arg1)
 		if IsControlKeyDown() then
 			self.scale = max(0, self.scale + arg1 * .05)
 			buttonPreview:SetScale(self.target:GetEffectiveScale() * self.scale)
@@ -261,32 +400,33 @@ function CreateButtonPlacer()
 			target(self)
 		end
 	end)
-	frame:SetScript('OnMouseDown', function(self)
+	frame:SetScript("OnMouseDown", function(self)
 		self:Hide()
 		local x, y = GetCursorPosition()
 		local targetScale, targetX, targetY = self.target:GetEffectiveScale(), self.target:GetCenter()
 		HearthDB[self.key] = {parent=self.target:GetName(), position={(x/targetScale-targetX)/self.scale, (y/targetScale-targetY)/self.scale}, scale=self.scale}
 		UpdateButton(self.key)
+		core:Print("Placement has been anchored to: " .. HearthDB.BAG["parent"])
 	end)
-	frame:SetScript('OnUpdate', function()
+	frame:SetScript("OnUpdate", function()
 		local scale, x, y = buttonPreview:GetEffectiveScale(), GetCursorPosition()
-		buttonPreview:SetPoint('CENTER', UIParent, 'BOTTOMLEFT', x/scale, y/scale)
+		buttonPreview:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x/scale, y/scale)
 	end)
-	frame:HookScript('OnUpdate', function()
+	frame:HookScript("OnUpdate", function(self)
 		if UnitAffectingCombat("player") == true then
 			self:Hide()
-			print("Cancelling placement due to combat!")
+			core:Print("Cancelling placement due to combat!")
 		end
 	end)
 end
 
 function CreateButtonResetter()
-	local frame = CreateFrame('Frame', nil, UIParent)
+	local frame = CreateFrame("Frame", nil, UIParent)
 	buttonResetter = frame
 	frame:EnableMouse(true)
 	frame:EnableMouseWheel(true)
 	frame:EnableKeyboard(true)
-	frame:SetFrameStrata'FULLSCREEN_DIALOG'
+	frame:SetFrameStrata("FULLSCREEN_DIALOG")
 	frame:SetAllPoints()
 	frame:Hide()
 	local targetMarker = frame:CreateTexture()
@@ -306,9 +446,139 @@ function CreateButtonResetter()
 		RaidNotice_AddMessage(RaidWarningFrame, f:GetName(), ChatTypeInfo["SAY"])
 	end
 
-	frame:SetScript('OnShow', function(self)
+--[[local AddonProfiles = {
+	Name = {
+		["ElvUI"] = ,
+
+	}
+}]]
+
+	frame:SetScript("OnShow", function(self)
 		self:Hide()
-		HearthDB[self.key] = {parent="ContainerFrame1PortraitButton",scale=1,position={[1]=-3,[2]=2}}
+		if IsAddOnLoaded("ElvUI") == true then
+			--OpenAllBags()
+			if (ElvUI_ContainerFrameBag0Slot1:IsVisible() == true) then
+				HearthDB[self.key] = ElvuiProfile
+			elseif ElvUI_ContainerFrameBag0Slot1:GetParent() == UIParent then
+				ElvUI_ContainerFrameBag0Slot1:Show()
+				HearthDB[self.key] = ElvuiProfile
+			else
+				ElvUI_ContainerFrameBag0Slot1:GetParent():Show()
+				HearthDB[self.key] = ElvuiProfile
+			end
+
+		elseif IsAddOnLoaded("GW2_UI") == true then
+			--OpenAllBags()
+			if (MainMenuBarBackpackButton:IsVisible() == true) then
+				HearthDB[self.key] = GW2Profile
+			elseif MainMenuBarBackpackButton:GetParent() == UIParent then
+				MainMenuBarBackpackButton:Show()
+				HearthDB[self.key] = GW2Profile
+			else
+				MainMenuBarBackpackButton:GetParent():Show()
+				HearthDB[self.key] = GW2Profile
+			end
+
+		elseif IsAddOnLoaded("Inventorian") == true then
+			--OpenAllBags()
+			if (InventorianBagFrameIconButton:IsVisible() == true) then
+				HearthDB[self.key] = InventorianProfile
+			elseif InventorianBagFrameIconButton:GetParent() == UIParent then
+				InventorianBagFrameIconButton:Show()
+				HearthDB[self.key] = InventorianProfile
+			else
+				InventorianBagFrameIconButton:GetParent():Show()
+				HearthDB[self.key] = InventorianProfile
+			end
+
+		elseif IsAddOnLoaded("AdiBags") == true then
+			--OpenAllBags()
+			if (AdiBagsSimpleLayeredRegion1:IsVisible() == true) then
+				HearthDB[self.key] = AdiBagsProfile
+			elseif AdiBagsSimpleLayeredRegion1:GetParent() == UIParent then
+				AdiBagsSimpleLayeredRegion1:Show()
+				HearthDB[self.key] = AdiBagsProfile
+			else
+				AdiBagsSimpleLayeredRegion1:GetParent():Show()
+				HearthDB[self.key] = AdiBagsProfile
+			end
+
+		elseif IsAddOnLoaded("Baggins") == true then
+			--OpenAllBags()
+			if (BagginsBag1Section2:IsVisible() == true) then
+				HearthDB[self.key] = BagginsProfile
+			elseif BagginsBag1Section2:GetParent() == UIParent then
+				BagginsBag1Section2:Show()
+				HearthDB[self.key] = BagginsProfile
+			else
+				BagginsBag1Section2:GetParent():Show()
+				HearthDB[self.key] = BagginsProfile
+			end
+
+		elseif IsAddOnLoaded("Combuctor") == true then
+			OpenAllBags()
+			if (CombuctorInventoryFrame1:IsVisible() == true) then
+				HearthDB[self.key] = CombuctorProfile
+			elseif CombuctorInventoryFrame1:GetParent() == UIParent then
+				CombuctorInventoryFrame1:Show()
+				HearthDB[self.key] = CombuctorProfile
+			else
+				CombuctorInventoryFrame1:GetParent():Show()
+				HearthDB[self.key] = CombuctorProfile
+			end
+
+		elseif IsAddOnLoaded("Arkinventory") == true then
+			--OpenAllBags()
+			if (ARKINV_Frame1TitleActionButton0:IsVisible() == true) then
+				HearthDB[self.key] = ArkinventoryProfile
+			elseif ARKINV_Frame1TitleActionButton0:GetParent() == UIParent then
+				ARKINV_Frame1TitleActionButton0:Show()
+				HearthDB[self.key] = ArkinventoryProfile
+			else
+				ARKINV_Frame1TitleActionButton0:GetParent():Show()
+				HearthDB[self.key] = ArkinventoryProfile
+			end
+
+		elseif IsAddOnLoaded("Bagnon") == true then
+			OpenAllBags()
+			if (BagnonMoneyFrame1:IsVisible() == true) then
+				HearthDB[self.key] = BagnonProfile
+			elseif BagnonMoneyFrame1:GetParent() == UIParent then
+				BagnonMoneyFrame1:Show()
+				HearthDB[self.key] = BagnonProfile
+			else
+				BagnonMoneyFrame1:GetParent():Show()
+				HearthDB[self.key] = BagnonProfile
+			end
+
+		elseif IsAddOnLoaded("BaudBag") == true then
+			--OpenAllBags()
+			if (BaudBagSubBag0Item1:IsVisible() == true) then
+				HearthDB[self.key] = BaudbagProfile
+			elseif BaudBagSubBag0Item1:GetParent() == UIParent then
+				BaudBagSubBag0Item1:Show()
+				HearthDB[self.key] = BaudbagProfile
+			else
+				BaudBagSubBag0Item1:GetParent():Show()
+				HearthDB[self.key] = BaudbagProfile
+			end
+
+		elseif IsAddOnLoaded("Sorted") == true then
+			--OpenAllBags()
+			if (SortedFramePortraitButton:IsVisible() == true) then
+				HearthDB[self.key] = SortedProfile
+			elseif SortedFramePortraitButton:GetParent() == UIParent then
+				SortedFramePortraitButton:Show()
+				HearthDB[self.key] = SortedProfile
+			else
+				SortedFramePortraitButton:GetParent():Show()
+				HearthDB[self.key] = SortedProfile
+			end
+
+		else
+			HearthDB[self.key] = DefaultProfile
+			print("executing default profile")
+		end
 		UpdateButton(self.key)
 	end)
 end
@@ -333,29 +603,39 @@ ProfileChecker:SetScript("OnEvent", function(self, event, arg1)
 			HearthDB.BAG["parent"] = "ContainerFrame1PortraitButton"
 			HearthDB.BAG["scale"] = 1
 			HearthDB.BAG["position"] = {-3,2,}
-			print("|T"..hearthDefaultTex..":14|t".."|ThearthDefaultTex|t".."|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r detects no profile set for this character. Now using default anchor.")
+			core:Print("Detecting no profile set for this character. Now using default profile.")
 		end
 	end
 end)
 
-local _dummy, core = ...;
-
 core.commands = {
 	["reset"] = function()
 		if UnitAffectingCombat("player") == false then
-			HearthDB.BAG["parent"] = "ContainerFrame1PortraitButton"
-			HearthDB.BAG["scale"] = 1
-			HearthDB.BAG["position"] = {-3,2,}
 			buttonResetter.key = 'BAG'
 			buttonResetter:Show()
-			print("|T"..hearthDefaultTex..":14|t".."|ThearthDefaultTex|t".."|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r has been reset.")
+			core:Print("Placement has been reset. Anchoring to: " .. HearthDB.BAG["parent"])
 			--HearthDB.BAG = {parent="ContainerFrame1PortraitButton",scale=1,position={[1]=-3,[2]=2}}
 			--UpdateButton(HearthDB.BAG)
 		end
 	end,
 
+	--[[["addon"] = function()
+		if UnitAffectingCombat("player") == false then
+			print("passing initial")
+			HearthDB.BAG = inventorianTest
+			print("passing the variable part, parent is: ".. HearthDB.BAG["parent"])
+			buttonResetter.key = 'BAG'
+			print("passing the key part, parent is: ".. HearthDB.BAG["parent"])
+			--buttonResetter:Show()
+			print("passing the show part, parent is: ".. HearthDB.BAG["parent"])
+			core:Print("Placement has been reset. Anchoring to: " .. HearthDB.BAG["parent"])
+			--HearthDB.BAG = {parent="ContainerFrame1PortraitButton",scale=1,position={[1]=-3,[2]=2}}
+			--UpdateButton(HearthDB.BAG)
+		end
+	end,]]
+
 	["help"] = function()
-		core:Print("Type '/hearthbag' or '/hb' to place the button on a highlighted frame. Use ScrollWheel to cycle through the frames until you select the one of your choosing. Control+ScrollWheel will scale the size of the Hearthbag.")
+		core:Print("Type '/hearthbag' or '/hb' to place the button on a highlighted frame. Use ScrollWheel to cycle through the frames until you select the one of your choosing. Control+ScrollWheel will scale the size of the Hearthbag. '/hearthbag reset' will reset to a preset location, depending on your addons loaded.")
 	end
 };
 
@@ -367,7 +647,7 @@ local function HandleSlashCommands(str)
 		core.commands.help();
 		return;	
 	elseif UnitAffectingCombat("player") == true then
-		print("You can't do that in combat!")
+		core:Print("You can't do that in combat!")
 	end
 
 	local args = {};
@@ -402,7 +682,7 @@ end
 
 function core:Print(...)
 	local hex = "00ccff";
-	local prefix = string.format("|cff%s%s|r", hex:upper(), "Hearthbag:");
+	local prefix = string.format("|cff%s%s|r", hex:upper(), "|T"..hearthDefaultTex..":14|t".."|ThearthDefaultTex|t".."|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r:");
 	DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix, ...));
 end
 
@@ -415,3 +695,4 @@ function core:HearthbagSlash(event, name)
 end
 
 ProfileChecker:HookScript("OnEvent", core.HearthbagSlash); -- part of 
+
