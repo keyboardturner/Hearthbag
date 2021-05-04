@@ -1,9 +1,9 @@
-## Interface: 11306
+## Interface: 90005
 ## Author: Keyboardturner
-## Version: 0.0.2
+## Version: 0.0.5
 ## Title: Hearthbag
 ## Notes: Places a clickable hearthstone over the bag icon of the default backpack.
 ## SavedVariablesPerCharacter: HearthDB
 ## OptionalDeps: ElvUI, GW2_UI, AdiBags, Inventorian, Baggins, Combuctor, Arkinventory, Bagnon, BaudBag, Sorted  
 
-Hearthbag.lua
+Hearthbag-Mainline.lua

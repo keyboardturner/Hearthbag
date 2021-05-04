@@ -57,57 +57,62 @@ local INVALID_FRAME = {
     ACP_AddonListSortDropDownButton = true,
 };
 
--- item list
-local defaultHearthstone = 6948
-local defaultHearthstoneSpellID = 8690
-local rubySlippers = 28585
-local rubySlippersSpellID = 39937
-local darkPortal = 184871
-local darkPortalSpellID = 348699
+local ITEM_LIST = {
+    defaultHearthstone = 6948,
+    defaultHearthstoneSpellID = 8690,
+    rubySlippers = 28585,
+    rubySlippersSpellID = 39937,
+    darkPortal = 184871,
+    darkPortalSpellID = 348699,
+
+};
 
 -- texture list
-local hearthDefaultTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Default.blp"
-local hearthCooldownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown.blp"
-local hearthCooldownBlip = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown_blip.blp"
-local hearthDesatTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Desat.blp"
-local hearthDownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Down.blp"
+local TEXTURE_LIST = {
+hearthDefaultTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Default.blp",
+hearthCooldownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown.blp",
+hearthCooldownBlip = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown_blip.blp",
+hearthDesatTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Desat.blp",
+hearthDownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Down.blp",
 
-local hearthFrameHolder = "Interface/AddOns/Hearthbag/Textures/DropdownBackground.blp"
-local hearthEndUpButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HB.blp"
-local hearthEndDownButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HBDown.blp"
-local hearthEndHighlight = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HBHL.blp"
-local hearthTitleBar = "Interface/AddOns/Hearthbag/Textures/TitleBar.blp"
-local hearthItemHolderTBC = "Interface/AddOns/Hearthbag/Textures/ItemHolderTBC.blp"
-local hearthItemHolderRet = "Interface/AddOns/Hearthbag/Textures/ItemHolderRetail.blp"
+hearthEndUpButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HB.blp",
+hearthEndDownButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HBDown.blp",
+hearthEndHighlight = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HBHL.blp",
+hearthTitleBar = "Interface/AddOns/Hearthbag/Textures/TitleBar.blp",
+hearthItemHolderTBC = "Interface/AddOns/Hearthbag/Textures/ItemHolderTBC.blp",
 
-local hearthCheckUp = "Interface/AddOns/Hearthbag/Textures/CheckButton_Enabled.blp"
-local hearthCheckDown = "Interface/AddOns/Hearthbag/Textures/CheckButton_Disabled.blp"
-local hearthCheckOff = "Interface/AddOns/Hearthbag/Textures/CheckButton_Off.blp"
+hearthCheckUp = "Interface/AddOns/Hearthbag/Textures/CheckButton_Enabled.blp",
+hearthCheckDown = "Interface/AddOns/Hearthbag/Textures/CheckButton_Disabled.blp",
+hearthCheckOff = "Interface/AddOns/Hearthbag/Textures/CheckButton_Off.blp",
 
-local hearthArrowRN = "Interface/AddOns/Hearthbag/Textures/ArrowButtonRight_Norm.blp"
-local hearthArrowLN = "Interface/AddOns/Hearthbag/Textures/ArrowButtonLeft_Norm.blp"
-local hearthArrowDN = "Interface/AddOns/Hearthbag/Textures/ArrowButtonDown_Norm.blp"
-local hearthArrowUN = "Interface/AddOns/Hearthbag/Textures/ArrowButtonUp_Norm.blp"
-local hearthArrowRP = "Interface/AddOns/Hearthbag/Textures/ArrowButtonRight_Pressed.blp"
-local hearthArrowLP = "Interface/AddOns/Hearthbag/Textures/ArrowButtonLeft_Pressed.blp"
-local hearthArrowDP = "Interface/AddOns/Hearthbag/Textures/ArrowButtonDown_Pressed.blp"
-local hearthArrowUP = "Interface/AddOns/Hearthbag/Textures/ArrowButtonUp_Pressed.blp"
-local hearthArrowRHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonRight_HL.blp"
-local hearthArrowLHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonLeft_HL.blp"
-local hearthArrowDHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonDown_HL.blp"
-local hearthArrowUHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonUp_HL.blp"
-local haerthArrowParent = "Interface/AddOns/Hearthbag/Textures/ArruwButton_Parent.blp"
+hearthCollectedYes = "Interface/AddOns/Hearthbag/Textures/Collected_Yes.blp",
+hearthCollectedNo = "Interface/AddOns/Hearthbag/Textures/Collected_No.blp",
 
+hearthArrowRN = "Interface/AddOns/Hearthbag/Textures/ArrowButtonRight_Norm.blp",
+hearthArrowLN = "Interface/AddOns/Hearthbag/Textures/ArrowButtonLeft_Norm.blp",
+hearthArrowDN = "Interface/AddOns/Hearthbag/Textures/ArrowButtonDown_Norm.blp",
+hearthArrowUN = "Interface/AddOns/Hearthbag/Textures/ArrowButtonUp_Norm.blp",
+hearthArrowRP = "Interface/AddOns/Hearthbag/Textures/ArrowButtonRight_Pressed.blp",
+hearthArrowLP = "Interface/AddOns/Hearthbag/Textures/ArrowButtonLeft_Pressed.blp",
+hearthArrowDP = "Interface/AddOns/Hearthbag/Textures/ArrowButtonDown_Pressed.blp",
+hearthArrowUP = "Interface/AddOns/Hearthbag/Textures/ArrowButtonUp_Pressed.blp",
+hearthArrowRHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonRight_HL.blp",
+hearthArrowLHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonLeft_HL.blp",
+hearthArrowDHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonDown_HL.blp",
+hearthArrowUHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonUp_HL.blp",
+hearthArrowParent = "Interface/AddOns/Hearthbag/Textures/ArruwButton_Parent.blp",
 
-local hearthDarkPortalUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportal.blp"
-local hearthDarkPortalDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportalDown.blp"
-local hearthDarkPortalCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_darkportal.blp"
-local hearthDarkPortalDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportalDesat.blp"
+hearthDarkPortalUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportal.blp",
+hearthDarkPortalDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportalDown.blp",
+hearthDarkPortalCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_darkportal.blp",
+hearthDarkPortalDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportalDesat.blp",
 
-local hearthKaraUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhan.blp"
-local hearthKaraDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhanDown.blp"
-local hearthKaraCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_karazhan.blp"
-local hearthKaraDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhanDesat.blp"
+hearthKaraUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhan.blp",
+hearthKaraDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhanDown.blp",
+hearthKaraCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_karazhan.blp",
+hearthKaraDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhanDesat.blp",
+
+};
 
 
 -- our default savedvariables, if none exist yet. prevents nil error upon first ever addon login
@@ -118,16 +123,17 @@ HearthDB = HearthDB or {
         ["position"] = {-3,2},
     },
     INHERIT = true,
-    ITEM = defaultHearthstone,
-    SPELLID = defaultHearthstoneSpellID,
+    ITEM = ITEM_LIST.defaultHearthstone,
+    SPELLID = ITEM_LIST.defaultHearthstoneSpellID,
     APPEARANCE = {
-        UP = hearthDefaultTex,
-        DOWN = hearthDownTex,
-        COOLDOWN = hearthCooldownTex,
-        BLIP = hearthCooldownBlip,
-        DESAT = hearthDesatTex,
+        UP = TEXTURE_LIST.hearthDefaultTex,
+        DOWN = TEXTURE_LIST.hearthDownTex,
+        COOLDOWN = TEXTURE_LIST.hearthCooldownTex,
+        BLIP = TEXTURE_LIST.hearthCooldownBlip,
+        DESAT = TEXTURE_LIST.hearthDesatTex,
     },
     COMBAT = {
+        ["relative"] = "CENTER",
         ["scale"] = 45,
         ["position"] = {0,0},
     },
@@ -265,6 +271,16 @@ local defaultProfile = {
     },
 };
 
+-- default combat frame profile
+local defaultCombatFrame = {
+    ["relative"] = "CENTER",
+    ["scale"] = 45,
+    ["position"] = {
+        0, -- [1]
+        0, -- [2]
+    },
+};
+
 local _dummy, core = ...; -- handles slash commands
 
 -- this is where hearthbag will jump to in combat
@@ -281,7 +297,8 @@ combatFrame:SetScript("OnMouseUp", function(self, button)
     if button == "LeftButton" and self.isMoving then
         self:StopMovingOrSizing();
         self.isMoving = false;
-        point, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint()
+        local point, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint() -- I don't remember why but if I change this it explodes
+        HearthDB.COMBAT["relative"] = point
         HearthDB.COMBAT["position"][1] = xOfs
         HearthDB.COMBAT["position"][2] = yOfs
     end
@@ -292,13 +309,13 @@ combatFrame:SetScript("OnHide", function(self)
         self.isMoving = false;
     end
 end)
-combatFrame:SetPoint("CENTER", HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
+combatFrame:SetPoint(HearthDB.COMBAT["relative"], HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
 combatFrame:SetSize(HearthDB.COMBAT["scale"],HearthDB.COMBAT["scale"]);
 combatFrame:SetClampedToScreen(true);
 --combatFrame:SetScale(1.5);
 local combatTex = combatFrame:CreateTexture("CombatTexture", "BACKGROUND");
 combatTex:SetAllPoints(combatFrame);
-combatTex:SetTexture(hearthDesatTex);
+combatTex:SetTexture(TEXTURE_LIST.hearthDesatTex);
 combatTex:SetAlpha(0.5);
 combatFrame:Hide();
 
@@ -332,7 +349,7 @@ end);
 
 
 local function UpdateItem()
-    NewItem = select(1, GetItemInfo(HearthDB.ITEM)) 
+    local NewItem = select(1, GetItemInfo(HearthDB.ITEM)) 
     if UnitAffectingCombat("player") == false then
         hearthbag:RegisterForClicks("LeftButtonUp", "RightButtonUp");
         hearthbag:SetAttribute("*type1", "item");   -- set to "any left click," targets an item
@@ -347,9 +364,9 @@ end
 local scrollbackButton = CreateFrame("Button", "ScrollBackButton", hearthbag, nil);
 scrollbackButton:SetSize(25, 25);
 scrollbackButton:SetPoint("LEFT", -15, 0);
-scrollbackButton:SetNormalTexture(hearthEndUpButton);
-scrollbackButton:SetPushedTexture(hearthEndDownButton);
-scrollbackButton:SetHighlightTexture(hearthEndHighlight);
+scrollbackButton:SetNormalTexture(TEXTURE_LIST.hearthEndUpButton);
+scrollbackButton:SetPushedTexture(TEXTURE_LIST.hearthEndDownButton);
+scrollbackButton:SetHighlightTexture(TEXTURE_LIST.hearthEndHighlight);
 
 
 -- background frame for the options to parent to, but is also parented to the button and placed under it in strata
@@ -359,7 +376,7 @@ scrollbackFrame:SetPoint("CENTER", -60, 0);
 
 local scrollbackTex = scrollbackFrame:CreateTexture("ScrollBackTex", "BACKGROUND");
 scrollbackTex:SetPoint("CENTER");
-scrollbackTex:SetTexture(hearthTitleBar);
+scrollbackTex:SetTexture(TEXTURE_LIST.hearthTitleBar);
 scrollbackTex:SetDrawLayer("Background", 0);
 scrollbackTex:SetAllPoints(scrollbackFrame);
 scrollbackFrame:Hide();
@@ -370,9 +387,9 @@ scrollbackendButton:SetSize(25, 25);
 scrollbackendButton:SetPoint("LEFT", 30, 1);
 
 
-scrollbackendButton:SetNormalTexture(hearthEndUpButton);
-scrollbackendButton:SetPushedTexture(hearthEndDownButton);
-scrollbackendButton:SetHighlightTexture(hearthEndHighlight);
+scrollbackendButton:SetNormalTexture(TEXTURE_LIST.hearthEndUpButton);
+scrollbackendButton:SetPushedTexture(TEXTURE_LIST.hearthEndDownButton);
+scrollbackendButton:SetHighlightTexture(TEXTURE_LIST.hearthEndHighlight);
 
 -- function that handles showing / hiding options panel
 local function SBBTEX_ONCLICK()
@@ -405,7 +422,7 @@ checkboxbg0:SetSize(15, 15);
 checkboxbg0:SetPoint("CENTER", -25, 3);
 
 local checkboxbg0Tex = checkboxbg0:CreateTexture("ScrollBackTex0", "BACKGROUND");
-checkboxbg0Tex:SetTexture(hearthCheckDown);
+checkboxbg0Tex:SetTexture(TEXTURE_LIST.hearthCheckDown);
 checkboxbg0Tex:SetDrawLayer("Background", 0);
 checkboxbg0Tex:SetAllPoints(checkboxbg0);
 
@@ -413,8 +430,8 @@ checkboxbg0Tex:SetAllPoints(checkboxbg0);
 local InheritOptions = CreateFrame("CheckButton", "HearthAddons", checkboxbg0);
 InheritOptions:SetAllPoints(checkboxbg0);
 InheritOptions:SetPoint("CENTER", 0, 0);
-InheritOptions:SetCheckedTexture(hearthCheckUp);
-InheritOptions:SetDisabledCheckedTexture(hearthCheckOff);
+InheritOptions:SetCheckedTexture(TEXTURE_LIST.hearthCheckUp);
+InheritOptions:SetDisabledCheckedTexture(TEXTURE_LIST.hearthCheckOff);
 
 
 -- handles what frame to "right click" per addon
@@ -480,20 +497,21 @@ local function CheckButton0Combat_OnEvent()
     end
 end
 
+InheritOptions.InheritValue = "True"
 local function CheckButton0Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
 
     if HearthDB.INHERIT == true then
-        InheritValue = "True"
+        InheritOptions.InheritValue = "True"
     else
-        InheritValue = "False"
+        InheritOptions.InheritValue = "False"
     end
-    GameTooltip:AddLine("Inherit the right click options of current bag addon frame: |cff4fe6fc" .. InheritValue .. "|r", 1, 1, 1, 1);
+    GameTooltip:AddLine("Inherit the right click options of current bag addon frame: |cff4fe6fc" .. InheritOptions.InheritValue .. "|r", 1, 1, 1, 1);
     GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG0", "BOTTOMRIGHT", -15, 15);
     GameTooltip:Show();
 end
 
-local function CheckButton0Tooltip_OnLeave(self, motion)
+local function CheckButton0Tooltip_OnLeave()
     GameTooltip:Hide();
 end
 
@@ -513,15 +531,15 @@ checkboxbg1:SetSize(15, 15);
 checkboxbg1:SetPoint("CENTER", 0, 3);
 
 local checkboxbg1Tex = checkboxbg1:CreateTexture("ScrollBackTex1", "BACKGROUND");
-checkboxbg1Tex:SetTexture(hearthCheckDown);
+checkboxbg1Tex:SetTexture(TEXTURE_LIST.hearthCheckDown);
 checkboxbg1Tex:SetDrawLayer("Background", 0);
 checkboxbg1Tex:SetAllPoints(checkboxbg1);
 
 local CombatOptions = CreateFrame("CheckButton", "HearthCombat", checkboxbg1);
 CombatOptions:SetAllPoints(checkboxbg1);
 CombatOptions:SetPoint("CENTER", 0, 0);
-CombatOptions:SetCheckedTexture(hearthCheckUp);
-CombatOptions:SetDisabledCheckedTexture(hearthCheckOff);
+CombatOptions:SetCheckedTexture(TEXTURE_LIST.hearthCheckUp);
+CombatOptions:SetDisabledCheckedTexture(TEXTURE_LIST.hearthCheckOff);
 
 
 local function UpdateCheckCombat_OnClick()
@@ -558,20 +576,21 @@ local function CheckButton1Status_OnShow()
     end
 end
 
+CombatOptions.OutOfCombatValue = "False"
 local function CheckButton1Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
 
     if HearthDB.COMBATFRAME_SHOW == true then
-        OutOfCombatValue = "True"
+        CombatOptions.OutOfCombatValue = "True"
     else
-        OutOfCombatValue = "False"
+        CombatOptions.OutOfCombatValue = "False"
     end
-    GameTooltip:AddLine("Show Combat Frame outside of Combat: |cff4fe6fc" .. OutOfCombatValue .. "|r", 1, 1, 1, 1);
+    GameTooltip:AddLine("Show Combat Frame outside of Combat: |cff4fe6fc" .. CombatOptions.OutOfCombatValue .. "|r", 1, 1, 1, 1);
     GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG1", "BOTTOMRIGHT", -15, 15);
     GameTooltip:Show();
 end
 
-local function CheckButton1Tooltip_OnLeave(self, motion)
+local function CheckButton1Tooltip_OnLeave()
     GameTooltip:Hide();
 end
 
@@ -589,15 +608,15 @@ checkboxbg2:SetSize(15, 15);
 checkboxbg2:SetPoint("CENTER", 25, 3);
 
 local checkboxbg2Tex = checkboxbg2:CreateTexture("ScrollBackTex1", "BACKGROUND");
-checkboxbg2Tex:SetTexture(hearthCheckDown);
+checkboxbg2Tex:SetTexture(TEXTURE_LIST.hearthCheckDown);
 checkboxbg2Tex:SetDrawLayer("Background", 0);
 checkboxbg2Tex:SetAllPoints(checkboxbg2);
 
 local InCombatOptions = CreateFrame("CheckButton", "HearthInCombat", checkboxbg2);
 InCombatOptions:SetAllPoints(checkboxbg2);
 InCombatOptions:SetPoint("CENTER", 0, 0);
-InCombatOptions:SetCheckedTexture(hearthCheckUp);
-InCombatOptions:SetDisabledCheckedTexture(hearthCheckOff);
+InCombatOptions:SetCheckedTexture(TEXTURE_LIST.hearthCheckUp);
+InCombatOptions:SetDisabledCheckedTexture(TEXTURE_LIST.hearthCheckOff);
 
 -- true/false of inheriting addon right click functions
 local function CheckButton2Up_OnClick()
@@ -622,20 +641,21 @@ local function CheckButton2Status_OnShow()
     end
 end
 
+InCombatOptions.InCombatValue = "True"
 local function CheckButton2Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
 
     if HearthDB.INCOMBATFRAME_SHOW == true then
-        InCombatValue = "True"
+        InCombatOptions.InCombatValue = "True"
     else
-        InCombatValue = "False"
+        InCombatOptions.InCombatValue = "False"
     end
-    GameTooltip:AddLine("Show Combat Frame during Combat: |cff4fe6fc" .. InCombatValue .. "|r", 1, 1, 1, 1);
+    GameTooltip:AddLine("Show Combat Frame during Combat: |cff4fe6fc" .. InCombatOptions.InCombatValue .. "|r", 1, 1, 1, 1);
     GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG2", "BOTTOMRIGHT", -15, 15);
     GameTooltip:Show();
 end
 
-local function CheckButton2Tooltip_OnLeave(self, motion)
+local function CheckButton2Tooltip_OnLeave()
     GameTooltip:Hide();
 end
 
@@ -649,16 +669,16 @@ local nudgeParent = CreateFrame("Frame", "NudgeParent", scrollbackFrame, nil);
 nudgeParent:SetSize(30, 30);
 nudgeParent:SetPoint("CENTER", 0, 50);
 local nudgeParentTex = nudgeParent:CreateTexture("NudgeParentTex", "BACKGROUND");
-nudgeParentTex:SetTexture(haerthArrowParent);
+nudgeParentTex:SetTexture(TEXTURE_LIST.hearthArrowParent);
 nudgeParentTex:SetDrawLayer("Background", 0);
 nudgeParentTex:SetAllPoints(nudgeParent);
 
 -- nudge right
 local microMovementR = CreateFrame("Button", "HearthArrowR", nudgeParent);
 microMovementR:SetSize(25,25);
-microMovementR:SetNormalTexture(hearthArrowRN);
-microMovementR:SetPushedTexture(hearthArrowRP);
-microMovementR:SetHighlightTexture(hearthArrowRHL);
+microMovementR:SetNormalTexture(TEXTURE_LIST.hearthArrowRN);
+microMovementR:SetPushedTexture(TEXTURE_LIST.hearthArrowRP);
+microMovementR:SetHighlightTexture(TEXTURE_LIST.hearthArrowRHL);
 microMovementR:SetPoint("RIGHT", 15, 0);
 
 local function UpdatePositionRight_OnClick()
@@ -675,9 +695,9 @@ microMovementR:SetScript("OnClick", UpdatePositionRight_OnClick);
 -- nudge left
 local microMovementL = CreateFrame("Button", "HearthArrowL", nudgeParent);
 microMovementL:SetSize(25,25);
-microMovementL:SetNormalTexture(hearthArrowLN);
-microMovementL:SetPushedTexture(hearthArrowLP);
-microMovementL:SetHighlightTexture(hearthArrowLHL);
+microMovementL:SetNormalTexture(TEXTURE_LIST.hearthArrowLN);
+microMovementL:SetPushedTexture(TEXTURE_LIST.hearthArrowLP);
+microMovementL:SetHighlightTexture(TEXTURE_LIST.hearthArrowLHL);
 microMovementL:SetPoint("LEFT", -15, 0);
 
 local function UpdatePositionLeft_OnClick()
@@ -694,9 +714,9 @@ microMovementL:SetScript("OnClick", UpdatePositionLeft_OnClick);
 -- nudge down
 local microMovementD = CreateFrame("Button", "HearthArrowD", nudgeParent);
 microMovementD:SetSize(25,25);
-microMovementD:SetNormalTexture(hearthArrowDN);
-microMovementD:SetPushedTexture(hearthArrowDP);
-microMovementD:SetHighlightTexture(hearthArrowDHL);
+microMovementD:SetNormalTexture(TEXTURE_LIST.hearthArrowDN);
+microMovementD:SetPushedTexture(TEXTURE_LIST.hearthArrowDP);
+microMovementD:SetHighlightTexture(TEXTURE_LIST.hearthArrowDHL);
 microMovementD:SetPoint("BOTTOM", 0, -15);
 
 local function UpdatePositionDown_OnClick()
@@ -713,9 +733,9 @@ microMovementD:SetScript("OnClick", UpdatePositionDown_OnClick);
 -- nudge up
 local microMovementU = CreateFrame("Button", "HearthArrowU", nudgeParent);
 microMovementU:SetSize(25,25);
-microMovementU:SetNormalTexture(hearthArrowUN);
-microMovementU:SetPushedTexture(hearthArrowUP);
-microMovementU:SetHighlightTexture(hearthArrowUHL);
+microMovementU:SetNormalTexture(TEXTURE_LIST.hearthArrowUN);
+microMovementU:SetPushedTexture(TEXTURE_LIST.hearthArrowUP);
+microMovementU:SetHighlightTexture(TEXTURE_LIST.hearthArrowUHL);
 microMovementU:SetPoint("TOP", 0, 15);
 
 local function UpdatePositionUp_OnClick()
@@ -774,7 +794,7 @@ end
 
 -- controls the behaviour of Hearthbag
 local function hearthBag_OnMouseDown(self, button)  -- controls the mouse down behaviour, including the "down" texture
-    local start, duration = GetSpellCooldown(HearthDB.SPELLID);
+    local duration = GetSpellCooldown(HearthDB.SPELLID);
     local CastingHearth = select(8,UnitCastingInfo("player"));  -- I refuse to use == 1 for the item count because it may be possible to glitch the game and grab 2+ hearthstones
     if ((GetItemCount(HearthDB.ITEM) > 0) and (button == "LeftButton") and (duration == 0) and (CastingHearth ~= HearthDB.SPELLID) and (UnitOnTaxi("player") == false) and (IsPlayerMoving() == false) and (IsFalling() == false)) then
         hearthbag.background:SetTexture(HearthDB.APPEARANCE.DOWN);
@@ -787,7 +807,7 @@ local function hearthBag_OnMouseDown(self, button)  -- controls the mouse down b
 end
 -- controls the mouse up behaviour, similar to mousedown function
 local function hearthBag_OnMouseUp()
-    local start, duration = GetSpellCooldown(HearthDB.SPELLID);
+    local duration = GetSpellCooldown(HearthDB.SPELLID);
     local CastingHearth = select(8,UnitCastingInfo("player"));
     if (GetItemCount(HearthDB.ITEM) > 0) then
         hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
@@ -831,8 +851,6 @@ local function hearthMouseOver_ONENTER()
         if ( ( HearthDB.BAG["position"][1] <= ( (SortedProfile["position"][1] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][1] >= ( (SortedProfile["position"][1] - HearthDB.BAG["scale"])/2 ) ) ) and ( ( HearthDB.BAG["position"][2] <= ( (SortedProfile["position"][2] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][2] >= ( (SortedProfile["position"][2] - HearthDB.BAG["scale"])/2 ) ) ) then
             SortedTooltip.CreateLocalized(hearthbag, "ANCHOR_TOP", "TOOLTIP_CONFIG")
         end
-    elseif IsAddOnLoaded("Dummy") == true then
-        print("dummy is loaded")
     elseif HearthDB.BAG["parent"] == "ContainerFrame1PortraitButton" then
         if ( ( HearthDB.BAG["position"][1] <= ( (defaultProfile["position"][1] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][1] >= ( (defaultProfile["position"][1] - HearthDB.BAG["scale"])/2 ) ) ) and ( ( HearthDB.BAG["position"][2] <= ( (defaultProfile["position"][2] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][2] >= ( (defaultProfile["position"][2] - HearthDB.BAG["scale"])/2 ) ) ) then
             GameTooltip:SetOwner(hearthbag, "ANCHOR_LEFT");
@@ -944,7 +962,7 @@ itemHolderFrame:SetPoint("CENTER", 0, -32);
 
 local itemHolderFrameTex = itemHolderFrame:CreateTexture("ItemHolderFrameTex", "BACKGROUND");
 itemHolderFrameTex:SetPoint("CENTER");
-itemHolderFrameTex:SetTexture(hearthItemHolderTBC);
+itemHolderFrameTex:SetTexture(TEXTURE_LIST.hearthItemHolderTBC);
 itemHolderFrameTex:SetDrawLayer("Background", 0);
 itemHolderFrameTex:SetAllPoints(itemHolderFrame);
 --itemHolderFrameTex:Hide();
@@ -954,16 +972,16 @@ itemHolderFrameTex:SetAllPoints(itemHolderFrame);
 local option0 = CreateFrame("Button", "HearthbagOption0", itemHolderFrame, nil);
 option0:SetSize(25, 25);
 option0:SetPoint("LEFT", 47.5, 2);
-option0:SetNormalTexture(hearthDefaultTex);
-option0:SetPushedTexture(hearthDownTex);
+option0:SetNormalTexture(TEXTURE_LIST.hearthDefaultTex);
+option0:SetPushedTexture(TEXTURE_LIST.hearthDownTex);
 
 function option0:SetHearthTexture_ONCLICK()
-    HearthDB.APPEARANCE.UP = hearthDefaultTex
-    HearthDB.APPEARANCE.DOWN = hearthDownTex
-    HearthDB.APPEARANCE.COOLDOWN = hearthCooldownTex
-    HearthDB.APPEARANCE.DESAT = hearthDesatTex
-    HearthDB.ITEM = defaultHearthstone
-    HearthDB.SPELLID = defaultHearthstoneSpellID
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthDefaultTex
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthDownTex
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthCooldownTex
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthDesatTex
+    HearthDB.ITEM = ITEM_LIST.defaultHearthstone
+    HearthDB.SPELLID = ITEM_LIST.defaultHearthstoneSpellID
     if (GetItemCount(HearthDB.ITEM) > 0) then   -- if the item exists but doesn't fullfil above criteria
         hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
     else                                    -- if the item does not exist or turns up nil
@@ -975,12 +993,12 @@ end
 
 function option0:Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(defaultHearthstone)
+    GameTooltip:SetItemByID(ITEM_LIST.defaultHearthstone)
     GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOption0", "BOTTOMRIGHT", -15, 15);
     GameTooltip:Show();
 end
 
-function option0:Tooltip_OnLeave(self, motion)
+function option0:Tooltip_OnLeave()
     GameTooltip:Hide();
 end
 
@@ -988,22 +1006,42 @@ option0:SetScript("OnClick", option0.SetHearthTexture_ONCLICK);
 option0:SetScript("OnEnter", option0.Tooltip_OnEnter);
 option0:SetScript("OnLeave", option0.Tooltip_OnLeave);
 
+option0.collected = CreateFrame("Frame", nil, option0, nil);
+option0.collected:SetSize(10, 10);
+option0.collected:SetPoint("TOPLEFT", 0, 0);
+
+option0.collected.tex = option0.collected:CreateTexture(nil, "BACKGROUND");
+option0.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+option0.collected.tex:SetAllPoints(option0.collected);
+
+function option0.collected:CollectionCheck()
+    if GetItemCount(ITEM_LIST.defaultHearthstone) >= 1 then
+        option0.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+    else
+        option0.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+    end
+end
+
+option0:RegisterEvent("TOYS_UPDATED");
+option0:RegisterEvent("BAG_UPDATE");
+option0:SetScript("OnEvent", option0.collected.CollectionCheck);
+
 local option1 = CreateFrame("Button", "HearthbagOption1", option0, nil);
 option1:SetSize(25, 25);
 option1:SetPoint("LEFT", 27, 0);
-option1:SetNormalTexture(hearthDarkPortalUp);
-option1:SetPushedTexture(hearthDarkPortalDown);
+option1:SetNormalTexture(TEXTURE_LIST.hearthDarkPortalUp);
+option1:SetPushedTexture(TEXTURE_LIST.hearthDarkPortalDown);
 --option1:SetHighlightTexture(GetItemIcon(darkPortal));
 
 
 -- dark portal
 function option1:SetHearthTexture_ONCLICK()
-    HearthDB.APPEARANCE.UP = hearthDarkPortalUp
-    HearthDB.APPEARANCE.DOWN = hearthDarkPortalDown
-    HearthDB.APPEARANCE.COOLDOWN = hearthDarkPortalCD
-    HearthDB.APPEARANCE.DESAT = hearthDarkPortalDesat
-    HearthDB.ITEM = darkPortal
-    HearthDB.SPELLID = darkPortalSpellID
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthDarkPortalUp
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthDarkPortalDown
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthDarkPortalCD
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthDarkPortalDesat
+    HearthDB.ITEM = ITEM_LIST.darkPortal
+    HearthDB.SPELLID = ITEM_LIST.darkPortalSpellID
     if (GetItemCount(HearthDB.ITEM) > 0) then   -- if the item exists but doesn't fullfil above criteria
         hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
     else                                    -- if the item does not exist or turns up nil
@@ -1016,12 +1054,12 @@ end
 
 function option1:Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(darkPortal)
+    GameTooltip:SetItemByID(ITEM_LIST.darkPortal)
     GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOption1", "BOTTOMRIGHT", -15, 15);
     GameTooltip:Show();
 end
 
-function option1:Tooltip_OnLeave(self, motion)
+function option1:Tooltip_OnLeave()
     GameTooltip:Hide();
 end
 
@@ -1030,20 +1068,42 @@ option1:SetScript("OnClick", option1.SetHearthTexture_ONCLICK);
 option1:SetScript("OnEnter", option1.Tooltip_OnEnter);
 option1:SetScript("OnLeave", option1.Tooltip_OnLeave);
 
+option1.collected = CreateFrame("Frame", nil, option1, nil);
+option1.collected:SetSize(10, 10);
+option1.collected:SetPoint("TOPLEFT", 0, 0);
+
+option1.collected.tex = option1.collected:CreateTexture(nil, "BACKGROUND");
+option1.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+option1.collected.tex:SetAllPoints(option1.collected);
+
+function option1.collected:CollectionCheck()
+    if GetItemCount(ITEM_LIST.darkPortal) >= 1 then
+        option1.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+    else
+        option1.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+    end
+end
+
+option1:RegisterEvent("TOYS_UPDATED");
+option1:RegisterEvent("BAG_UPDATE");
+option1:SetScript("OnEvent", option1.collected.CollectionCheck);
+
+
+-- Karazhan
 local option2 = CreateFrame("Button", "HearthbagOption2", option1, nil);
 option2:SetSize(25, 25);
 option2:SetPoint("LEFT", 27, 0);
-option2:SetNormalTexture(hearthKaraUp);
-option2:SetPushedTexture(hearthKaraDown);
+option2:SetNormalTexture(TEXTURE_LIST.hearthKaraUp);
+option2:SetPushedTexture(TEXTURE_LIST.hearthKaraDown);
 --option1:SetHighlightTexture(GetItemIcon(darkPortal));
 
 function option2:SetHearthTexture_ONCLICK()
-    HearthDB.APPEARANCE.UP = hearthKaraUp
-    HearthDB.APPEARANCE.DOWN = hearthKaraDown
-    HearthDB.APPEARANCE.COOLDOWN = hearthKaraCD
-    HearthDB.APPEARANCE.DESAT = hearthKaraDesat
-    HearthDB.ITEM = rubySlippers
-    HearthDB.SPELLID = rubySlippersSpellID
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthKaraUp
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthKaraDown
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthKaraCD
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthKaraDesat
+    HearthDB.ITEM = ITEM_LIST.rubySlippers
+    HearthDB.SPELLID = ITEM_LIST.rubySlippersSpellID
     if (GetItemCount(HearthDB.ITEM) > 0) then   -- if the item exists but doesn't fullfil above criteria
         hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
     else                                    -- if the item does not exist or turns up nil
@@ -1055,18 +1115,55 @@ end
 
 function option2:Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(rubySlippers)
+    GameTooltip:SetItemByID(ITEM_LIST.rubySlippers)
     GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOption2", "BOTTOMRIGHT", -15, 15);
     GameTooltip:Show();
 end
 
-function option2:Tooltip_OnLeave(self, motion)
+function option2:Tooltip_OnLeave()
     GameTooltip:Hide();
 end
 
 option2:SetScript("OnClick", option2.SetHearthTexture_ONCLICK);
 option2:SetScript("OnEnter", option2.Tooltip_OnEnter);
 option2:SetScript("OnLeave", option2.Tooltip_OnLeave);
+
+option2.collected = CreateFrame("Frame", nil, option2, nil);
+option2.collected:SetSize(10, 10);
+option2.collected:SetPoint("TOPLEFT", 0, 0);
+
+option2.collected.tex = option2.collected:CreateTexture(nil, "BACKGROUND");
+option2.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+option2.collected.tex:SetAllPoints(option2.collected);
+
+function option2.collected:CollectionCheck()
+    if GetItemCount(ITEM_LIST.rubySlippers) >= 1 then
+        option2.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+    else
+        option2.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+    end
+end
+
+option2:RegisterEvent("TOYS_UPDATED");
+option2:RegisterEvent("BAG_UPDATE");
+option2:SetScript("OnEvent", option2.collected.CollectionCheck);
+
+function buttonContainer:FrameLevelChildren()
+    -- default
+    if option0.collected:GetParent():GetFrameLevel() >= option0.collected:GetFrameLevel() then
+        option0.collected:SetFrameLevel(option0.collected:GetFrameLevel() + 1)
+    end
+
+    --ruby slippers 
+    if option2.collected:GetParent():GetFrameLevel() >= option2.collected:GetFrameLevel() then
+        option2.collected:SetFrameLevel(option2.collected:GetFrameLevel() + 1)
+    end
+
+    --darkPortal
+    if option1.collected:GetParent():GetFrameLevel() >= option1.collected:GetFrameLevel() then
+        option1.collected:SetFrameLevel(option1.collected:GetFrameLevel() + 1)
+    end
+end
 
 
 function buttonContainer:SetNewParent(newParent, offsetX, offsetY)
@@ -1078,6 +1175,7 @@ function buttonContainer:SetNewParent(newParent, offsetX, offsetY)
     hearthbag:SetPoint("CENTER", HearthDB.BAG["parent"], "CENTER", HearthDB.BAG["position"][1], HearthDB.BAG["position"][2]);
     hearthbag:SetFrameStrata("FULLSCREEN_DIALOG");
     FrameLevelOrganiser();
+    buttonContainer.FrameLevelChildren();
 end
 
 
@@ -1086,7 +1184,7 @@ frameSelector:SetFrameStrata("FULLSCREEN_DIALOG");
 frameSelector:SetIgnoreParentScale(true);
 
 frameSelector.placerTexture = frameSelector:CreateTexture(nil, "OVERLAY", nil, 1);
-frameSelector.placerTexture:SetTexture(hearthDesatTex);
+frameSelector.placerTexture:SetTexture(TEXTURE_LIST.hearthDesatTex);
 frameSelector.placerTexture:SetSize(32, 32);
 frameSelector.placerTexture:SetAlpha(0.6);
 frameSelector.placerTexture:SetPoint("CENTER", 0, 0);
@@ -1121,7 +1219,6 @@ function frameSelector:UpdateAnchorPosition()
     local focus = GetMouseFocus();
     if focus then
         local frameName = focus:GetName();
-        local showFocusTexture;
         if not frameName or INVALID_FRAME[frameName] then
             focus = UIParent;
             frameName = "UIParent";
@@ -1251,17 +1348,23 @@ function hearthbag:buttonResetter()
     hearthbag:SetSize(HearthDB.BAG["scale"], HearthDB.BAG["scale"]);
     UpdateCheckInherit_OnClick();
     FrameLevelOrganiser();
+    buttonContainer.FrameLevelChildren();
+
+    HearthDB.COMBAT["relative"] = defaultCombatFrame["relative"]
+    HearthDB.COMBAT["position"][1] = defaultCombatFrame["position"][1]
+    HearthDB.COMBAT["position"][2] = defaultCombatFrame["position"][2]
+    combatFrame:SetPoint(HearthDB.COMBAT["relative"], HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
 end
 
+hearthbag.frames = {}
 -- snapshots all frames at the current time of executing this function
 local function CollectFrames()
-    frames = {}
     local f
     while true do
         f = EnumerateFrames(f);
         if not f then break end
         if f.GetName and f:GetName() and f.IsVisible and f:IsVisible() and f.GetCenter and f:GetCenter() then
-            tinsert(frames, f);
+            tinsert(hearthbag.frames, f);
         end
     end 
 end
@@ -1272,14 +1375,14 @@ previewFrame:SetPoint("CENTER", 0, 0);
 previewFrame:SetScale(1);
 previewFrame:SetFrameStrata("FULLSCREEN_DIALOG");
 local previewFrameTex = previewFrame:CreateTexture("PreviewFrameTex", "BACKGROUND");
-previewFrameTex:SetTexture(hearthDesatTex);
+previewFrameTex:SetTexture(TEXTURE_LIST.hearthDesatTex);
 previewFrameTex:SetAllPoints(previewFrame);
 previewFrame:Hide();
 
 --the "yellow frame" placer similar to fstack
-local function CreateButtonPlacer()
+function previewFrame:CreateButtonPlacer()
     local frame = CreateFrame("Frame", nil, UIParent)
-    buttonPlacer = frame
+    previewFrame.buttonPlacer = frame
     frame:EnableMouse(true);
     frame:EnableMouseWheel(true);
     frame:EnableKeyboard(true);
@@ -1295,9 +1398,8 @@ local function CreateButtonPlacer()
 
     -- grabs info on the currently selected frame
     local function target(self)
-        local f = frames[frame.index]
+        local f = hearthbag.frames[frame.index]
         frame.target = f
-        local scale, x, y = f:GetEffectiveScale(), GetCursorPosition();
         targetMarker:SetAllPoints(f);
         --buttonPreview:SetScale(scale * self.scale);
         RaidNotice_Clear(RaidWarningFrame);
@@ -1330,8 +1432,8 @@ local function CreateButtonPlacer()
         else]] --old code but will keep maybe for later
         self.index = self.index + arg1
         if self.index < 1 then
-            self.index = #frames
-        elseif self.index > #frames then
+            self.index = #hearthbag.frames
+        elseif self.index > #hearthbag.frames then
             self.index = 1
         end
         target(self);
@@ -1347,19 +1449,14 @@ local function CreateButtonPlacer()
         -- grabs the values stored and sets them as the SavedVars
         HearthDB.BAG = {parent=self.target:GetName(), position={(x/targetScale-targetX)/self.scale, (y/targetScale-targetY)/self.scale}, scale=HearthDB.BAG["scale"]}
         
-        -- hearthbag should never be placed on WorldFrame or Hearhtbag (and child) frames itself, will change this later to the SavedVar setter
-        if HearthDB.BAG["parent"] == ("WorldFrame" or "Hearthbag") then
-            core:Print(HearthDB.BAG["parent"] .. " cannot be set as parent frame. Switching to UIParent instead.");
-            HearthDB.BAG["parent"] = "UIParent"
-        end
-        
         hearthbag:SetPoint("CENTER", HearthDB.BAG["parent"], "CENTER", HearthDB.BAG["position"][1], HearthDB.BAG["position"][2]);
         hearthbag:SetParent(HearthDB.BAG["parent"]);
         hearthbag:SetSize(HearthDB.BAG["scale"], HearthDB.BAG["scale"]);
         UpdateCheckInherit_OnClick();
-        combatFrame:SetPoint("CENTER", UIParent, "CENTER", HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
+        combatFrame:SetPoint(HearthDB.COMBAT["relative"], HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
         hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
         FrameLevelOrganiser();
+        buttonContainer.FrameLevelChildren();
     end)
 
     -- handles the position of the preview on the cursor using OnUpdate, currently unused for simplicity
@@ -1406,8 +1503,8 @@ core.commands = {
 
     ["cycler"] = function()
         if UnitAffectingCombat("player") == false then
-            CreateButtonPlacer();
-            buttonPlacer:Show();
+            previewFrame.CreateButtonPlacer();
+            previewFrame.buttonPlacer:Show();
             core:Print("Highlight the frame and click where you want your frame to be placed.")
         else
             core:Print("You can't do that in combat!");
@@ -1458,7 +1555,7 @@ local function HandleSlashCommands(str)
 end
 
 function core:Print(...)
-    local prefix = string.format("|T" .. hearthDefaultTex .. ":14|t" .. "|ThearthDefaultTex|t" .. "|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r:");    
+    local prefix = string.format("|T" .. TEXTURE_LIST.hearthDefaultTex .. ":14|t" .. "|TTEXTURE_LIST.hearthDefaultTex|t" .. "|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r:");    
     DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix, ...));
 end
 
@@ -1477,16 +1574,19 @@ events:SetScript("OnEvent", core.init);
 hearthbag:HookScript("OnEvent", function(self, event)
     if event == "PLAYER_ENTERING_WORLD" then
         OpenAllBags();
+        hearthbag:ClearAllPoints();
+        combatFrame:ClearAllPoints();
         hearthbag:SetPoint("CENTER", HearthDB.BAG["parent"], "CENTER", HearthDB.BAG["position"][1], HearthDB.BAG["position"][2]);
         --hearthbag:SetPoint("BOTTOMRIGHT", HearthDB.BAG["parent"], "BOTTOMRIGHT", HearthDB.BAG["position"][1], HearthDB.BAG["position"][2]);
         hearthbag:SetParent(HearthDB.BAG["parent"]);
         --hearthbag:SetScale(HearthDB.BAG["scale"])
         hearthbag:SetSize(HearthDB.BAG["scale"], HearthDB.BAG["scale"]);
         UpdateCheckInherit_OnClick();
-        combatFrame:SetPoint("CENTER", UIParent, "CENTER", HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
+        combatFrame:SetPoint(HearthDB.COMBAT["relative"], HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
         hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
         CloseAllBags();
         FrameLevelOrganiser();
+        buttonContainer.FrameLevelChildren();
         UpdateItem();
         if HearthDB.COMBATFRAME_SHOW == true then
             combatFrame:Show();
@@ -1522,6 +1622,3 @@ anchorBuddy:SetScript("OnEvent", function(self, event)
         end
     end
 end);
---[[local anchorTex = anchorBuddy:CreateTexture("AnchorTexture", "BACKGROUND");
-anchorTex:SetAllPoints(anchorBuddy);
-anchorTex:SetTexture(hearthDesatTex);]]
