@@ -74,6 +74,7 @@ hearthCooldownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown.bl
 hearthCooldownBlip = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown_blip.blp",
 hearthDesatTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Desat.blp",
 hearthDownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Down.blp",
+hearthCombatTex = "Interface/AddOns/Hearthbag/Textures/combatframe.blp",
 
 hearthEndUpButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HB.blp",
 hearthEndDownButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HBDown.blp",
@@ -315,7 +316,7 @@ combatFrame:SetClampedToScreen(true);
 --combatFrame:SetScale(1.5);
 local combatTex = combatFrame:CreateTexture("CombatTexture", "BACKGROUND");
 combatTex:SetAllPoints(combatFrame);
-combatTex:SetTexture(TEXTURE_LIST.hearthDesatTex);
+combatTex:SetTexture(TEXTURE_LIST.hearthCombatTex);
 combatTex:SetAlpha(0.5);
 combatFrame:Hide();
 
@@ -341,8 +342,6 @@ item:ContinueOnItemLoad(function()  -- this is friend. ensures the item is loade
         hearthbag:SetAttribute("*type1", "item");   -- set to "any left click," targets an item
         hearthbag:SetAttribute("item", item:GetItemName()); -- the targetted item is now using the Item:CreateFromItemID() from before
         --UpdateCheckInherit_OnClick()
-    else
-        core:Print("Cannot set button functions in combat!");
     end
 end);
 
@@ -355,8 +354,6 @@ local function UpdateItem()
         hearthbag:SetAttribute("*type1", "item");   -- set to "any left click," targets an item
         hearthbag:SetAttribute("item", NewItem); -- the targetted item is now using the Item:CreateFromItemID() from before
         --UpdateCheckInherit_OnClick()
-    else
-        core:Print("Cannot set button functions in combat!");
     end
 end
 
@@ -789,6 +786,7 @@ local function FrameLevelOrganiser()
     if checkboxbg2:GetFrameLevel() <= scrollbackFrame:GetFrameLevel() then
         checkboxbg2:SetFrameLevel(scrollbackFrame:GetFrameLevel() +1 )
     end
+    buttonContainer.FrameLevelChildren()
 end
 
 
@@ -879,8 +877,8 @@ hearthbag:SetScript("OnEvent", function(self, event)
         combatFrame:Show();
         hearthbag:ClearAllPoints();
         hearthbag:SetParent(combatFrame);
-        hearthbag:SetPoint("TOPLEFT", combatFrame, "TOPLEFT", 5, -5);
-        hearthbag:SetPoint("BOTTOMRIGHT", combatFrame, "BOTTOMRIGHT", -5, 5);
+        hearthbag:SetPoint("TOPLEFT", combatFrame, "TOPLEFT", 5, -10);
+        hearthbag:SetPoint("BOTTOMRIGHT", combatFrame, "BOTTOMRIGHT", -5, 0);
         hearthbag:SetMovable(true);
         scrollbackButton:Hide();
         if HearthDB.INCOMBATFRAME_SHOW == true then
