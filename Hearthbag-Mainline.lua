@@ -111,6 +111,7 @@ local TEXTURE_LIST = {
     hearthCooldownBlip = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown_blip.blp",
     hearthDesatTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Desat.blp",
     hearthDownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Down.blp",
+    hearthCombatTex = "Interface/AddOns/Hearthbag/Textures/combatframe.blp",
 
     hearthEndUpButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HB.blp",
     hearthEndDownButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HBDown.blp",
@@ -457,7 +458,7 @@ combatFrame:SetClampedToScreen(true);
 --combatFrame:SetScale(1.5);
 local combatTex = combatFrame:CreateTexture("CombatTexture", "BACKGROUND");
 combatTex:SetAllPoints(combatFrame);
-combatTex:SetTexture(TEXTURE_LIST.hearthDesatTex);
+combatTex:SetTexture(TEXTURE_LIST.hearthCombatTex);
 combatTex:SetAlpha(0.5);
 combatFrame:Hide();
 
@@ -483,8 +484,6 @@ item:ContinueOnItemLoad(function()  -- this is friend. ensures the item is loade
         hearthbag:SetAttribute("*type1", "item");   -- set to "any left click," targets an item
         hearthbag:SetAttribute("item", item:GetItemName()); -- the targetted item is now using the Item:CreateFromItemID() from before
         --UpdateCheckInherit_OnClick()
-    else
-        core:Print("Cannot set button functions in combat!");
     end
 end);
 
@@ -496,9 +495,6 @@ local function UpdateItem()
         hearthbag:RegisterForClicks("LeftButtonUp", "RightButtonUp");
         hearthbag:SetAttribute("*type1", "item");   -- set to "any left click," targets an item
         hearthbag:SetAttribute("item", NewItem); -- the targetted item is now using the Item:CreateFromItemID() from before
-        --UpdateCheckInherit_OnClick()
-    else
-        core:Print("Cannot set button functions in combat!");
     end
 end
 
@@ -933,6 +929,7 @@ local function FrameLevelOrganiser()
     if checkboxbg2:GetFrameLevel() <= scrollbackFrame:GetFrameLevel() then
         checkboxbg2:SetFrameLevel(scrollbackFrame:GetFrameLevel() +1 )
     end
+    buttonContainer.FrameLevelChildren()
 end
 
 local function RandomSoundButton_Down()
@@ -1062,8 +1059,8 @@ hearthbag:SetScript("OnEvent", function(self, event)
         combatFrame:Show();
         hearthbag:ClearAllPoints();
         hearthbag:SetParent(combatFrame);
-        hearthbag:SetPoint("TOPLEFT", combatFrame, "TOPLEFT", 5, -5);
-        hearthbag:SetPoint("BOTTOMRIGHT", combatFrame, "BOTTOMRIGHT", -5, 5);
+        hearthbag:SetPoint("TOPLEFT", combatFrame, "TOPLEFT", 5, -10);
+        hearthbag:SetPoint("BOTTOMRIGHT", combatFrame, "BOTTOMRIGHT", -5, 0);
         hearthbag:SetMovable(true);
         scrollbackButton:Hide();
         if HearthDB.INCOMBATFRAME_SHOW == true then
@@ -1230,9 +1227,13 @@ dalaranHearth:SetNormalTexture(TEXTURE_LIST.hearthDalaranUp);
 dalaranHearth:SetPushedTexture(TEXTURE_LIST.hearthDalaranDown);
 
 function dalaranHearth:SetItem_OnEvent()
-    dalaranHearth.ItemID = select(1, GetItemInfo(ITEM_LIST.dalaran))
-    dalaranHearth:SetAttribute("*type1", "item")
-    dalaranHearth:SetAttribute("item", dalaranHearth.ItemID)
+    if InCombatLockdown() == true then
+        C_Timer.After(1, dalaranHearth.SetItem_OnEvent)
+    else
+        dalaranHearth.ItemID = select(1, GetItemInfo(ITEM_LIST.dalaran))
+        dalaranHearth:SetAttribute("*type1", "item")
+        dalaranHearth:SetAttribute("item", dalaranHearth.ItemID)
+    end
 end
 
 function dalaranHearth:Tooltip_OnEnter()
@@ -1303,9 +1304,13 @@ garrisonHearth:SetNormalTexture(TEXTURE_LIST.hearthGarrisonUp);
 garrisonHearth:SetPushedTexture(TEXTURE_LIST.hearthGarrisonDown);
 
 function garrisonHearth:SetItem_OnEvent()
-    garrisonHearth.ItemID = select(1, GetItemInfo(ITEM_LIST.garrison))
-    garrisonHearth:SetAttribute("*type1", "item")
-    garrisonHearth:SetAttribute("item", garrisonHearth.ItemID)
+    if InCombatLockdown() == true then
+        C_Timer.After(1, dalaranHearth.SetItem_OnEvent)
+    else
+        garrisonHearth.ItemID = select(1, GetItemInfo(ITEM_LIST.garrison))
+        garrisonHearth:SetAttribute("*type1", "item")
+        garrisonHearth:SetAttribute("item", garrisonHearth.ItemID)
+    end
 end
 
 function garrisonHearth:Tooltip_OnEnter()
@@ -1368,7 +1373,6 @@ garrisonHearth:RegisterEvent("BAG_UPDATE");
 garrisonHearth:HookScript("OnEvent", garrisonHearth.collected.CollectionCheck);
 
 
-
 -- Covenant
 local covenantHearthstone = CreateFrame("Button", "CovenantHearthstone", option0, nil);
 covenantHearthstone:SetSize(25, 25);
@@ -1378,6 +1382,7 @@ covenantHearthstone:SetPushedTexture(TEXTURE_LIST.hearthNobleDown);
 
 local covenantID = C_Covenants.GetActiveCovenantID()
 function covenantHearthstone:ButtonTexture_OnEvent()
+    covenantID = C_Covenants.GetActiveCovenantID()
     if covenantID == 0 then
         covenantID = math.random(1, 4);
     end
@@ -1397,6 +1402,7 @@ function covenantHearthstone:ButtonTexture_OnEvent()
 end
 
 function covenantHearthstone:SetHearthTexture_ONCLICK()
+    covenantID = C_Covenants.GetActiveCovenantID()
     if covenantID == 1 then
         HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthKyrianUp
         HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthKyrianDown
@@ -1432,6 +1438,7 @@ function covenantHearthstone:SetHearthTexture_ONCLICK()
 end
 
 function covenantHearthstone:Tooltip_OnEnter()
+    covenantID = C_Covenants.GetActiveCovenantID()
     GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
     if covenantID == 1 then
             GameTooltip:SetItemByID(ITEM_LIST.kyrian);
@@ -1466,6 +1473,7 @@ covenantHearthstone.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
 covenantHearthstone.collected.tex:SetAllPoints(covenantHearthstone.collected);
 
 function covenantHearthstone.collected:CollectionCheck()
+    covenantID = C_Covenants.GetActiveCovenantID()
     if covenantID == 1 and PlayerHasToy(ITEM_LIST.kyrian) == true then
         covenantHearthstone.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
     elseif covenantID == 2 and PlayerHasToy(ITEM_LIST.venthyr) == true then
@@ -2792,6 +2800,8 @@ hearthbag:HookScript("OnEvent", function(self, event)
         end
     end
 end);
+
+hearthbag:SetScript("OnShow", UpdateItem); -- NUCLEAR WEAPON ENGAGED BECAUSE SOMETIMES LOGGING IN DOESN'T WORK
 
 local anchorBuddy = CreateFrame("Frame", "AnchorBuddy", UIParent, nil);
 anchorBuddy:SetSize(25,25);
