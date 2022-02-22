@@ -101,6 +101,11 @@ local ITEM_LIST = {
     dalaranSpellID = 222695,
     garrison = 110560,
     garrisonSpellID = 171253,
+    broker = 190237,
+    brokerSpellID = 367013,
+    torghast = 188952,
+    torghastSpellID = 363799,
+
 
 };
 
@@ -241,6 +246,17 @@ local TEXTURE_LIST = {
     hearthDalaranDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_dalaranDown.blp",
     hearthDalaranCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_dalaran.blp",
     hearthDalaranDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_dalaranDesat.blp",
+
+    hearthBrokerUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_broker.blp",
+    hearthBrokerDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_brokerDown.blp",
+    hearthBrokerCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_broker.blp",
+    hearthBrokerDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_brokerDesat.blp",
+
+    hearthTorghastUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_torghast.blp",
+    hearthTorghastDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_torghastDown.blp",
+    hearthTorghastCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_torghast.blp",
+    hearthTorghastDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_torghastDesat.blp",
+
 
 };
 
@@ -1137,8 +1153,8 @@ end);
 
 -- background frame for the options to parent to, but is also parented to the button and placed under it in strata
 local itemHolderFrame = CreateFrame("Frame", "ItemHolderFrame", scrollbackFrame, nil);
-itemHolderFrame:SetSize(170, 200);
-itemHolderFrame:SetPoint("CENTER", 0, -102);
+itemHolderFrame:SetSize(220, 180);
+itemHolderFrame:SetPoint("CENTER", 0, -92);
 
 local itemHolderFrameTex = itemHolderFrame:CreateTexture("ItemHolderFrameTex", "BACKGROUND");
 itemHolderFrameTex:SetPoint("CENTER");
@@ -1167,7 +1183,7 @@ end
 -- Default Hearthstone
 local option0 = CreateFrame("Button", "HearthbagOption0", itemHolderFrame, nil);
 option0:SetSize(25, 25);
-option0:SetPoint("LEFT", 47.5, 67);
+option0:SetPoint("LEFT", 59, 57);
 option0:SetNormalTexture(TEXTURE_LIST.hearthDefaultTex);
 option0:SetPushedTexture(TEXTURE_LIST.hearthDownTex);
 
@@ -1374,15 +1390,15 @@ garrisonHearth:HookScript("OnEvent", garrisonHearth.collected.CollectionCheck);
 
 
 -- Covenant
-local covenantHearthstone = CreateFrame("Button", "CovenantHearthstone", option0, nil);
+local covenantHearthstone = CreateFrame("Button", "CovenantHearthstone", garrisonHearth, nil);
 covenantHearthstone:SetSize(25, 25);
-covenantHearthstone:SetPoint("LEFT", 0, -27);
+covenantHearthstone:SetPoint("LEFT", 27, 0);
 covenantHearthstone:SetNormalTexture(TEXTURE_LIST.hearthNobleUp);
 covenantHearthstone:SetPushedTexture(TEXTURE_LIST.hearthNobleDown);
 
 local covenantID = C_Covenants.GetActiveCovenantID()
 function covenantHearthstone:ButtonTexture_OnEvent()
-    covenantID = C_Covenants.GetActiveCovenantID()
+	covenantID = C_Covenants.GetActiveCovenantID()
     if covenantID == 0 then
         covenantID = math.random(1, 4);
     end
@@ -1493,9 +1509,9 @@ covenantHearthstone:HookScript("OnEvent", covenantHearthstone.collected.Collecti
 
 
 -- Mechagon
-local option10 = CreateFrame("Button", "HearthbagOption10", covenantHearthstone, nil);
+local option10 = CreateFrame("Button", "HearthbagOption10", option0, nil);
 option10:SetSize(25, 25);
-option10:SetPoint("LEFT", 27, 0);
+option10:SetPoint("LEFT", 0, -27);
 option10:SetNormalTexture(TEXTURE_LIST.hearthMechagonUp);
 option10:SetPushedTexture(TEXTURE_LIST.hearthMechagonDown);
 
@@ -1613,9 +1629,9 @@ option2:SetScript("OnEvent", option2.collected.CollectionCheck);
 
 
 -- Innkeeper's Daughter
-local option5 = CreateFrame("Button", "HearthbagOption5", covenantHearthstone, nil);
+local option5 = CreateFrame("Button", "HearthbagOption5", option2, nil);
 option5:SetSize(25, 25);
-option5:SetPoint("LEFT", 0, -27);
+option5:SetPoint("LEFT", 27, 0);
 option5:SetNormalTexture(TEXTURE_LIST.hearthDaughterUp);
 option5:SetPushedTexture(TEXTURE_LIST.hearthDaughterDown);
 
@@ -1723,9 +1739,9 @@ option4:SetScript("OnEvent", option4.collected.CollectionCheck);
 
 
 -- Brewfest
-local option3 = CreateFrame("Button", "HearthbagOption3", option4, nil);
+local option3 = CreateFrame("Button", "HearthbagOption3", option10, nil);
 option3:SetSize(25, 25);
-option3:SetPoint("LEFT", 27, 0);
+option3:SetPoint("LEFT", 0, -27);
 option3:SetNormalTexture(TEXTURE_LIST.hearthBrewfestUp);
 option3:SetPushedTexture(TEXTURE_LIST.hearthBrewfestDown);
 
@@ -1778,9 +1794,9 @@ option3:SetScript("OnEvent", option3.collected.CollectionCheck);
 
 
 -- Midsummer
-local option7 = CreateFrame("Button", "HearthbagOption7", option5, nil);
+local option7 = CreateFrame("Button", "HearthbagOption7", option3, nil);
 option7:SetSize(25, 25);
-option7:SetPoint("LEFT", 0, -27);
+option7:SetPoint("LEFT", 27, 0);
 option7:SetNormalTexture(TEXTURE_LIST.hearthMidsummerUp);
 option7:SetPushedTexture(TEXTURE_LIST.hearthMidsummerDown);
 
@@ -1943,7 +1959,7 @@ option9:HookScript("OnEvent", option9.collected.CollectionCheck);
 
 
 -- Lunar Festival
-local option12 = CreateFrame("Button", "HearthbagOption12", option7, nil);
+local option12 = CreateFrame("Button", "HearthbagOption12", option3, nil);
 option12:SetSize(25, 25);
 option12:SetPoint("LEFT", 0, -27);
 option12:SetNormalTexture(TEXTURE_LIST.hearthLunarUp);
@@ -2108,9 +2124,9 @@ option16:HookScript("OnEvent", option16.collected.CollectionCheck);
 
 
 -- Dark Portal TCG
-local option1 = CreateFrame("Button", "HearthbagOption1", option12, nil);
+local option1 = CreateFrame("Button", "HearthbagOption1", option16, nil);
 option1:SetSize(25, 25);
-option1:SetPoint("LEFT", 0, -27);
+option1:SetPoint("LEFT", 27, 0);
 option1:SetNormalTexture(TEXTURE_LIST.hearthDarkPortalUp);
 option1:SetPushedTexture(TEXTURE_LIST.hearthDarkPortalDown);
 
@@ -2163,9 +2179,9 @@ option1:HookScript("OnEvent", option1.collected.CollectionCheck);
 
 
 -- Ethereal Portal
-local option6 = CreateFrame("Button", "HearthbagOption6", option1, nil);
+local option6 = CreateFrame("Button", "HearthbagOption6", option12, nil);
 option6:SetSize(25, 25);
-option6:SetPoint("LEFT", 27, 0);
+option6:SetPoint("LEFT", 0, -27);
 option6:SetNormalTexture(TEXTURE_LIST.hearthEtherealUp);
 option6:SetPushedTexture(TEXTURE_LIST.hearthEtherealDown);
 
@@ -2273,6 +2289,118 @@ option17:HookScript("OnEvent", option17.collected.CollectionCheck);
 
 
 
+-- Broker
+local option19 = CreateFrame("Button", "HearthbagOption19", option17, nil);
+option19:SetSize(25, 25);
+option19:SetPoint("LEFT", 27, 0);
+option19:SetNormalTexture(TEXTURE_LIST.hearthBrokerUp);
+option19:SetPushedTexture(TEXTURE_LIST.hearthBrokerDown);
+
+function option19:SetHearthTexture_ONCLICK()
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthBrokerUp
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthBrokerDown
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthBrokerCD
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthBrokerDesat
+    HearthDB.ITEM = ITEM_LIST.broker
+    HearthDB.SPELLID = ITEM_LIST.brokerSpellID
+    CompleteHearthTexture();
+    hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+    UpdateItem();
+end
+
+function option19:Tooltip_OnEnter()
+    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    GameTooltip:SetItemByID(ITEM_LIST.broker)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOption19", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:Show();
+end
+
+function option19:Tooltip_OnLeave()
+    GameTooltip:Hide();
+end
+
+option19:SetScript("OnClick", option19.SetHearthTexture_ONCLICK);
+option19:SetScript("OnEnter", option19.Tooltip_OnEnter);
+option19:SetScript("OnLeave", option19.Tooltip_OnLeave);
+
+option19.collected = CreateFrame("Frame", nil, option19, nil);
+option19.collected:SetSize(10, 10);
+option19.collected:SetPoint("TOPLEFT", 0, 0);
+
+option19.collected.tex = option19.collected:CreateTexture(nil, "BACKGROUND");
+option19.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+option19.collected.tex:SetAllPoints(option19.collected);
+
+function option19.collected:CollectionCheck()
+    if PlayerHasToy(ITEM_LIST.broker) == true then
+        option19.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+    else
+        option19.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+    end
+end
+
+option19:RegisterEvent("TOYS_UPDATED");
+option19:RegisterEvent("BAG_UPDATE");
+option19:HookScript("OnEvent", option19.collected.CollectionCheck);
+
+
+
+-- Torghast
+local option20 = CreateFrame("Button", "HearthbagOption20", option19, nil);
+option20:SetSize(25, 25);
+option20:SetPoint("LEFT", 27, 0);
+option20:SetNormalTexture(TEXTURE_LIST.hearthTorghastUp);
+option20:SetPushedTexture(TEXTURE_LIST.hearthTorghastDown);
+
+function option20:SetHearthTexture_ONCLICK()
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthTorghastUp
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthTorghastDown
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthTorghastCD
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthTorghastDesat
+    HearthDB.ITEM = ITEM_LIST.torghast
+    HearthDB.SPELLID = ITEM_LIST.torghastSpellID
+    CompleteHearthTexture();
+    hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+    UpdateItem();
+end
+
+function option20:Tooltip_OnEnter()
+    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    GameTooltip:SetItemByID(ITEM_LIST.torghast)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOption20", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:Show();
+end
+
+function option20:Tooltip_OnLeave()
+    GameTooltip:Hide();
+end
+
+option20:SetScript("OnClick", option20.SetHearthTexture_ONCLICK);
+option20:SetScript("OnEnter", option20.Tooltip_OnEnter);
+option20:SetScript("OnLeave", option20.Tooltip_OnLeave);
+
+option20.collected = CreateFrame("Frame", nil, option20, nil);
+option20.collected:SetSize(10, 10);
+option20.collected:SetPoint("TOPLEFT", 0, 0);
+
+option20.collected.tex = option20.collected:CreateTexture(nil, "BACKGROUND");
+option20.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+option20.collected.tex:SetAllPoints(option20.collected);
+
+function option20.collected:CollectionCheck()
+    if PlayerHasToy(ITEM_LIST.torghast) == true then
+        option20.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+    else
+        option20.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+    end
+end
+
+option20:RegisterEvent("TOYS_UPDATED");
+option20:RegisterEvent("BAG_UPDATE");
+option20:HookScript("OnEvent", option20.collected.CollectionCheck);
+
+
+
 function buttonContainer:FrameLevelChildren()
     -- default
     if option0.collected:GetParent():GetFrameLevel() >= option0.collected:GetFrameLevel() then
@@ -2363,6 +2491,18 @@ function buttonContainer:FrameLevelChildren()
     if option17.collected:GetParent():GetFrameLevel() >= option17.collected:GetFrameLevel() then
         option17.collected:SetFrameLevel(option17.collected:GetFrameLevel() + 1)
     end
+
+    --broker
+    if option19.collected:GetParent():GetFrameLevel() >= option19.collected:GetFrameLevel() then
+        option19.collected:SetFrameLevel(option19.collected:GetFrameLevel() + 1)
+    end
+
+    --torghast
+    if option20.collected:GetParent():GetFrameLevel() >= option20.collected:GetFrameLevel() then
+        option20.collected:SetFrameLevel(option20.collected:GetFrameLevel() + 1)
+    end
+
+
 end
 
 
@@ -2761,7 +2901,7 @@ local function HandleSlashCommands(str)
 end
 
 function core:Print(...)
-    local prefix = string.format("|T" .. TEXTURE_LIST.hearthDefaultTex .. ":14|t" .. "|TTEXTURE_LIST.hearthDefaultTex|t" .. "|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r:");    
+    local prefix = string.format("|T" .. TEXTURE_LIST.hearthDefaultTex .. ":14|t" .. "|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r:");    
     DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix, ...));
 end
 
@@ -2804,10 +2944,7 @@ end);
 hearthbag:SetScript("OnShow", UpdateItem); -- NUCLEAR WEAPON ENGAGED BECAUSE SOMETIMES LOGGING IN DOESN'T WORK
 
 local anchorBuddy = CreateFrame("Frame", "AnchorBuddy", UIParent, nil);
-anchorBuddy:SetSize(25,25);
-anchorBuddy:SetFrameStrata("HIGH");
 anchorBuddy:RegisterEvent("PLAYER_ENTERING_WORLD");
-anchorBuddy:SetPoint("CENTER", UIParent, "CENTER", 0, 0);
 anchorBuddy:RegisterEvent("ADDON_LOADED")
 anchorBuddy:SetScript("OnEvent", function(self, event)
     if event == "PLAYER_ENTERING_WORLD" then
