@@ -277,7 +277,7 @@ local TEXTURE_LIST = {
 };
 
 local hearthCleanup = CreateFrame("Frame")
-hearthCleanup.tooltip = true
+
 hearthCleanup.xCB = -142
 hearthCleanup.yCB = 30
 
@@ -289,17 +289,13 @@ function hearthCleanup.BagsUpdated()
         hearthCleanup.xCB = -394
         hearthCleanup.yCB = 30
         hearthCleanup.UpdatePosition()
-        hearthCleanup.tooltip = true
     elseif GetCVarBool("combinedBags") == false and HearthDB.BAG["parent"] == "BagItemAutoSortButton" and HearthDB.BAG["position"][1] == -394 and HearthDB.BAG["position"][2] == 30 then
         HearthDB.BAG["position"][1] = -142
         HearthDB.BAG["position"][2] = 30
         hearthCleanup.xCB = -142
         hearthCleanup.yCB = 30
         hearthCleanup.UpdatePosition()
-        hearthCleanup.tooltip = true
-        core:Print("Be aware that sometimes going from combined bags to separate bags can taint the bag items. If this happens, do /reload.")
-    else
-        hearthCleanup.tooltip = false
+        core:Print("Please be aware that sometimes going from combined bags to separate bags can taint the bag items. If this happens, do /reload.")
     end
 end
 
@@ -711,6 +707,7 @@ function hearthbag.CheckButton0Tooltip_OnEnter()
         hearthbag.inheritOptions.InheritValue = "False"
     end
     GameTooltip:AddLine("Inherit the right click options of current bag addon frame: |cff4fe6fc" .. hearthbag.inheritOptions.InheritValue .. "|r", 1, 1, 1, 1);
+    GameTooltip:AddLine("Please be aware that sometimes going from combined bags to separate bags can taint the bag items. If this happens, do /reload.", 1, 1, 1, 1);
     GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG0", "BOTTOMRIGHT", -15, 15);
     GameTooltip:Show();
 end
@@ -1129,7 +1126,7 @@ function hearthbag.hearthBag_OnMouseDown(self, button)  -- controls the mouse do
             hearthbag.background:SetTexture(HearthDB.APPEARANCE.DESAT);
         end
     end
-    if button == "RightButton" then
+    if button == "RightButton" and HearthDB.INHERIT == true then
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
         --ContainerFramePortraitButtonMixin.OnMouseDown(ContainerFrame1PortraitButton) -- also causes taint too
         --(ContainerFrame1PortraitButton:GetScript('OnMouseDown'))(ContainerFrame1PortraitButton) -- also causes taint
@@ -1211,24 +1208,23 @@ function hearthbag.hearthMouseOver_ONENTER()
             SortedTooltip.CreateLocalized(hearthbag, "ANCHOR_TOP", "TOOLTIP_CONFIG")
         end
     elseif HearthDB.BAG["parent"] == "BagItemAutoSortButton" then
-        if hearthCleanup.tooltip == true then
+        
             GameTooltip:SetOwner(hearthbag, "ANCHOR_LEFT");
-            if ( hearthbag:GetID() == 0 ) then
+            if HearthDB.INHERIT == true then
                 GameTooltip:AddLine(BACKPACK_TOOLTIP, 1, 1, 1, true);
                 if (GetBindingKey("TOGGLEBACKPACK")) then
                     GameTooltip:AppendText(" "..NORMAL_FONT_COLOR_CODE.."("..GetBindingKey("TOGGLEBACKPACK")..")"..FONT_COLOR_CODE_CLOSE)
                 end
-
                 GameTooltip:AddLine(string.gsub(CLICK_BAG_SETTINGS, "Click", "Right-Click"), 1, 1, 1, true);
             end
-                local start, duration, enabled, modRate = GetSpellCooldown(HearthDB.SPELLID);
-                local desc = GetSpellDescription(HearthDB.SPELLID)
-                if duration ~= 0 then
-                    GameTooltip:AddLine("Cooldown Remaining: " .. date("%H:%M:%S",time() + start+duration-GetTime()), 1, 1, 1, true);
-                end
-                GameTooltip:AddLine("|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r: " .. desc, 1, 1, 1, true)
+            local start, duration, enabled, modRate = GetSpellCooldown(HearthDB.SPELLID);
+            local desc = GetSpellDescription(HearthDB.SPELLID)
+            if duration ~= 0 then
+                GameTooltip:AddLine("Cooldown Remaining: " .. date("%H:%M:%S",time() + start+duration-GetTime()), 1, 1, 1, true);
+            end
+            GameTooltip:AddLine("|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r: " .. desc, 1, 1, 1, true)
             GameTooltip:Show();
-        end
+        
     end
 end
 
