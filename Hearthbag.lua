@@ -263,15 +263,15 @@ local TEXTURE_LIST = {
     hearthTorghastCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_torghast.blp",
     hearthTorghastDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_torghastDesat.blp",
 
-    hearthTimewalkerPHUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalkerPH.blp",
-    hearthTimewalkerPHDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalkerPHDown.blp",
-    hearthTimewalkerPHCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_timewalkerPH.blp",
-    hearthTimewalkerPHDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalkerPHDesat.blp",
+    hearthTimewalkerUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalker.blp",
+    hearthTimewalkerDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalkerDown.blp",
+    hearthTimewalkerCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_timewalker.blp",
+    hearthTimewalkerDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalkerDesat.blp",
 
-    hearthCentaurPHUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalkerPH.blp",
-    hearthCentaurPHDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalkerPHDown.blp",
-    hearthCentaurPHCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_timewalkerPH.blp",
-    hearthCentaurPHDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_timewalkerPHDesat.blp",
+    hearthCentaurUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_centaur.blp",
+    hearthCentaurDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_centaurDown.blp",
+    hearthCentaurCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_centaur.blp",
+    hearthCentaurDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_centaurDesat.blp",
 
 
 };
@@ -1638,14 +1638,14 @@ hearthbag.rubySlippers:SetScript("OnEvent", hearthbag.rubySlippers.collected.Col
 hearthbag.timewalker = CreateFrame("Button", "HearthbagTimewalker", hearthbag.rubySlippers, nil);
 hearthbag.timewalker:SetSize(25, 25);
 hearthbag.timewalker:SetPoint("LEFT", 27, 0);
-hearthbag.timewalker:SetNormalTexture(TEXTURE_LIST.hearthTimewalkerPHUp);
-hearthbag.timewalker:SetPushedTexture(TEXTURE_LIST.hearthTimewalkerPHDown);
+hearthbag.timewalker:SetNormalTexture(TEXTURE_LIST.hearthTimewalkerUp);
+hearthbag.timewalker:SetPushedTexture(TEXTURE_LIST.hearthTimewalkerDown);
 
 function hearthbag.timewalker:SetHearthTexture_ONCLICK()
-    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthTimewalkerPHUp
-    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthTimewalkerPHDown
-    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthTimewalkerPHCD
-    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthTimewalkerPHDesat
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthTimewalkerUp
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthTimewalkerDown
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthTimewalkerCD
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthTimewalkerDesat
     HearthDB.ITEM = ITEM_LIST.timewalker
     HearthDB.SPELLID = ITEM_LIST.timewalkerSpellID
     hearthbag.CompleteHearthTexture();
@@ -1991,14 +1991,14 @@ hearthbag.torghast:HookScript("OnEvent", hearthbag.torghast.collected.Collection
 hearthbag.centaur = CreateFrame("Button", "HearthbagCentaur", hearthbag.kyrian, nil);
 hearthbag.centaur:SetSize(25, 25);
 hearthbag.centaur:SetPoint("LEFT", 0, -27);
-hearthbag.centaur:SetNormalTexture(TEXTURE_LIST.hearthCentaurPHUp);
-hearthbag.centaur:SetPushedTexture(TEXTURE_LIST.hearthCentaurPHDown);
+hearthbag.centaur:SetNormalTexture(TEXTURE_LIST.hearthCentaurUp);
+hearthbag.centaur:SetPushedTexture(TEXTURE_LIST.hearthCentaurDown);
 
 function hearthbag.centaur:SetHearthTexture_ONCLICK()
-    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthCentaurPHUp
-    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthCentaurPHDown
-    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthCentaurPHCD
-    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthCentaurPHDesat
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthCentaurUp
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthCentaurDown
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthCentaurCD
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthCentaurDesat
     HearthDB.ITEM = ITEM_LIST.centaur
     HearthDB.SPELLID = ITEM_LIST.centaurSpellID
     hearthbag.CompleteHearthTexture();
