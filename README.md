@@ -39,13 +39,12 @@
 <p><a href="https://www.wowhead.com/item=6948/hearthstone">Default Hearthstone</a></p>
 <p><a href="https://www.wowhead.com/item=140192/dalaran-hearthstone">Dalaran Hearthstone</a></p>
 <p><a href="https://www.wowhead.com/item=110560/garrison-hearthstone">Garrison Hearthstone</a></p>
-<p>Covenant Hearthstone</p>
-<ul>
-<li><a href="https://www.wowhead.com/item=184353/kyrian-hearthstone">Kyrian</a></li>
-<li><a href="https://www.wowhead.com/item=180290/night-fae-hearthstone">Night Fae</a></li>
-<li><a href="https://www.wowhead.com/item=183716/venthyr-sinstone">Venthyr</a></li>
-<li><a href="https://www.wowhead.com/item=182773/necrolord-hearthstone">Necrolord</a></li>
-</ul>
+<p><a href="https://www.wowhead.com/item=200630/ohnir-windsages-hearthstone">Ohn'ir Windsage's Hearthstone</a></p>
+<p><a href="https://www.wowhead.com/item=193588/timewalkers-hearthstone">Timewalker's Hearthstone</a></p>
+<p><a href="https://www.wowhead.com/item=184353/kyrian-hearthstone">Kyrian</a></p>
+<p><a href="https://www.wowhead.com/item=180290/night-fae-hearthstone">Night Fae</a></p>
+<p><a href="https://www.wowhead.com/item=183716/venthyr-sinstone">Venthyr</a></p>
+<p><a href="https://www.wowhead.com/item=182773/necrolord-hearthstone">Necrolord</a></p>
 <p><a href="https://www.wowhead.com/item=168907/holographic-digitalization-hearthstone">Holographic Digitalization Hearthstone</a></p>
 <p><a href="https://www.wowhead.com/item=28585/ruby-slippers">Ruby Slippers</a> / <a href="https://www.wowhead.com/item=142298/astonishingly-scarlet-slippers?bonus=1826:1472">Astonishingly Scarlet Slippers</a> (will prioritize the higher level version).</p>
 <p><a href="https://www.wowhead.com/item=64488/the-innkeepers-daughter">The Innkeeper's Daughter</a></p>
