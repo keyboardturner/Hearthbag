@@ -150,7 +150,7 @@ local TEXTURE_LIST = {
     hearthArrowLHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonLeft_HL.blp",
     hearthArrowDHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonDown_HL.blp",
     hearthArrowUHL = "Interface/AddOns/Hearthbag/Textures/ArrowButtonUp_HL.blp",
-    hearthArrowParent = "Interface/AddOns/Hearthbag/Textures/ArruwButton_Parent.blp",
+    hearthArrowParent = "Interface/AddOns/Hearthbag/Textures/ArrowButton_Parent.blp",
 
 
     hearthDarkPortalUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportal.blp",
@@ -1050,8 +1050,6 @@ end
 hearthbag.microMovementU:SetScript("OnClick", hearthbag.UpdatePositionUp_OnClick);
 
 function hearthbag.FrameLevelOrganiser()
-
-
 
     hearthbag:SetFrameLevel(600)
     if hearthbag:GetFrameLevel() >= 9000 then
@@ -3408,11 +3406,22 @@ local events = CreateFrame("Frame");
 events:RegisterEvent("ADDON_LOADED");
 events:SetScript("OnEvent", core.init);
 
+function hearthCleanup.DFCompat()
+    --fix for compatibility
+    if HearthDB.BAG["parent"] == "ContainerFrame1PortraitButton" then
+        HearthDB.BAG["parent"] = "BagItemAutoSortButton"
+        HearthDB.BAG["position"][1] = -142
+        HearthDB.BAG["position"][2] = 30
+        hearthCleanup.BagsUpdated()
+    end
+end
+
 hearthbag:HookScript("OnEvent", function(self, event)
     if event == "PLAYER_ENTERING_WORLD" then
         --OpenAllBags(); -- broken in dragonflight, don't use ever
         hearthbag:ClearAllPoints();
         combatFrame:ClearAllPoints();
+        hearthCleanup.DFCompat()
         hearthCleanup.UpdatePosition()
         hearthbag:SetParent(_G[HearthDB.BAG["parent"]]);
         hearthbag:SetSize(HearthDB.BAG["scale"], HearthDB.BAG["scale"]);
