@@ -529,6 +529,8 @@ hearthbag.background = hearthbag:CreateTexture(nil, "OVERLAY");
 hearthbag.background:SetAllPoints(true);
 hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
 
+hearthbag.coloredText = "|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r"
+
 function hearthCleanup.UpdatePosition()
     if UnitAffectingCombat("player") == false then
         hearthbag:SetPoint("CENTER", _G[HearthDB.BAG["parent"]], "CENTER", HearthDB.BAG["position"][1], HearthDB.BAG["position"][2]);
@@ -757,6 +759,9 @@ function hearthbag.CheckButton1Up_OnClick()
         HearthDB.COMBATFRAME_SHOW = false
         hearthbag.combatOptions:SetChecked(false)
         hearthbag.UpdateCheckCombat_OnClick(); 
+        if HearthDB.BAG["parent"] == "CombatFrame" then
+            hearthbag:buttonResetter()
+        end
     elseif HearthDB.COMBATFRAME_SHOW == false then
         HearthDB.COMBATFRAME_SHOW = true
         hearthbag.combatOptions:SetChecked(true)
@@ -1183,48 +1188,46 @@ function hearthbag.hearthDestroyed()
     end
 end
 
-function hearthbag.hearthMouseOver_ONENTER()
-    if IsAddOnLoaded("Arkinventory") == true and HearthDB.BAG["parent"] == "ARKINV_Frame1TitleActionButton0" then
-        if ( ( HearthDB.BAG["position"][1] <= ( (hearthCleanup.ArkinventoryProfile["position"][1] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][1] >= ( (hearthCleanup.ArkinventoryProfile["position"][1] - HearthDB.BAG["scale"])/2 ) ) ) and ( ( HearthDB.BAG["position"][2] <= ( (hearthCleanup.ArkinventoryProfile["position"][2] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][2] >= ( (hearthCleanup.ArkinventoryProfile["position"][2] - HearthDB.BAG["scale"])/2 ) ) ) then
-            GameTooltip:SetOwner(hearthbag, "ANCHOR_LEFT");
-            GameTooltip:AddLine(ArkInventory.Localise["MENU"], 1, 1, 1, true);
-        end
 
-    elseif IsAddOnLoaded("Inventorian") == true and HearthDB.BAG["parent"] == "InventorianBagFrameIconButton" then
-        if ( ( HearthDB.BAG["position"][1] <= ( (hearthCleanup.InventorianProfile["position"][1] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][1] >= ( (hearthCleanup.InventorianProfile["position"][1] - HearthDB.BAG["scale"])/2 ) ) ) and ( ( HearthDB.BAG["position"][2] <= ( (hearthCleanup.InventorianProfile["position"][2] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][2] >= ( (hearthCleanup.InventorianProfile["position"][2] - HearthDB.BAG["scale"])/2 ) ) ) then
-            local ItemCache = LibStub("LibItemCache-1.1")
-            GameTooltip:SetOwner(hearthbag, "ANCHOR_RIGHT");
-            GameTooltip:AddLine((GetUnitName("player", false)), 1, 1, 1, true);
-            if ItemCache:HasCache() then
-                GameTooltip:AddLine("<Right-Click> to switch characters", 1, 1, 1, true);
-            else
-                GameTooltip:AddLine("Install BagBrother to get access to the inventory of other characters.", 1, 1, 1, true);
-            end
-            GameTooltip:Show();
+function hearthbag.hearthMouseOver_ONENTER()
+    GameTooltip:SetOwner(hearthbag, "ANCHOR_LEFT");
+    if IsAddOnLoaded("Arkinventory") == true and HearthDB.INHERIT == true then
+        GameTooltip:AddLine(ArkInventory.Localise["MENU"], 1, 1, 1, true);
+
+    elseif IsAddOnLoaded("Inventorian") == true and HearthDB.INHERIT == true then
+        local ItemCache = LibStub("LibItemCache-1.1")
+        GameTooltip:SetOwner(hearthbag, "ANCHOR_RIGHT");
+        GameTooltip:AddLine((GetUnitName("player", false)), 1, 1, 1, true);
+        if ItemCache:HasCache() then
+            GameTooltip:AddLine("<Right-Click> to switch characters", 1, 1, 1, true);
+        else
+            GameTooltip:AddLine("Install BagBrother to get access to the inventory of other characters.", 1, 1, 1, true);
         end
+        GameTooltip:Show();
 
     elseif IsAddOnLoaded("Sorted") == true and HearthDB.BAG["parent"] == "SortedFramePortraitButton" then
-        if ( ( HearthDB.BAG["position"][1] <= ( (hearthCleanup.SortedProfile["position"][1] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][1] >= ( (hearthCleanup.SortedProfile["position"][1] - HearthDB.BAG["scale"])/2 ) ) ) and ( ( HearthDB.BAG["position"][2] <= ( (hearthCleanup.SortedProfile["position"][2] + HearthDB.BAG["scale"])/2 ) ) and ( HearthDB.BAG["position"][2] >= ( (hearthCleanup.SortedProfile["position"][2] - HearthDB.BAG["scale"])/2 ) ) ) then
-            SortedTooltip.CreateLocalized(hearthbag, "ANCHOR_TOP", "TOOLTIP_CONFIG")
+        SortedTooltip.CreateLocalized(hearthbag, "ANCHOR_TOP", "TOOLTIP_CONFIG")
+
+    elseif HearthDB.INHERIT == true then
+        GameTooltip:AddLine(BACKPACK_TOOLTIP, 1, 1, 1, true);
+        if (GetBindingKey("TOGGLEBACKPACK")) then
+            GameTooltip:AppendText(" "..NORMAL_FONT_COLOR_CODE.."("..GetBindingKey("TOGGLEBACKPACK")..")"..FONT_COLOR_CODE_CLOSE)
         end
-    elseif HearthDB.BAG["parent"] == "BagItemAutoSortButton" then
-        
-            GameTooltip:SetOwner(hearthbag, "ANCHOR_LEFT");
-            if HearthDB.INHERIT == true then
-                GameTooltip:AddLine(BACKPACK_TOOLTIP, 1, 1, 1, true);
-                if (GetBindingKey("TOGGLEBACKPACK")) then
-                    GameTooltip:AppendText(" "..NORMAL_FONT_COLOR_CODE.."("..GetBindingKey("TOGGLEBACKPACK")..")"..FONT_COLOR_CODE_CLOSE)
-                end
-                GameTooltip:AddLine(string.gsub(CLICK_BAG_SETTINGS, "Click", "Right-Click"), 1, 1, 1, true);
-            end
-            local start, duration, enabled, modRate = GetSpellCooldown(HearthDB.SPELLID);
-            local desc = GetSpellDescription(HearthDB.SPELLID)
-            if duration ~= 0 then
-                GameTooltip:AddLine("Cooldown Remaining: " .. date("%H:%M:%S",time() + start+duration-GetTime()), 1, 1, 1, true);
-            end
-            GameTooltip:AddLine("|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r: " .. desc, 1, 1, 1, true)
-            GameTooltip:Show();
-        
+        GameTooltip:AddLine(string.gsub(CLICK_BAG_SETTINGS, "Click", "Right-Click"), 1, 1, 1, true);
+    end
+
+    local start, duration, enabled, modRate = GetSpellCooldown(HearthDB.SPELLID);
+    local desc = GetSpellDescription(HearthDB.SPELLID)
+    if duration ~= 0 then
+        GameTooltip:AddLine("Cooldown Remaining: " .. SecondsToClock(start+duration-GetTime()), false);
+    end
+    GameTooltip:AddLine(hearthbag.coloredText .. ": " .. desc, 1, 1, 1, true)
+    GameTooltip:Show();
+
+    if MouseIsOver(hearthbag) then
+        C_Timer.After(1, hearthbag.hearthMouseOver_ONENTER)
+    else
+        GameTooltip:Hide()
     end
 end
 
@@ -3389,7 +3392,7 @@ local function HandleSlashCommands(str)
 end
 
 function core:Print(...)
-    local prefix = string.format("|T" .. TEXTURE_LIST.hearthDefaultTex .. ":14|t" .. "|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r:");    
+    local prefix = string.format("|T" .. TEXTURE_LIST.hearthDefaultTex .. ":14|t" .. hearthbag.coloredText .. ":");    
     DEFAULT_CHAT_FRAME:AddMessage(string.join(" ", prefix, ...));
 end
 
