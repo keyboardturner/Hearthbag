@@ -62,7 +62,6 @@ local INVALID_FRAME = {
 local ITEM_LIST = {
     defaultHearthstone = 6948,
     defaultHearthstoneSpellID = 8690,
-    rubySlippers = 28585,
 
 };
 
@@ -74,6 +73,7 @@ local TEXTURE_LIST = {
     hearthDesatTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Desat.blp",
     hearthDownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Down.blp",
     hearthCombatTex = "Interface/AddOns/Hearthbag/Textures/combatframe.blp",
+    hearthCooldownTex_Classic = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown_Classic.blp",
 
     hearthEndUpButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HB.blp",
     hearthEndDownButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HBDown.blp",
@@ -121,7 +121,7 @@ HearthDB = HearthDB or {
     APPEARANCE = {
         UP = TEXTURE_LIST.hearthDefaultTex,
         DOWN = TEXTURE_LIST.hearthDownTex,
-        COOLDOWN = TEXTURE_LIST.hearthCooldownTex,
+        COOLDOWN = TEXTURE_LIST.hearthCooldownTex_Classic,
         BLIP = TEXTURE_LIST.hearthCooldownBlip,
         DESAT = TEXTURE_LIST.hearthDesatTex,
     },
@@ -364,7 +364,7 @@ end);
 function hearthbag.UpdateItem()
     local NewItem = select(1, GetItemInfo(HearthDB.ITEM)) 
     if UnitAffectingCombat("player") == false then
-        hearthbag:RegisterForClicks("AnyUp", "AnyDown");
+        hearthbag:RegisterForClicks("LeftButtonUp", "RightButtonUp");
         hearthbag:SetAttribute("*type1", "item");   -- set to "any left click," targets an item
         hearthbag:SetAttribute("item", NewItem); -- the targetted item is now using the Item:CreateFromItemID() from before
     end
@@ -1471,6 +1471,20 @@ local events = CreateFrame("Frame");
 events:RegisterEvent("ADDON_LOADED");
 events:SetScript("OnEvent", core.init);
 
+function hearthCleanup.ClassicCompat()
+    --fix for compatibility
+    if HearthDB.APPEARANCE.COOLDOWN == TEXTURE_LIST.hearthCooldownTex then
+        HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthCooldownTex_Classic
+    end
+    if HearthDB.APPEARANCE.COOLDOWN == TEXTURE_LIST.hearthDarkPortalCD then
+        HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthDarkPortalCD_Classic
+    end
+    if HearthDB.APPEARANCE.COOLDOWN == TEXTURE_LIST.hearthKaraCD then
+        HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthKaraCD_Classic
+    end
+    hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN)
+end
+
 hearthbag:HookScript("OnEvent", function(self, event)
     if event == "PLAYER_ENTERING_WORLD" then
         OpenAllBags();
@@ -1486,6 +1500,7 @@ hearthbag:HookScript("OnEvent", function(self, event)
         CloseAllBags();
         hearthbag.FrameLevelOrganiser();
         hearthbag.UpdateItem()
+        hearthCleanup.ClassicCompat()
         if HearthDB.COMBATFRAME_SHOW == true then
             combatFrame:Show();
         else

@@ -77,6 +77,7 @@ local TEXTURE_LIST = {
     hearthDesatTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Desat.blp",
     hearthDownTex = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Down.blp",
     hearthCombatTex = "Interface/AddOns/Hearthbag/Textures/combatframe.blp",
+    hearthCooldownTex_Classic = "Interface/AddOns/Hearthbag/Textures/Hearthstone_Cooldown_Classic.blp",
 
     hearthEndUpButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HB.blp",
     hearthEndDownButton = "Interface/AddOns/Hearthbag/Textures/ArrowButton_HBDown.blp",
@@ -111,11 +112,13 @@ local TEXTURE_LIST = {
     hearthDarkPortalDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportalDown.blp",
     hearthDarkPortalCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_darkportal.blp",
     hearthDarkPortalDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_darkportalDesat.blp",
+    hearthDarkPortalCD_Classic = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_darkportal_Classic.blp",
 
     hearthKaraUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhan.blp",
     hearthKaraDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhanDown.blp",
     hearthKaraCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_karazhan.blp",
     hearthKaraDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_karazhanDesat.blp",
+    hearthKaraCD_Classic = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_karazhan_Classic.blp",
 
 
 };
@@ -135,7 +138,7 @@ HearthDB = HearthDB or {
     APPEARANCE = {
         UP = TEXTURE_LIST.hearthDefaultTex,
         DOWN = TEXTURE_LIST.hearthDownTex,
-        COOLDOWN = TEXTURE_LIST.hearthCooldownTex,
+        COOLDOWN = TEXTURE_LIST.hearthCooldownTex_Classic,
         BLIP = TEXTURE_LIST.hearthCooldownBlip,
         DESAT = TEXTURE_LIST.hearthDesatTex,
     },
@@ -148,6 +151,8 @@ HearthDB = HearthDB or {
     INCOMBATFRAME_SHOW = true,
     SCALING = false,
 };
+
+
 
 -- adibags
 -- this is the bag frame, but don't replace it. It's too small (maybe). Scaling with the bag frame seems to be fine with its settings.
@@ -1099,7 +1104,7 @@ hearthbag.option0:SetPushedTexture(TEXTURE_LIST.hearthDownTex);
 function hearthbag.option0:SetHearthTexture_ONCLICK()
     HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthDefaultTex
     HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthDownTex
-    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthCooldownTex
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthCooldownTex_Classic
     HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthDesatTex
     HearthDB.ITEM = ITEM_LIST.defaultHearthstone
     HearthDB.SPELLID = ITEM_LIST.defaultHearthstoneSpellID
@@ -1162,7 +1167,7 @@ hearthbag.darkportal:SetPushedTexture(TEXTURE_LIST.hearthDarkPortalDown);
 function hearthbag.darkportal:SetHearthTexture_ONCLICK()
     HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthDarkPortalUp
     HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthDarkPortalDown
-    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthDarkPortalCD
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthDarkPortalCD_Classic
     HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthDarkPortalDesat
     HearthDB.ITEM = ITEM_LIST.darkPortal
     HearthDB.SPELLID = ITEM_LIST.darkPortalSpellID
@@ -1224,7 +1229,7 @@ hearthbag.rubySlippers:SetPushedTexture(TEXTURE_LIST.hearthKaraDown);
 function hearthbag.rubySlippers:SetHearthTexture_ONCLICK()
     HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthKaraUp
     HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthKaraDown
-    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthKaraCD
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthKaraCD_Classic
     HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthKaraDesat
     HearthDB.ITEM = ITEM_LIST.rubySlippers
     HearthDB.SPELLID = ITEM_LIST.rubySlippersSpellID
@@ -1698,6 +1703,20 @@ local events = CreateFrame("Frame");
 events:RegisterEvent("ADDON_LOADED");
 events:SetScript("OnEvent", core.init);
 
+function hearthCleanup.ClassicCompat()
+    --fix for compatibility
+    if HearthDB.APPEARANCE.COOLDOWN == TEXTURE_LIST.hearthCooldownTex then
+        HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthCooldownTex_Classic
+    end
+    if HearthDB.APPEARANCE.COOLDOWN == TEXTURE_LIST.hearthDarkPortalCD then
+        HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthDarkPortalCD_Classic
+    end
+    if HearthDB.APPEARANCE.COOLDOWN == TEXTURE_LIST.hearthKaraCD then
+        HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthKaraCD_Classic
+    end
+    hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN)
+end
+
 hearthbag:HookScript("OnEvent", function(self, event)
     if event == "PLAYER_ENTERING_WORLD" then
         OpenAllBags();
@@ -1713,6 +1732,7 @@ hearthbag:HookScript("OnEvent", function(self, event)
         CloseAllBags();
         hearthbag.FrameLevelOrganiser();
         hearthbag.UpdateItem()
+        hearthCleanup.ClassicCompat()
         if HearthDB.COMBATFRAME_SHOW == true then
             combatFrame:Show();
         else
