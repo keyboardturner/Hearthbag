@@ -1,4 +1,4 @@
-## Interface: 11307
+## Interface: 11403
 ## Author: Keyboardturner
 ## Version: 0.0.3
 ## Title: Hearthbag
@@ -6,4 +6,4 @@
 ## SavedVariablesPerCharacter: HearthDB
 ## OptionalDeps: ElvUI, GW2_UI, AdiBags, Inventorian, Baggins, Combuctor, Arkinventory, Bagnon, BaudBag, Sorted  
 
-Hearthbag-Classic.lua
+Hearthbag_Vanilla.lua
