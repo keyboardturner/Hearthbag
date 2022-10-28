@@ -701,16 +701,19 @@ end
 
 hearthbag.inheritOptions.InheritValue = "True"
 function hearthbag.CheckButton0Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    if GameTooltip:IsShown() == false then
+        GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.checkboxbg0);
+    end
+    GameTooltip:ClearAllPoints();
 
     if HearthDB.INHERIT == true then
         hearthbag.inheritOptions.InheritValue = "True"
     else
         hearthbag.inheritOptions.InheritValue = "False"
     end
-    GameTooltip:AddLine("Inherit the right click options of current bag addon frame: |cff4fe6fc" .. hearthbag.inheritOptions.InheritValue .. "|r", 1, 1, 1, 1);
-    GameTooltip:AddLine("Please be aware that sometimes going from combined bags to separate bags can taint the bag items. If this happens, do /reload.", 1, 1, 1, 1);
-    GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG0", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:SetText("Inherit the right click options of current bag addon frame: |cff4fe6fc" .. hearthbag.inheritOptions.InheritValue .. "|r", 1, 1, 1, 1, true);
+    GameTooltip:AddLine("Please be aware that sometimes going from combined bags to separate bags can taint the bag items. If this happens, do /reload.", 1, 1, 1, 1, true);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG0", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -785,15 +788,18 @@ end
 
 hearthbag.combatOptions.OutOfCombatValue = "False"
 function hearthbag.CheckButton1Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    if GameTooltip:IsShown() == false then
+        GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.combatOptions);
+    end
+    GameTooltip:ClearAllPoints();
 
     if HearthDB.COMBATFRAME_SHOW == true then
         hearthbag.combatOptions.OutOfCombatValue = "True"
     else
         hearthbag.combatOptions.OutOfCombatValue = "False"
     end
-    GameTooltip:AddLine("Show Combat Frame outside of Combat: |cff4fe6fc" .. hearthbag.combatOptions.OutOfCombatValue .. "|r", 1, 1, 1, 1);
-    GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG1", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:SetText("Show Combat Frame outside of Combat: |cff4fe6fc" .. hearthbag.combatOptions.OutOfCombatValue .. "|r", 1, 1, 1, 1, true);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG1", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -851,15 +857,18 @@ end
 
 hearthbag.inCombatOptions.InCombatValue = "True"
 function hearthbag.CheckButton2Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    if GameTooltip:IsShown() == false then
+        GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.inCombatOptions);
+    end
+    GameTooltip:ClearAllPoints();
 
     if HearthDB.INCOMBATFRAME_SHOW == true then
         hearthbag.inCombatOptions.InCombatValue = "True"
     else
         hearthbag.inCombatOptions.InCombatValue = "False"
     end
-    GameTooltip:AddLine("Show Combat Frame during Combat: |cff4fe6fc" .. hearthbag.inCombatOptions.InCombatValue .. "|r", 1, 1, 1, 1);
-    GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG2", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:SetText("Show Combat Frame during Combat: |cff4fe6fc" .. hearthbag.inCombatOptions.InCombatValue .. "|r", 1, 1, 1, 1, true);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG2", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -923,19 +932,22 @@ end
 
 hearthbag.scalingOptions.Value = "False"
 function hearthbag.CheckButton3Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    if GameTooltip:IsShown() == false then
+        GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.scalingOptions);
+    end
+    GameTooltip:ClearAllPoints();
 
     if HearthDB.SCALING == true then
         hearthbag.scalingOptions.Value = "True"
     else
         hearthbag.scalingOptions.Value = "False"
     end
-    GameTooltip:AddLine("Allow scaling the button frame: |cff4fe6fc" .. hearthbag.scalingOptions.Value .. "|r", 1, 1, 1, 1);
-    GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG3", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:SetText("Allow scaling the button frame: |cff4fe6fc" .. hearthbag.scalingOptions.Value .. "|r", 1, 1, 1, 1, true);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "CheckBoxBG3", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
-function hearthbag.CheckButton2Tooltip_OnLeave()
+function hearthbag.CheckButton3Tooltip_OnLeave()
     GameTooltip:Hide();
 end
 
@@ -1370,9 +1382,10 @@ function hearthbag.option0:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.option0:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.option0);
+    GameTooltip:ClearAllPoints();
     GameTooltip:SetItemByID(ITEM_LIST.defaultHearthstone)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOption0", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOption0", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1426,9 +1439,10 @@ function hearthbag.dalaranHearth:SetItem_OnEvent()
 end
 
 function hearthbag.dalaranHearth:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.dalaranHearth);
+    GameTooltip:ClearAllPoints();
     GameTooltip:SetItemByID(ITEM_LIST.dalaran)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "DalaranHearth", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "DalaranHearth", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1505,9 +1519,10 @@ function hearthbag.garrisonHearth:SetItem_OnEvent()
 end
 
 function hearthbag.garrisonHearth:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.garrisonHearth);
+    GameTooltip:ClearAllPoints();
     GameTooltip:SetItemByID(ITEM_LIST.garrison)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "GarrisonHearth", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "GarrisonHearth", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1591,13 +1606,14 @@ function hearthbag.rubySlippers:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.rubySlippers:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.rubySlippers);
+    GameTooltip:ClearAllPoints();
     if GetItemCount(ITEM_LIST.scarletSlippers) >= 1 then
         GameTooltip:SetItemByID(ITEM_LIST.scarletSlippers)
     else
         GameTooltip:SetItemByID(ITEM_LIST.rubySlippers)
     end
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagRubySlippers", "BOTTOMRIGHT", -15, 15);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagRubySlippers", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1655,9 +1671,10 @@ function hearthbag.timewalker:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.timewalker:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.timewalker)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagTimewalker", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.timewalker);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.timewalker)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagTimewalker", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1713,9 +1730,10 @@ function hearthbag.kyrian:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.kyrian:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.kyrian)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagKyrian", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.kyrian);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.kyrian)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagKyrian", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1771,9 +1789,10 @@ function hearthbag.necrolord:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.necrolord:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.necrolord)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagNecro", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.necrolord);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.necrolord)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagNecro", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1829,9 +1848,10 @@ function hearthbag.ardenweald:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.ardenweald:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.ardenweald)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagArden", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.ardenweald);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.ardenweald)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagArden", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1887,9 +1907,10 @@ function hearthbag.venthyr:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.venthyr:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.venthyr)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagVenthyr", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.venthyr);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.venthyr)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagVenthyr", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1945,9 +1966,10 @@ function hearthbag.torghast:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.torghast:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.torghast)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagTorghast", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.torghast);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.torghast)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagTorghast", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -1979,13 +2001,6 @@ hearthbag.torghast:RegisterEvent("TOYS_UPDATED");
 hearthbag.torghast:RegisterEvent("BAG_UPDATE");
 hearthbag.torghast:HookScript("OnEvent", hearthbag.torghast.collected.CollectionCheck);
 
-----------------------------------------------------------------------------------
-----------------------------------------------------------------------------------
-----------------------------------------------------------------------------------
-----------------------------------------------------------------------------------
-----------------------------------------------------------------------------------
-----------------------------------------------------------------------------------
-
 
 
 -- Centaur
@@ -2008,9 +2023,10 @@ function hearthbag.centaur:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.centaur:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.centaur)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagCentaur", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.centaur);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.centaur)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagCentaur", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2065,9 +2081,10 @@ function hearthbag.broker:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.broker:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.broker)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagBroker", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.broker);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.broker)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagBroker", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2122,9 +2139,10 @@ function hearthbag.oribos:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.oribos:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.oribos)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOribos", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.oribos);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.oribos)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagOribos", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2180,9 +2198,10 @@ function hearthbag.mechagon:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.mechagon:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.mechagon)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagMechagon", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.mechagon);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.mechagon)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagMechagon", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2238,9 +2257,10 @@ function hearthbag.inndaughter:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.inndaughter:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.inndaughter)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagInndaughter", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.inndaughter);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.inndaughter)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagInndaughter", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2296,9 +2316,10 @@ function hearthbag.lunar:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.lunar:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.lunar)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagLunar", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.lunar);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.lunar)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagLunar", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2354,9 +2375,10 @@ function hearthbag.love:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.love:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.valentine)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagLove", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.love);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.valentine)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagLove", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2412,9 +2434,10 @@ function hearthbag.noble:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.noble:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.noblegarden)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagNoble", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.noble);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.noblegarden)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagNoble", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2470,9 +2493,10 @@ function hearthbag.midsummer:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.midsummer:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.midsummer)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagMidsummer", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.midsummer);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.midsummer)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagMidsummer", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2528,9 +2552,10 @@ function hearthbag.brewfest:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.brewfest:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.brewfest)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagBrewfest", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.brewfest);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.brewfest)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagBrewfest", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2586,9 +2611,10 @@ function hearthbag.halloween:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.halloween:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.halloween)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagHalloween", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.halloween);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.halloween)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagHalloween", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2644,9 +2670,10 @@ function hearthbag.crimbo:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.crimbo:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.crimbo)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagCrimbo", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.crimbo);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.crimbo)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagCrimbo", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2702,9 +2729,10 @@ function hearthbag.darkportal:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.darkportal:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.darkPortal)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagDarkportal", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.darkportal);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.darkPortal)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagDarkportal", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2759,9 +2787,10 @@ function hearthbag.diablo:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.diablo:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.diablo)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagDiablo", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.diablo);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.diablo)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagDiablo", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
@@ -2816,9 +2845,10 @@ function hearthbag.ethereal:SetHearthTexture_ONCLICK()
 end
 
 function hearthbag.ethereal:Tooltip_OnEnter()
-    GameTooltip_SetDefaultAnchor(GameTooltip, UIParent);
-    GameTooltip:SetItemByID(ITEM_LIST.etherealPortal)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagEthereal", "BOTTOMRIGHT", -15, 15);
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.ethereal);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.etherealPortal)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagEthereal", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
