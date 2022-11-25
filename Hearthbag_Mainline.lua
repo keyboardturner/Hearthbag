@@ -302,7 +302,7 @@ end
 
 
 -- our default savedvariables, if none exist yet. prevents nil error upon first ever addon login
-HearthDB = HearthDB or {
+local defaultsTable = {
     BAG = {
         ["parent"] = "BagItemAutoSortButton",
         ["scale"] = 42,
@@ -326,6 +326,10 @@ HearthDB = HearthDB or {
     COMBATFRAME_SHOW = false,
     INCOMBATFRAME_SHOW = true,
     SCALING = false,
+    MENU = {
+        scale = 1,
+        button = true,
+    },
 };
 
 -- adibags
@@ -505,8 +509,8 @@ combatFrame:SetScript("OnHide", function(self)
         self.isMoving = false;
     end
 end)
-combatFrame:SetPoint(HearthDB.COMBAT["relative"], HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
-combatFrame:SetSize(HearthDB.COMBAT["scale"],HearthDB.COMBAT["scale"]);
+combatFrame:SetPoint(defaultsTable.COMBAT["relative"], defaultsTable.COMBAT["position"][1], defaultsTable.COMBAT["position"][2]);
+combatFrame:SetSize(defaultsTable.COMBAT["scale"],defaultsTable.COMBAT["scale"]);
 combatFrame:SetClampedToScreen(true);
 --combatFrame:SetScale(1.5);
 combatFrame.combatTex = combatFrame:CreateTexture("CombatTexture", "BACKGROUND");
@@ -527,7 +531,7 @@ hearthbag.size = 32;
 hearthbag:SetSize(32, 32);
 hearthbag.background = hearthbag:CreateTexture(nil, "OVERLAY");
 hearthbag.background:SetAllPoints(true);
-hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
+hearthbag.background:SetTexture(defaultsTable.APPEARANCE.UP);
 
 hearthbag.coloredText = "|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r"
 
@@ -539,7 +543,7 @@ function hearthCleanup.UpdatePosition()
 end
 
 -- magical code stuff, basically will call upon the hearthstone item ID
-hearthbag.item = Item:CreateFromItemID(HearthDB.ITEM)
+hearthbag.item = Item:CreateFromItemID(defaultsTable.ITEM)
 hearthbag.item:ContinueOnItemLoad(function()  -- this is friend. ensures the item is loaded with a mixin so you don't get item = nil  
     if UnitAffectingCombat("player") == false then
         hearthbag:RegisterForClicks("AnyUp", "AnyDown");
@@ -1288,10 +1292,10 @@ hearthbag:RegisterEvent("PLAYER_REGEN_ENABLED");
 -- the cooldown texture itself (the rune)
 hearthbag.hearthCD = CreateFrame("Cooldown", "HearthCD", Hearthbag, "CooldownFrameTemplate");
 hearthbag.hearthCD:SetUseCircularEdge(true); -- makes the cooldown edge circular
-hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN); -- set the cooldown texture to be the rune
+hearthbag.hearthCD:SetSwipeTexture(defaultsTable.APPEARANCE.COOLDOWN); -- set the cooldown texture to be the rune
 hearthbag.hearthCD:SetSwipeColor(0.2,0.2,0.2,1.0); -- set the RGB of the rune to ~20% "brightness" (makes it dark)
 hearthbag.hearthCD:SetDrawEdge(true); -- shows the blip on the CD
-hearthbag.hearthCD:SetEdgeTexture(HearthDB.APPEARANCE.BLIP,1.0,1.0,1.0,1.0); -- makes the blip as bright as possible
+hearthbag.hearthCD:SetEdgeTexture(defaultsTable.APPEARANCE.BLIP,1.0,1.0,1.0,1.0); -- makes the blip as bright as possible
 hearthbag.hearthCD:SetRotation(-2.22); -- rotates the whole cooldown rune so that the tail end of the rune will fill out last. ~ -127 degrees
 
  -- checks the cooldown on the hearthstone spell portion of the item
@@ -1460,7 +1464,7 @@ hearthbag.dalaranHearth.hearthCD:SetUseCircularEdge(true); -- makes the cooldown
 hearthbag.dalaranHearth.hearthCD:SetSwipeTexture(TEXTURE_LIST.hearthDalaranCD); -- set the cooldown texture to be the rune
 hearthbag.dalaranHearth.hearthCD:SetSwipeColor(0.2,0.2,0.2,1.0); -- set the RGB of the rune to ~20% "brightness" (makes it dark)
 hearthbag.dalaranHearth.hearthCD:SetDrawEdge(true); -- shows the blip on the CD
-hearthbag.dalaranHearth.hearthCD:SetEdgeTexture(HearthDB.APPEARANCE.BLIP,1.0,1.0,1.0,1.0); -- makes the blip as bright as possible
+hearthbag.dalaranHearth.hearthCD:SetEdgeTexture(defaultsTable.APPEARANCE.BLIP,1.0,1.0,1.0,1.0); -- makes the blip as bright as possible
 --hearthbag.dalaranHearth.hearthCD:SetRotation(-2.22); -- rotates the whole cooldown rune so that the tail end of the rune will fill out last. ~ -127 degrees
 
  -- checks the cooldown on the hearthstone spell portion of the item
@@ -1540,7 +1544,7 @@ hearthbag.garrisonHearth.hearthCD:SetUseCircularEdge(true); -- makes the cooldow
 hearthbag.garrisonHearth.hearthCD:SetSwipeTexture(TEXTURE_LIST.hearthGarrisonCD); -- set the cooldown texture to be the rune
 hearthbag.garrisonHearth.hearthCD:SetSwipeColor(0.2,0.2,0.2,1.0); -- set the RGB of the rune to ~20% "brightness" (makes it dark)
 hearthbag.garrisonHearth.hearthCD:SetDrawEdge(true); -- shows the blip on the CD
-hearthbag.garrisonHearth.hearthCD:SetEdgeTexture(HearthDB.APPEARANCE.BLIP,1.0,1.0,1.0,1.0); -- makes the blip as bright as possible
+hearthbag.garrisonHearth.hearthCD:SetEdgeTexture(defaultsTable.APPEARANCE.BLIP,1.0,1.0,1.0,1.0); -- makes the blip as bright as possible
 hearthbag.garrisonHearth.hearthCD:SetRotation(-5.13); -- rotates the whole cooldown rune so that the tail end of the rune will fill out last. ~ -127 degrees
 
  -- checks the cooldown on the hearthstone spell portion of the item
@@ -2881,6 +2885,76 @@ hearthbag.ethereal:RegisterEvent("BAG_UPDATE");
 hearthbag.ethereal:HookScript("OnEvent", hearthbag.ethereal.collected.CollectionCheck);
 
 
+------------------------------------------------------------------------------------------------------------------
+
+
+
+local hearthPanel = CreateFrame("Frame");
+hearthPanel.name = "Hearthbag";
+
+hearthPanel.Headline = hearthPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+hearthPanel.Headline:SetFont(hearthPanel.Headline:GetFont(), 23);
+hearthPanel.Headline:SetTextColor(0,1,0,1);
+hearthPanel.Headline:ClearAllPoints();
+hearthPanel.Headline:SetPoint("TOPLEFT", hearthPanel, "TOPLEFT",12,-12);
+hearthPanel.Headline:SetText(hearthbag.coloredText);
+
+hearthPanel.Version = hearthPanel:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+hearthPanel.Version:SetFont(hearthPanel.Version:GetFont(), 12);
+hearthPanel.Version:SetTextColor(1,1,1,1);
+hearthPanel.Version:ClearAllPoints();
+hearthPanel.Version:SetPoint("TOPLEFT", hearthPanel, "TOPLEFT",400,-21);
+hearthPanel.Version:SetText("Version: " .. GetAddOnMetadata("Hearthbag", "Version"));
+
+
+------------------------------------------------------------------------------------------------------------------
+
+--menu slider
+hearthPanel.HBSlider = CreateFrame("Slider", "HBScaleSlider", hearthPanel, "OptionsSliderTemplate");
+hearthPanel.HBSlider:SetWidth(300);
+hearthPanel.HBSlider:SetHeight(15);
+hearthPanel.HBSlider:SetMinMaxValues(50,200);
+hearthPanel.HBSlider:SetValueStep(1);
+hearthPanel.HBSlider:ClearAllPoints();
+hearthPanel.HBSlider:SetPoint("TOPLEFT", hearthPanel, "TOPLEFT",12,-53);
+getglobal(hearthPanel.HBSlider:GetName() .. 'Low'):SetText('50');
+getglobal(hearthPanel.HBSlider:GetName() .. 'High'):SetText('200');
+getglobal(hearthPanel.HBSlider:GetName() .. 'Text'):SetText('Menu Frame Size');
+hearthPanel.HBSlider:SetScript("OnValueChanged", function()
+    local scaleValue = getglobal(hearthPanel.HBSlider:GetName()):GetValue() / 100;
+    HearthDB.MENU.scale = scaleValue;
+    ScrollBackFrame:SetScale(scaleValue);
+end)
+
+------------------------------------------------------------------------------------------------------------------
+
+--frames movable
+hearthPanel.HBButtonCheckbox = CreateFrame("CheckButton", "HBButtonCheckbox", hearthPanel, "UICheckButtonTemplate");
+hearthPanel.HBButtonCheckbox:ClearAllPoints();
+hearthPanel.HBButtonCheckbox:SetPoint("TOPLEFT", 350, -53);
+getglobal(hearthPanel.HBButtonCheckbox:GetName().."Text"):SetText("Show Menu Button");
+
+hearthPanel.HBButtonCheckbox:SetScript("OnClick", function(self)
+    if hearthPanel.HBButtonCheckbox:GetChecked() then
+        HearthDB.MENU.button = true;
+        ScrollBackButton:Show();
+    else
+        HearthDB.MENU.button = false;
+        ScrollBackButton:Hide();
+    end
+end);
+
+
+
+------------------------------------------------------------------------------------------------------------------
+
+--final
+InterfaceOptions_AddCategory(hearthPanel);
+
+
+------------------------------------------------------------------------------------------------------------------
+
+
 
 
 
@@ -3138,17 +3212,7 @@ end)]]
 
 function hearthbag:buttonResetter()
     hearthbag:ClearAllPoints();
-    if ( IsAddOnLoaded("ElvUI") == true ) then
-        HearthDB.BAG["parent"] = hearthCleanup.ElvuiProfile["parent"]
-        HearthDB.BAG["scale"] = hearthCleanup.ElvuiProfile["scale"]
-        HearthDB.BAG["position"][1] = hearthCleanup.ElvuiProfile["position"][1]
-        HearthDB.BAG["position"][2] = hearthCleanup.ElvuiProfile["position"][2]
-    elseif ( IsAddOnLoaded("GW2_UI") == true ) then
-        HearthDB.BAG["parent"] = hearthCleanup.GW2Profile["parent"]
-        HearthDB.BAG["scale"] = hearthCleanup.GW2Profile["scale"]
-        HearthDB.BAG["position"][1] = hearthCleanup.GW2Profile["position"][1]
-        HearthDB.BAG["position"][2] = hearthCleanup.GW2Profile["position"][2]
-    elseif ( IsAddOnLoaded("AdiBags") == true ) then
+    if ( IsAddOnLoaded("AdiBags") == true ) then
         HearthDB.BAG["parent"] = hearthCleanup.AdiBagsProfile["parent"]
         HearthDB.BAG["scale"] = hearthCleanup.AdiBagsProfile["scale"]
         HearthDB.BAG["position"][1] = hearthCleanup.AdiBagsProfile["position"][1]
@@ -3193,6 +3257,16 @@ function hearthbag:buttonResetter()
         HearthDB.BAG["scale"] = hearthCleanup.LitebagProfile["scale"]
         HearthDB.BAG["position"][1] = hearthCleanup.LitebagProfile["position"][1]
         HearthDB.BAG["position"][2] = hearthCleanup.LitebagProfile["position"][2]
+    elseif ( IsAddOnLoaded("ElvUI") == true ) then
+        HearthDB.BAG["parent"] = hearthCleanup.ElvuiProfile["parent"]
+        HearthDB.BAG["scale"] = hearthCleanup.ElvuiProfile["scale"]
+        HearthDB.BAG["position"][1] = hearthCleanup.ElvuiProfile["position"][1]
+        HearthDB.BAG["position"][2] = hearthCleanup.ElvuiProfile["position"][2]
+    elseif ( IsAddOnLoaded("GW2_UI") == true ) then
+        HearthDB.BAG["parent"] = hearthCleanup.GW2Profile["parent"]
+        HearthDB.BAG["scale"] = hearthCleanup.GW2Profile["scale"]
+        HearthDB.BAG["position"][1] = hearthCleanup.GW2Profile["position"][1]
+        HearthDB.BAG["position"][2] = hearthCleanup.GW2Profile["position"][2]
     else
         HearthDB.BAG["parent"] = hearthCleanup.defaultProfile["parent"]
         HearthDB.BAG["scale"] = hearthCleanup.defaultProfile["scale"]
@@ -3219,6 +3293,11 @@ function hearthbag:buttonResetter()
     HearthDB.COMBAT["position"][1] = hearthCleanup.defaultCombatFrame["position"][1]
     HearthDB.COMBAT["position"][2] = hearthCleanup.defaultCombatFrame["position"][2]
     combatFrame:SetPoint(HearthDB.COMBAT["relative"], HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
+
+    HearthDB.MENU = {
+        scale = 1,
+        button = true,
+    }
 end
 
 hearthbag.frames = {}
@@ -3446,7 +3525,7 @@ function hearthCleanup.DFCompat()
     end
 end
 
-hearthbag:HookScript("OnEvent", function(self, event)
+function hearthbag:OnEvent(event,arg1)
     if event == "PLAYER_ENTERING_WORLD" then
         --OpenAllBags(); -- broken in dragonflight, don't use ever
         hearthbag:ClearAllPoints();
@@ -3469,7 +3548,23 @@ hearthbag:HookScript("OnEvent", function(self, event)
             combatFrame:Hide();
         end
     end
-end);
+    if event == "ADDON_LOADED" and arg1 == "Hearthbag" then
+        if not HearthDB then
+            HearthDB = defaultsTable;
+        end
+        if not HearthDB.MENU then
+            HearthDB.MENU = defaultsTable.MENU
+        end
+
+
+        hearthPanel.HBSlider:SetValue(HearthDB.MENU.scale*100);
+        ScrollBackFrame:SetScale(HearthDB.MENU.scale);
+
+        hearthPanel.HBButtonCheckbox:SetChecked(HearthDB.MENU.button)
+    end
+end;
+
+hearthbag:HookScript("OnEvent", hearthbag.OnEvent);
 
 hearthbag:SetScript("OnShow", hearthbag.UpdateItem); -- NUCLEAR WEAPON ENGAGED BECAUSE SOMETIMES LOGGING IN DOESN'T WORK
 
