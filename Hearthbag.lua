@@ -432,11 +432,11 @@ hearthCleanup.SortedProfile = {
 
 -- litebag
 hearthCleanup.LitebagProfile = {
-    ["parent"] = "LiteBagInventoryPanelButton1",
-    ["scale"] = 72,
+    ["parent"] = "LiteBagBackpackDragButton",
+    ["scale"] = 42,
     ["position"] = {
-        -48, --[1]
-        22, --[2]
+        -203, --[1]
+        -9, --[2]
     },
 };
 
@@ -535,7 +535,14 @@ hearthbag.background:SetTexture(defaultsTable.APPEARANCE.UP);
 
 hearthbag.coloredText = "|cff4fe6fcH|r|cff44e7ebe|r|cff4de7d6a|r|cff62e6bfr|r|cff7be4a6t|r|cff95e08eh|r|cffafdb78b|r|cffc9d466a|r|cffe2cb5ag|r"
 
+function hearthCleanup.OutdatedPresets() -- purge and reset these profiles because they will throw nil
+    if HearthDB.BAG["parent"] == "LiteBagInventoryPanelButton1" then
+        HearthDB.BAG = hearthCleanup.LitebagProfile
+    end
+end
+
 function hearthCleanup.UpdatePosition()
+    hearthCleanup.OutdatedPresets()
     if UnitAffectingCombat("player") == false then
         hearthbag:SetPoint("CENTER", _G[HearthDB.BAG["parent"]], "CENTER", HearthDB.BAG["position"][1], HearthDB.BAG["position"][2]);
 
