@@ -1,6 +1,6 @@
-## Interface: 100100
+## Interface: 100105
 ## Author: Keyboardturner
-## Version: 0.1.9
+## Version: 0.2.0
 ## Title: Hearthbag
 ## Notes: Places a clickable hearthstone over the bag icon of the default backpack.
 ## IconTexture: Interface/Addons/Hearthbag/Textures/Hearthstone_Default.blp

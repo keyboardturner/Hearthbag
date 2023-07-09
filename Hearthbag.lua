@@ -569,6 +569,13 @@ function hearthbag.UpdateItem()
         hearthbag:SetAttribute("*type1", "item");   -- set to "any left click," targets an item
         hearthbag:SetAttribute("item", NewItem); -- the targetted item is now using the Item:CreateFromItemID() from before
     end
+    if HearthDB.ITEM == ITEM_LIST.dalaran then
+        hearthbag.hearthCD:SetRotation(0)
+    elseif HearthDB.ITEM == ITEM_LIST.garrison then
+        hearthbag.hearthCD:SetRotation(-.5)
+    else
+        hearthbag.hearthCD:SetRotation(-2.22)
+    end
 end
 
 -- button that enables the panel the options populate on to
@@ -1432,7 +1439,7 @@ hearthbag.option0:SetScript("OnEvent", hearthbag.option0.collected.CollectionChe
 
 
 
--- Dalaran Hearthstone
+--[[ Dalaran Hearthstone OLD
 hearthbag.dalaranHearth = CreateFrame("Button", "DalaranHearth", hearthbag.option0, "SecureActionButtonTemplate");
 hearthbag.dalaranHearth:SetSize(25, 25);
 hearthbag.dalaranHearth:SetPoint("LEFT", 27, 0);
@@ -1444,15 +1451,15 @@ function hearthbag.dalaranHearth:SetItem_OnEvent()
         C_Timer.After(1, hearthbag.dalaranHearth.SetItem_OnEvent)
     else
         hearthbag.dalaranHearth.ItemID = select(1, GetItemInfo(ITEM_LIST.dalaran))
-        hearthbag.dalaranHearth:SetAttribute("*type1", "item")
-        hearthbag.dalaranHearth:SetAttribute("item", hearthbag.dalaranHearth.ItemID)
+        hearthbag.dalaranHearth:SetAttribute("*type1", "macro")
+        hearthbag.dalaranHearth:SetAttribute("macrotext", "/use Dalaran Hearthstone")
     end
 end
 
 function hearthbag.dalaranHearth:Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.dalaranHearth);
     GameTooltip:ClearAllPoints();
-    GameTooltip:SetItemByID(ITEM_LIST.dalaran)
+    GameTooltip:SetToyByItemID(ITEM_LIST.dalaran)
     GameTooltip:SetPoint("BOTTOMRIGHT", "DalaranHearth", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
@@ -1497,7 +1504,63 @@ hearthbag.dalaranHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRe
 hearthbag.dalaranHearth.collected.tex:SetAllPoints(hearthbag.dalaranHearth.collected);
 
 function hearthbag.dalaranHearth.collected:CollectionCheck()
-    if GetItemCount(ITEM_LIST.dalaran) >= 1 then
+    if PlayerHasToy(ITEM_LIST.dalaran) == true then
+        hearthbag.dalaranHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+    else
+        hearthbag.dalaranHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+    end
+end
+
+hearthbag.dalaranHearth:RegisterEvent("TOYS_UPDATED");
+hearthbag.dalaranHearth:RegisterEvent("BAG_UPDATE");
+hearthbag.dalaranHearth:HookScript("OnEvent", hearthbag.dalaranHearth.collected.CollectionCheck);
+]]
+
+-- Dalaran Hearthstone NEW
+hearthbag.dalaranHearth = CreateFrame("Button", "HearthbagDalaranHearth", hearthbag.option0, nil);
+hearthbag.dalaranHearth:SetSize(25, 25);
+hearthbag.dalaranHearth:SetPoint("LEFT", 27, 0);
+hearthbag.dalaranHearth:SetNormalTexture(TEXTURE_LIST.hearthDalaranUp);
+hearthbag.dalaranHearth:SetPushedTexture(TEXTURE_LIST.hearthDalaranDown);
+
+function hearthbag.dalaranHearth:SetHearthTexture_ONCLICK()
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthDalaranUp
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthDalaranDown
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthDalaranCD
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthDalaranDesat
+    HearthDB.ITEM = ITEM_LIST.dalaran
+    HearthDB.SPELLID = ITEM_LIST.dalaranSpellID
+    hearthbag.CompleteHearthTexture();
+    hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+    hearthbag.UpdateItem();
+end
+
+function hearthbag.dalaranHearth:Tooltip_OnEnter()
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.dalaranHearth);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.dalaran)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagDalaranHearth", "TOPLEFT", 0, 0);
+    GameTooltip:Show();
+end
+
+function hearthbag.dalaranHearth:Tooltip_OnLeave()
+    GameTooltip:Hide();
+end
+
+hearthbag.dalaranHearth:SetScript("OnClick", hearthbag.dalaranHearth.SetHearthTexture_ONCLICK);
+hearthbag.dalaranHearth:SetScript("OnEnter", hearthbag.dalaranHearth.Tooltip_OnEnter);
+hearthbag.dalaranHearth:SetScript("OnLeave", hearthbag.dalaranHearth.Tooltip_OnLeave);
+
+hearthbag.dalaranHearth.collected = CreateFrame("Frame", nil, hearthbag.dalaranHearth, nil);
+hearthbag.dalaranHearth.collected:SetSize(10, 10);
+hearthbag.dalaranHearth.collected:SetPoint("TOPLEFT", 0, 0);
+
+hearthbag.dalaranHearth.collected.tex = hearthbag.dalaranHearth.collected:CreateTexture(nil, "BACKGROUND");
+hearthbag.dalaranHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+hearthbag.dalaranHearth.collected.tex:SetAllPoints(hearthbag.dalaranHearth.collected);
+
+function hearthbag.dalaranHearth.collected:CollectionCheck()
+    if PlayerHasToy(ITEM_LIST.dalaran) == true then
         hearthbag.dalaranHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
     else
         hearthbag.dalaranHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
@@ -1512,7 +1575,7 @@ hearthbag.dalaranHearth:HookScript("OnEvent", hearthbag.dalaranHearth.collected.
 
 
 
--- Garrison Hearthstone
+--[[ Garrison Hearthstone OLD
 hearthbag.garrisonHearth = CreateFrame("Button", "GarrisonHearth", hearthbag.dalaranHearth, "SecureActionButtonTemplate");
 hearthbag.garrisonHearth:SetSize(25, 25);
 hearthbag.garrisonHearth:SetPoint("LEFT", 27, 0);
@@ -1532,7 +1595,7 @@ end
 function hearthbag.garrisonHearth:Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.garrisonHearth);
     GameTooltip:ClearAllPoints();
-    GameTooltip:SetItemByID(ITEM_LIST.garrison)
+    GameTooltip:SetToyByItemID(ITEM_LIST.garrison)
     GameTooltip:SetPoint("BOTTOMRIGHT", "GarrisonHearth", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
@@ -1544,7 +1607,7 @@ end
 hearthbag.garrisonHearth:RegisterEvent("PLAYER_ENTERING_WORLD");
 hearthbag.garrisonHearth:SetScript("OnEnter", hearthbag.garrisonHearth.Tooltip_OnEnter);
 hearthbag.garrisonHearth:SetScript("OnLeave", hearthbag.garrisonHearth.Tooltip_OnLeave);
-hearthbag.garrisonHearth:SetScript("OnEvent", hearthbag.garrisonHearth.SetItem_OnEvent);
+hearthbag.garrisonHearth:SetScript("OnClick", hearthbag.garrisonHearth.SetItem_OnEvent);
 
 hearthbag.garrisonHearth.hearthCD = CreateFrame("Cooldown", "GarHearthCD", hearthbag.garrisonHearth, "CooldownFrameTemplate");
 hearthbag.garrisonHearth.hearthCD:SetUseCircularEdge(true); -- makes the cooldown edge circular
@@ -1578,7 +1641,7 @@ hearthbag.garrisonHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderR
 hearthbag.garrisonHearth.collected.tex:SetAllPoints(hearthbag.garrisonHearth.collected);
 
 function hearthbag.garrisonHearth.collected:CollectionCheck()
-    if GetItemCount(ITEM_LIST.garrison) >= 1 then
+    if PlayerHasToy(ITEM_LIST.garrison) == true then
         hearthbag.garrisonHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
     else
         hearthbag.garrisonHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
@@ -1588,6 +1651,65 @@ end
 hearthbag.garrisonHearth:RegisterEvent("TOYS_UPDATED");
 hearthbag.garrisonHearth:RegisterEvent("BAG_UPDATE");
 hearthbag.garrisonHearth:HookScript("OnEvent", hearthbag.garrisonHearth.collected.CollectionCheck);
+]]
+
+
+
+-- Garrison Hearthstone NEW
+hearthbag.garrisonHearth = CreateFrame("Button", "HearthbagGarrisonHearth", hearthbag.dalaranHearth, nil);
+hearthbag.garrisonHearth:SetSize(25, 25);
+hearthbag.garrisonHearth:SetPoint("LEFT", 27, 0);
+hearthbag.garrisonHearth:SetNormalTexture(TEXTURE_LIST.hearthGarrisonUp);
+hearthbag.garrisonHearth:SetPushedTexture(TEXTURE_LIST.hearthGarrisonDown);
+
+function hearthbag.garrisonHearth:SetHearthTexture_ONCLICK()
+    HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthGarrisonUp
+    HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthGarrisonDown
+    HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthGarrisonCD
+    HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthGarrisonDesat
+    HearthDB.ITEM = ITEM_LIST.garrison
+    HearthDB.SPELLID = ITEM_LIST.garrisonSpellID
+    hearthbag.CompleteHearthTexture();
+    hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+    hearthbag.UpdateItem();
+end
+
+function hearthbag.garrisonHearth:Tooltip_OnEnter()
+    GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.garrisonHearth);
+    GameTooltip:ClearAllPoints();
+    GameTooltip:SetToyByItemID(ITEM_LIST.garrison)
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagGarrisonHearth", "TOPLEFT", 0, 0);
+    GameTooltip:Show();
+end
+
+function hearthbag.garrisonHearth:Tooltip_OnLeave()
+    GameTooltip:Hide();
+end
+
+hearthbag.garrisonHearth:SetScript("OnClick", hearthbag.garrisonHearth.SetHearthTexture_ONCLICK);
+hearthbag.garrisonHearth:SetScript("OnEnter", hearthbag.garrisonHearth.Tooltip_OnEnter);
+hearthbag.garrisonHearth:SetScript("OnLeave", hearthbag.garrisonHearth.Tooltip_OnLeave);
+
+hearthbag.garrisonHearth.collected = CreateFrame("Frame", nil, hearthbag.garrisonHearth, nil);
+hearthbag.garrisonHearth.collected:SetSize(10, 10);
+hearthbag.garrisonHearth.collected:SetPoint("TOPLEFT", 0, 0);
+
+hearthbag.garrisonHearth.collected.tex = hearthbag.garrisonHearth.collected:CreateTexture(nil, "BACKGROUND");
+hearthbag.garrisonHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+hearthbag.garrisonHearth.collected.tex:SetAllPoints(hearthbag.garrisonHearth.collected);
+
+function hearthbag.garrisonHearth.collected:CollectionCheck()
+    if PlayerHasToy(ITEM_LIST.garrison) == true then
+        hearthbag.garrisonHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+    else
+        hearthbag.garrisonHearth.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+    end
+end
+
+hearthbag.garrisonHearth:RegisterEvent("TOYS_UPDATED");
+hearthbag.garrisonHearth:RegisterEvent("BAG_UPDATE");
+hearthbag.garrisonHearth:HookScript("OnEvent", hearthbag.garrisonHearth.collected.CollectionCheck);
+
 
 
 
@@ -1781,7 +1903,7 @@ hearthbag.kyrian:HookScript("OnEvent", hearthbag.kyrian.collected.CollectionChec
 
 
 -- Covenants Updated - Necrolord
-hearthbag.necrolord = CreateFrame("Button", "HearthbagNecro", hearthbag.kyrian, nil);
+hearthbag.necrolord = CreateFrame("Button", "HearthbagNecrolord", hearthbag.kyrian, nil);
 hearthbag.necrolord:SetSize(25, 25);
 hearthbag.necrolord:SetPoint("LEFT", 27, 0);
 hearthbag.necrolord:SetNormalTexture(TEXTURE_LIST.hearthNecroUp);
@@ -1803,7 +1925,7 @@ function hearthbag.necrolord:Tooltip_OnEnter()
     GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.necrolord);
     GameTooltip:ClearAllPoints();
     GameTooltip:SetToyByItemID(ITEM_LIST.necrolord)
-    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagNecro", "TOPLEFT", 0, 0);
+    GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagNecrolord", "TOPLEFT", 0, 0);
     GameTooltip:Show();
 end
 
