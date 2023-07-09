@@ -1,0 +1,8 @@
+## Interface: 100105
+## Title: Heck Trade Chat
+## Notes: Honestly, heck Trade Chat.
+## IconTexture: Interface/Addons/HeckTradeChat/HeckTradeChat.blp
+## Author: Keyboardturner
+## Version: 0.0.6
+
+HeckTradeChat.lua
