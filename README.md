@@ -1,6 +1,9 @@
 <hr />
 <p>It initially started with a <a href="https://twitter.com/keyboardturn/status/1275546863601479680">concept I developed and shared on twitter</a>. I've now decided that I can just... make this into an addon. <del>It's still in heavy development, but a working prototype is now available for others to test and play around with. I can't guarantee this'll be in full working order any time soon, especially for custom bag addons that replace the bag entirely, but it's a proof of concept that works.</del></p>
 <hr />
+
+A link to my discord for addon projects and other things can be found [here](https://discord.gg/tA4rrmjPp8).
+
 <h2>Commands</h2>
 <p>All commands begin with '/hearthbag' or '/hb' followed by the command.</p>
 <ul>
