@@ -1,6 +1,6 @@
 ## Interface: 11404
 ## Author: Keyboardturner
-## Version: 0.2.1
+## Version: 0.2.2
 ## Title: Hearthbag
 ## Notes: Places a clickable hearthstone over the bag icon of the default backpack.
 ## SavedVariablesPerCharacter: HearthDB

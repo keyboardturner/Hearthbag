@@ -1067,8 +1067,8 @@ function buttonContainer:SetNewParent(newParent, offsetX, offsetY)
     HearthDB.BAG["parent"] = newParent:GetName()
     HearthDB.BAG["position"][1] = offsetX
     HearthDB.BAG["position"][2] = offsetY
-    self:SetParent(HearthDB.BAG["parent"]);
-    hearthbag:SetParent(HearthDB.BAG["parent"]);
+    self:SetParent(_G[HearthDB.BAG["parent"]]);
+    hearthbag:SetParent(_G[HearthDB.BAG["parent"]]);
     hearthCleanup.UpdatePosition()
     hearthbag:SetFrameStrata("FULLSCREEN_DIALOG");
     hearthbag.FrameLevelOrganiser();
@@ -1245,7 +1245,7 @@ function hearthbag:buttonResetter()
         HearthDB.BAG["position"][2] = hearthCleanup.defaultProfile["position"][2]
     end
     hearthCleanup.UpdatePosition()
-    hearthbag:SetParent(HearthDB.BAG["parent"]);
+    hearthbag:SetParent(_G[HearthDB.BAG["parent"]]);
     hearthbag:SetSize(HearthDB.BAG["scale"], HearthDB.BAG["scale"]);
     hearthbag.UpdateCheckInherit_OnClick();
     hearthbag.FrameLevelOrganiser();
@@ -1351,7 +1351,7 @@ function hearthbag.previewFrame:CreateButtonPlacer()
         
         
         hearthCleanup.UpdatePosition()
-        hearthbag:SetParent(HearthDB.BAG["parent"]);
+        hearthbag:SetParent(_G[HearthDB.BAG["parent"]]);
         hearthbag:SetSize(HearthDB.BAG["scale"], HearthDB.BAG["scale"]);
         hearthbag.UpdateCheckInherit_OnClick();
         combatFrame:SetPoint(HearthDB.COMBAT["relative"], UIParent, "CENTER", HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
@@ -1491,7 +1491,7 @@ hearthbag:HookScript("OnEvent", function(self, event)
         hearthbag:ClearAllPoints();
         combatFrame:ClearAllPoints();
         hearthCleanup.UpdatePosition()
-		hearthbag:SetParent(HearthDB.BAG["parent"]);
+		hearthbag:SetParent(_G[HearthDB.BAG["parent"]]);
         hearthbag:SetSize(HearthDB.BAG["scale"], HearthDB.BAG["scale"]);
         hearthbag.UpdateCheckInherit_OnClick();
         combatFrame:SetPoint(HearthDB.COMBAT["relative"], HearthDB.COMBAT["position"][1], HearthDB.COMBAT["position"][2]);
