@@ -1,3 +1,7 @@
+# 0.2.5
+
+10.2.5 toc bump
+
 # 0.2.4
 
 Inventorian Fix, Classic TOC Bump
