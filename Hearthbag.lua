@@ -111,6 +111,18 @@ local ITEM_LIST = {
 	timewalkerSpellID = 375357,
 	centaur = 200630,
 	centaurSpellID = 391042,
+	draenei = 210455,
+	draeneiSpellID = 438606,
+	edraid = 209035,
+	edraidSpellID = 422284,
+	enlightened = 190196,
+	enlightenedSpellID = 366945,
+	naaru = 206195,
+	naaruSpellID = 412555,
+	storm = 208704,
+	stormSpellID = 420418,
+	anniversary = 212337,
+	anniversarySpellID = 401802,
 
 
 };
@@ -272,6 +284,36 @@ local TEXTURE_LIST = {
 	hearthCentaurDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_centaurDown.blp",
 	hearthCentaurCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_centaur.blp",
 	hearthCentaurDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_centaurDesat.blp",
+
+	hearthDraeneiUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_draenei.blp",
+	hearthDraeneiDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_draeneiDown.blp",
+	hearthDraeneiCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_draenei.blp",
+	hearthDraeneiDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_draeneiDesat.blp",
+
+	hearthEDRaidUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_EDRaid.blp",
+	hearthEDRaidDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_EDRaidDown.blp",
+	hearthEDRaidCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_EDRaid.blp",
+	hearthEDRaidDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_EDRaidDesat.blp",
+
+	hearthEnlightenedUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_enlightened.blp",
+	hearthEnlightenedDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_enlightenedDown.blp",
+	hearthEnlightenedCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_enlightened.blp",
+	hearthEnlightenedDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_enlightenedDesat.blp",
+
+	hearthNaaruUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_naaru.blp",
+	hearthNaaruDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_naaruDown.blp",
+	hearthNaaruCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_naaru.blp",
+	hearthNaaruDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_naaruDesat.blp",
+
+	hearthStormUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_storm.blp",
+	hearthStormDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_stormDown.blp",
+	hearthStormCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_storm.blp",
+	hearthStormDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_stormDesat.blp",
+
+	hearthAnniversaryUp = "Interface/AddOns/Hearthbag/Textures/hearthbutton_anniversary.blp",
+	hearthAnniversaryDown = "Interface/AddOns/Hearthbag/Textures/hearthbutton_anniversaryDown.blp",
+	hearthAnniversaryCD = "Interface/AddOns/Hearthbag/Textures/hearthCooldown_anniversary.blp",
+	hearthAnniversaryDesat = "Interface/AddOns/Hearthbag/Textures/hearthbutton_anniversaryDesat.blp",
 
 
 };
@@ -1353,8 +1395,8 @@ end);
 
 -- background frame for the options to parent to, but is also parented to the button and placed under it in strata
 hearthbag.itemHolderFrame = CreateFrame("Frame", "ItemHolderFrame", hearthbag.scrollbackFrame, nil);
-hearthbag.itemHolderFrame:SetSize(250, 180);
-hearthbag.itemHolderFrame:SetPoint("CENTER", 0, -92);
+hearthbag.itemHolderFrame:SetSize(250, 235); -- each row is about 27.5?
+hearthbag.itemHolderFrame:SetPoint("TOP", hearthbag.scrollbackFrame, "BOTTOM", 0, 10);
 
 hearthbag.itemHolderFrameTex = hearthbag.itemHolderFrame:CreateTexture("ItemHolderFrameTex", "BACKGROUND");
 hearthbag.itemHolderFrameTex:SetPoint("CENTER");
@@ -1383,7 +1425,7 @@ end
 -- Default Hearthstone
 hearthbag.option0 = CreateFrame("Button", "HearthbagOption0", hearthbag.itemHolderFrame, nil);
 hearthbag.option0:SetSize(25, 25);
-hearthbag.option0:SetPoint("LEFT", 60, 57);
+hearthbag.option0:SetPoint("TOPLEFT", 60, -20);
 hearthbag.option0:SetNormalTexture(TEXTURE_LIST.hearthDefaultTex);
 hearthbag.option0:SetPushedTexture(TEXTURE_LIST.hearthDownTex);
 
@@ -3014,6 +3056,352 @@ hearthbag.ethereal:RegisterEvent("BAG_UPDATE");
 hearthbag.ethereal:HookScript("OnEvent", hearthbag.ethereal.collected.CollectionCheck);
 
 
+
+-- Draenei (Heritage/Racial)
+hearthbag.draenei = CreateFrame("Button", "HearthbagDraenei", hearthbag.halloween, nil);
+hearthbag.draenei:SetSize(25, 25);
+hearthbag.draenei:SetPoint("LEFT", 0, -27);
+hearthbag.draenei:SetNormalTexture(TEXTURE_LIST.hearthDraeneiUp);
+hearthbag.draenei:SetPushedTexture(TEXTURE_LIST.hearthDraeneiDown);
+
+function hearthbag.draenei:SetHearthTexture_ONCLICK()
+	HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthDraeneiUp
+	HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthDraeneiDown
+	HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthDraeneiCD
+	HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthDraeneiDesat
+	HearthDB.ITEM = ITEM_LIST.draenei
+	HearthDB.SPELLID = ITEM_LIST.draeneiSpellID
+	hearthbag.CompleteHearthTexture();
+	hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+	hearthbag.UpdateItem();
+end
+
+function hearthbag.draenei:Tooltip_OnEnter()
+	GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.draenei);
+	GameTooltip:ClearAllPoints();
+	GameTooltip:SetToyByItemID(ITEM_LIST.draenei)
+	GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagDraenei", "TOPLEFT", 0, 0);
+	GameTooltip:Show();
+end
+
+function hearthbag.draenei:Tooltip_OnLeave()
+	GameTooltip:Hide();
+end
+
+hearthbag.draenei:SetScript("OnClick", hearthbag.draenei.SetHearthTexture_ONCLICK);
+hearthbag.draenei:SetScript("OnEnter", hearthbag.draenei.Tooltip_OnEnter);
+hearthbag.draenei:SetScript("OnLeave", hearthbag.draenei.Tooltip_OnLeave);
+
+hearthbag.draenei.collected = CreateFrame("Frame", nil, hearthbag.draenei, nil);
+hearthbag.draenei.collected:SetSize(10, 10);
+hearthbag.draenei.collected:SetPoint("TOPLEFT", 0, 0);
+
+hearthbag.draenei.collected.tex = hearthbag.draenei.collected:CreateTexture(nil, "BACKGROUND");
+hearthbag.draenei.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+hearthbag.draenei.collected.tex:SetAllPoints(hearthbag.draenei.collected);
+
+function hearthbag.draenei.collected:CollectionCheck()
+	if PlayerHasToy(ITEM_LIST.draenei) == true then
+		hearthbag.draenei.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+	else
+		hearthbag.draenei.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+	end
+end
+
+hearthbag.draenei:RegisterEvent("TOYS_UPDATED");
+hearthbag.draenei:RegisterEvent("BAG_UPDATE");
+hearthbag.draenei:HookScript("OnEvent", hearthbag.draenei.collected.CollectionCheck);
+
+
+
+
+-- Emerald Dream Raid
+hearthbag.edraid = CreateFrame("Button", "HearthbagEDRaid", hearthbag.draenei, nil);
+hearthbag.edraid:SetSize(25, 25);
+hearthbag.edraid:SetPoint("LEFT", 27, 0);
+hearthbag.edraid:SetNormalTexture(TEXTURE_LIST.hearthEDRaidUp);
+hearthbag.edraid:SetPushedTexture(TEXTURE_LIST.hearthEDRaidDown);
+
+function hearthbag.edraid:SetHearthTexture_ONCLICK()
+	HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthEDRaidUp
+	HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthEDRaidDown
+	HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthEDRaidCD
+	HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthEDRaidDesat
+	HearthDB.ITEM = ITEM_LIST.edraid
+	HearthDB.SPELLID = ITEM_LIST.edraidSpellID
+	hearthbag.CompleteHearthTexture();
+	hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+	hearthbag.UpdateItem();
+end
+
+function hearthbag.edraid:Tooltip_OnEnter()
+	GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.edraid);
+	GameTooltip:ClearAllPoints();
+	GameTooltip:SetToyByItemID(ITEM_LIST.edraid)
+	GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagEDRaid", "TOPLEFT", 0, 0);
+	GameTooltip:Show();
+end
+
+function hearthbag.edraid:Tooltip_OnLeave()
+	GameTooltip:Hide();
+end
+
+hearthbag.edraid:SetScript("OnClick", hearthbag.edraid.SetHearthTexture_ONCLICK);
+hearthbag.edraid:SetScript("OnEnter", hearthbag.edraid.Tooltip_OnEnter);
+hearthbag.edraid:SetScript("OnLeave", hearthbag.edraid.Tooltip_OnLeave);
+
+hearthbag.edraid.collected = CreateFrame("Frame", nil, hearthbag.edraid, nil);
+hearthbag.edraid.collected:SetSize(10, 10);
+hearthbag.edraid.collected:SetPoint("TOPLEFT", 0, 0);
+
+hearthbag.edraid.collected.tex = hearthbag.edraid.collected:CreateTexture(nil, "BACKGROUND");
+hearthbag.edraid.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+hearthbag.edraid.collected.tex:SetAllPoints(hearthbag.edraid.collected);
+
+function hearthbag.edraid.collected:CollectionCheck()
+	if PlayerHasToy(ITEM_LIST.edraid) == true then
+		hearthbag.edraid.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+	else
+		hearthbag.edraid.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+	end
+end
+
+hearthbag.edraid:RegisterEvent("TOYS_UPDATED");
+hearthbag.edraid:RegisterEvent("BAG_UPDATE");
+hearthbag.edraid:HookScript("OnEvent", hearthbag.edraid.collected.CollectionCheck);
+
+
+
+
+-- Enlightened
+hearthbag.enlightened = CreateFrame("Button", "HearthbagEnlightened", hearthbag.edraid, nil);
+hearthbag.enlightened:SetSize(25, 25);
+hearthbag.enlightened:SetPoint("LEFT", 27, 0);
+hearthbag.enlightened:SetNormalTexture(TEXTURE_LIST.hearthEnlightenedUp);
+hearthbag.enlightened:SetPushedTexture(TEXTURE_LIST.hearthEnlightenedDown);
+
+function hearthbag.enlightened:SetHearthTexture_ONCLICK()
+	HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthEnlightenedUp
+	HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthEnlightenedDown
+	HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthEnlightenedCD
+	HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthEnlightenedDesat
+	HearthDB.ITEM = ITEM_LIST.enlightened
+	HearthDB.SPELLID = ITEM_LIST.enlightenedSpellID
+	hearthbag.CompleteHearthTexture();
+	hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+	hearthbag.UpdateItem();
+end
+
+function hearthbag.enlightened:Tooltip_OnEnter()
+	GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.enlightened);
+	GameTooltip:ClearAllPoints();
+	GameTooltip:SetToyByItemID(ITEM_LIST.enlightened)
+	GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagEnlightened", "TOPLEFT", 0, 0);
+	GameTooltip:Show();
+end
+
+function hearthbag.enlightened:Tooltip_OnLeave()
+	GameTooltip:Hide();
+end
+
+hearthbag.enlightened:SetScript("OnClick", hearthbag.enlightened.SetHearthTexture_ONCLICK);
+hearthbag.enlightened:SetScript("OnEnter", hearthbag.enlightened.Tooltip_OnEnter);
+hearthbag.enlightened:SetScript("OnLeave", hearthbag.enlightened.Tooltip_OnLeave);
+
+hearthbag.enlightened.collected = CreateFrame("Frame", nil, hearthbag.enlightened, nil);
+hearthbag.enlightened.collected:SetSize(10, 10);
+hearthbag.enlightened.collected:SetPoint("TOPLEFT", 0, 0);
+
+hearthbag.enlightened.collected.tex = hearthbag.enlightened.collected:CreateTexture(nil, "BACKGROUND");
+hearthbag.enlightened.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+hearthbag.enlightened.collected.tex:SetAllPoints(hearthbag.enlightened.collected);
+
+function hearthbag.enlightened.collected:CollectionCheck()
+	if PlayerHasToy(ITEM_LIST.enlightened) == true then
+		hearthbag.enlightened.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+	else
+		hearthbag.enlightened.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+	end
+end
+
+hearthbag.enlightened:RegisterEvent("TOYS_UPDATED");
+hearthbag.enlightened:RegisterEvent("BAG_UPDATE");
+hearthbag.enlightened:HookScript("OnEvent", hearthbag.enlightened.collected.CollectionCheck);
+
+
+
+
+-- Naaru
+hearthbag.naaru = CreateFrame("Button", "HearthbagNaaru", hearthbag.enlightened, nil);
+hearthbag.naaru:SetSize(25, 25);
+hearthbag.naaru:SetPoint("LEFT", 27, 0);
+hearthbag.naaru:SetNormalTexture(TEXTURE_LIST.hearthNaaruUp);
+hearthbag.naaru:SetPushedTexture(TEXTURE_LIST.hearthNaaruDown);
+
+function hearthbag.naaru:SetHearthTexture_ONCLICK()
+	HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthNaaruUp
+	HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthNaaruDown
+	HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthNaaruCD
+	HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthNaaruDesat
+	HearthDB.ITEM = ITEM_LIST.naaru
+	HearthDB.SPELLID = ITEM_LIST.naaruSpellID
+	hearthbag.CompleteHearthTexture();
+	hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+	hearthbag.UpdateItem();
+end
+
+function hearthbag.naaru:Tooltip_OnEnter()
+	GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.naaru);
+	GameTooltip:ClearAllPoints();
+	GameTooltip:SetToyByItemID(ITEM_LIST.naaru)
+	GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagNaaru", "TOPLEFT", 0, 0);
+	GameTooltip:Show();
+end
+
+function hearthbag.naaru:Tooltip_OnLeave()
+	GameTooltip:Hide();
+end
+
+hearthbag.naaru:SetScript("OnClick", hearthbag.naaru.SetHearthTexture_ONCLICK);
+hearthbag.naaru:SetScript("OnEnter", hearthbag.naaru.Tooltip_OnEnter);
+hearthbag.naaru:SetScript("OnLeave", hearthbag.naaru.Tooltip_OnLeave);
+
+hearthbag.naaru.collected = CreateFrame("Frame", nil, hearthbag.naaru, nil);
+hearthbag.naaru.collected:SetSize(10, 10);
+hearthbag.naaru.collected:SetPoint("TOPLEFT", 0, 0);
+
+hearthbag.naaru.collected.tex = hearthbag.naaru.collected:CreateTexture(nil, "BACKGROUND");
+hearthbag.naaru.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+hearthbag.naaru.collected.tex:SetAllPoints(hearthbag.naaru.collected);
+
+function hearthbag.naaru.collected:CollectionCheck()
+	if PlayerHasToy(ITEM_LIST.naaru) == true then
+		hearthbag.naaru.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+	else
+		hearthbag.naaru.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+	end
+end
+
+hearthbag.naaru:RegisterEvent("TOYS_UPDATED");
+hearthbag.naaru:RegisterEvent("BAG_UPDATE");
+hearthbag.naaru:HookScript("OnEvent", hearthbag.naaru.collected.CollectionCheck);
+
+
+
+
+-- Storm
+hearthbag.storm = CreateFrame("Button", "HearthbagStorm", hearthbag.naaru, nil);
+hearthbag.storm:SetSize(25, 25);
+hearthbag.storm:SetPoint("LEFT", 27, 0);
+hearthbag.storm:SetNormalTexture(TEXTURE_LIST.hearthStormUp);
+hearthbag.storm:SetPushedTexture(TEXTURE_LIST.hearthStormDown);
+
+function hearthbag.storm:SetHearthTexture_ONCLICK()
+	HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthStormUp
+	HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthStormDown
+	HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthStormCD
+	HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthStormDesat
+	HearthDB.ITEM = ITEM_LIST.storm
+	HearthDB.SPELLID = ITEM_LIST.stormSpellID
+	hearthbag.CompleteHearthTexture();
+	hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+	hearthbag.UpdateItem();
+end
+
+function hearthbag.storm:Tooltip_OnEnter()
+	GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.storm);
+	GameTooltip:ClearAllPoints();
+	GameTooltip:SetToyByItemID(ITEM_LIST.storm)
+	GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagStorm", "TOPLEFT", 0, 0);
+	GameTooltip:Show();
+end
+
+function hearthbag.storm:Tooltip_OnLeave()
+	GameTooltip:Hide();
+end
+
+hearthbag.storm:SetScript("OnClick", hearthbag.storm.SetHearthTexture_ONCLICK);
+hearthbag.storm:SetScript("OnEnter", hearthbag.storm.Tooltip_OnEnter);
+hearthbag.storm:SetScript("OnLeave", hearthbag.storm.Tooltip_OnLeave);
+
+hearthbag.storm.collected = CreateFrame("Frame", nil, hearthbag.storm, nil);
+hearthbag.storm.collected:SetSize(10, 10);
+hearthbag.storm.collected:SetPoint("TOPLEFT", 0, 0);
+
+hearthbag.storm.collected.tex = hearthbag.storm.collected:CreateTexture(nil, "BACKGROUND");
+hearthbag.storm.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+hearthbag.storm.collected.tex:SetAllPoints(hearthbag.storm.collected);
+
+function hearthbag.storm.collected:CollectionCheck()
+	if PlayerHasToy(ITEM_LIST.storm) == true then
+		hearthbag.storm.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+	else
+		hearthbag.storm.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+	end
+end
+
+hearthbag.storm:RegisterEvent("TOYS_UPDATED");
+hearthbag.storm:RegisterEvent("BAG_UPDATE");
+hearthbag.storm:HookScript("OnEvent", hearthbag.storm.collected.CollectionCheck);
+
+
+
+-- Anniversary
+hearthbag.anniversary = CreateFrame("Button", "HearthbagAnniversary", hearthbag.draenei, nil);
+hearthbag.anniversary:SetSize(25, 25);
+hearthbag.anniversary:SetPoint("LEFT", 0, -27);
+hearthbag.anniversary:SetNormalTexture(TEXTURE_LIST.hearthAnniversaryUp);
+hearthbag.anniversary:SetPushedTexture(TEXTURE_LIST.hearthAnniversaryDown);
+
+function hearthbag.anniversary:SetHearthTexture_ONCLICK()
+	HearthDB.APPEARANCE.UP = TEXTURE_LIST.hearthAnniversaryUp
+	HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthAnniversaryDown
+	HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthAnniversaryCD
+	HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthAnniversaryDesat
+	HearthDB.ITEM = ITEM_LIST.anniversary
+	HearthDB.SPELLID = ITEM_LIST.anniversarySpellID
+	hearthbag.CompleteHearthTexture();
+	hearthbag.hearthCD:SetSwipeTexture(HearthDB.APPEARANCE.COOLDOWN);
+	hearthbag.UpdateItem();
+end
+
+function hearthbag.anniversary:Tooltip_OnEnter()
+	GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.anniversary);
+	GameTooltip:ClearAllPoints();
+	GameTooltip:SetToyByItemID(ITEM_LIST.anniversary)
+	GameTooltip:SetPoint("BOTTOMRIGHT", "HearthbagAnniversary", "TOPLEFT", 0, 0);
+	GameTooltip:Show();
+end
+
+function hearthbag.anniversary:Tooltip_OnLeave()
+	GameTooltip:Hide();
+end
+
+hearthbag.anniversary:SetScript("OnClick", hearthbag.anniversary.SetHearthTexture_ONCLICK);
+hearthbag.anniversary:SetScript("OnEnter", hearthbag.anniversary.Tooltip_OnEnter);
+hearthbag.anniversary:SetScript("OnLeave", hearthbag.anniversary.Tooltip_OnLeave);
+
+hearthbag.anniversary.collected = CreateFrame("Frame", nil, hearthbag.anniversary, nil);
+hearthbag.anniversary.collected:SetSize(10, 10);
+hearthbag.anniversary.collected:SetPoint("TOPLEFT", 0, 0);
+
+hearthbag.anniversary.collected.tex = hearthbag.anniversary.collected:CreateTexture(nil, "BACKGROUND");
+hearthbag.anniversary.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet);
+hearthbag.anniversary.collected.tex:SetAllPoints(hearthbag.anniversary.collected);
+
+function hearthbag.anniversary.collected:CollectionCheck()
+	if PlayerHasToy(ITEM_LIST.anniversary) == true then
+		hearthbag.anniversary.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
+	else
+		hearthbag.anniversary.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
+	end
+end
+
+hearthbag.anniversary:RegisterEvent("TOYS_UPDATED");
+hearthbag.anniversary:RegisterEvent("BAG_UPDATE");
+hearthbag.anniversary:HookScript("OnEvent", hearthbag.anniversary.collected.CollectionCheck);
+
+
 ------------------------------------------------------------------------------------------------------------------
 
 
@@ -3214,6 +3602,36 @@ function buttonContainer:FrameLevelChildren()
 	--etherealPortal
 	if hearthbag.ethereal.collected:GetParent():GetFrameLevel() >= hearthbag.ethereal.collected:GetFrameLevel() then
 		hearthbag.ethereal.collected:SetFrameLevel(hearthbag.ethereal.collected:GetFrameLevel() + 1)
+	end
+
+	--draenei
+	if hearthbag.draenei.collected:GetParent():GetFrameLevel() >= hearthbag.draenei.collected:GetFrameLevel() then
+		hearthbag.draenei.collected:SetFrameLevel(hearthbag.draenei.collected:GetFrameLevel() + 1)
+	end
+
+	--edraid
+	if hearthbag.edraid.collected:GetParent():GetFrameLevel() >= hearthbag.edraid.collected:GetFrameLevel() then
+		hearthbag.edraid.collected:SetFrameLevel(hearthbag.edraid.collected:GetFrameLevel() + 1)
+	end
+
+	--enlightened
+	if hearthbag.enlightened.collected:GetParent():GetFrameLevel() >= hearthbag.enlightened.collected:GetFrameLevel() then
+		hearthbag.enlightened.collected:SetFrameLevel(hearthbag.enlightened.collected:GetFrameLevel() + 1)
+	end
+
+	--naaru
+	if hearthbag.naaru.collected:GetParent():GetFrameLevel() >= hearthbag.naaru.collected:GetFrameLevel() then
+		hearthbag.naaru.collected:SetFrameLevel(hearthbag.naaru.collected:GetFrameLevel() + 1)
+	end
+
+	--storm
+	if hearthbag.storm.collected:GetParent():GetFrameLevel() >= hearthbag.storm.collected:GetFrameLevel() then
+		hearthbag.storm.collected:SetFrameLevel(hearthbag.storm.collected:GetFrameLevel() + 1)
+	end
+
+	--storm
+	if hearthbag.anniversary.collected:GetParent():GetFrameLevel() >= hearthbag.anniversary.collected:GetFrameLevel() then
+		hearthbag.anniversary.collected:SetFrameLevel(hearthbag.anniversary.collected:GetFrameLevel() + 1)
 	end
 
 end

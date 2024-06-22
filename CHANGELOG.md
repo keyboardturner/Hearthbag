@@ -1,3 +1,7 @@
+# 0.2.8
+
+Added options for the following: Stone of the Hearth, Draenic Hologem, Hearthstone of the Flame, Enlightened Hearthstone, Path of the Naaru, and Deepdweller's Earthen Hearthstone. Rework still pending.
+
 # 0.2.7
 
 toc bump to 10.2.7/1.15.2/4.4.0
