@@ -1,6 +1,10 @@
-# 0.2.8
+# 0.2.9
 
 Added options for the following: Stone of the Hearth, Draenic Hologem, Hearthstone of the Flame, Enlightened Hearthstone, Path of the Naaru, and Deepdweller's Earthen Hearthstone. Rework still pending.
+
+# 0.2.8
+
+Fix to Cataclysm Suffix
 
 # 0.2.7
 
