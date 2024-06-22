@@ -1,3 +1,7 @@
+# 0.3.0
+
+i forgor the textures
+
 # 0.2.9
 
 Added options for the following: Stone of the Hearth, Draenic Hologem, Hearthstone of the Flame, Enlightened Hearthstone, Path of the Naaru, and Deepdweller's Earthen Hearthstone. Rework still pending.
