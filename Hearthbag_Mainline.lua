@@ -605,7 +605,7 @@ end);
 
 
 function hearthbag.UpdateItem()
-	local NewItem = select(1, GetItemInfo(HearthDB.ITEM)) 
+	local NewItem = select(1, C_Item.GetItemInfo(HearthDB.ITEM)) 
 	if UnitAffectingCombat("player") == false then
 		hearthbag:RegisterForClicks("AnyUp", "AnyDown");
 		hearthbag:SetAttribute("*type1", "item");   -- set to "any left click," targets an item
@@ -699,13 +699,13 @@ hearthbag.inheritOptions:SetDisabledCheckedTexture(TEXTURE_LIST.hearthCheckOff);
 function hearthbag.UpdateCheckInherit_OnClick()
 	if (HearthDB.INHERIT == true) then 
 		if UnitAffectingCombat("player") == false then
-			if (IsAddOnLoaded("Arkinventory") == true) then
+			if (C_AddOns.IsAddOnLoaded("Arkinventory") == true) then
 				hearthbag:SetAttribute("*type2", "click");
 				hearthbag:SetAttribute("clickbutton", ARKINV_Frame1TitleActionButton0);
-			elseif (IsAddOnLoaded("Inventorian") == true) then
+			elseif (C_AddOns.IsAddOnLoaded("Inventorian") == true) then
 				hearthbag:SetAttribute("*type2", "macro");
 				hearthbag:SetAttribute("macrotext", "/click InventorianBagFrameIconButton"); -- this is ugly and I hate it but it works and click / clickbutton / frame do not. I DON'T KNOW WHY. But this works.
-			elseif (IsAddOnLoaded("Sorted") == true) then
+			elseif (C_AddOns.IsAddOnLoaded("Sorted") == true) then
 				hearthbag:SetAttribute("*type2", "click");
 				hearthbag:SetAttribute("clickbutton", SortedFramePortraitButton);
 			else
@@ -1180,13 +1180,13 @@ end
 -- (C_ToyBox.IsToyUsable(HearthDB.ITEM) == true)
 -- controls the behaviour of Hearthbag
 function hearthbag.hearthBag_OnMouseDown(self, button)  -- controls the mouse down behaviour, including the "down" texture
-	local duration = GetSpellCooldown(HearthDB.SPELLID);
+	local duration = C_Spell.GetSpellCooldown(HearthDB.SPELLID);
 	local CastingHearth = select(8,UnitCastingInfo("player"));  -- I refuse to use == 1 for the item count because it may be possible to glitch the game and grab 2+ hearthstones
 	if ( (HearthDB.ITEM == ITEM_LIST.defaultHearthstone) or (HearthDB.ITEM == ITEM_LIST.rubySlippers) or (HearthDB.ITEM == ITEM_LIST.scarletSlippers) ) then
-		if ((GetItemCount(HearthDB.ITEM) > 0) and (button == "LeftButton") and (duration == 0) and (CastingHearth ~= HearthDB.SPELLID) and (UnitOnTaxi("player") == false) and (IsPlayerMoving() == false) and (IsFalling() == false)) then
+		if ((C_Item.GetItemCount(HearthDB.ITEM) > 0) and (button == "LeftButton") and (duration == 0) and (CastingHearth ~= HearthDB.SPELLID) and (UnitOnTaxi("player") == false) and (IsPlayerMoving() == false) and (IsFalling() == false)) then
 			hearthbag.background:SetTexture(HearthDB.APPEARANCE.DOWN);
 			hearthbag.RandomSoundButton_Down();   -- selects from a random number of sounds
-		elseif (GetItemCount(HearthDB.ITEM) > 0) then   -- if the item exists but doesn't fullfil above criteria
+		elseif (C_Item.GetItemCount(HearthDB.ITEM) > 0) then   -- if the item exists but doesn't fullfil above criteria
 			hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
 		else                                    -- if the item does not exist or turns up nil
 			hearthbag.background:SetTexture(HearthDB.APPEARANCE.DESAT);
@@ -1209,9 +1209,9 @@ function hearthbag.hearthBag_OnMouseDown(self, button)  -- controls the mouse do
 		--ContainerFramePortraitButtonMixin:OnMouseDown()
 		--ToggleDropDownMenu(1, nil, ContainerFrame1.FilterDropDown, self, 0, 0); -- causes taint
 		if GetCVarBool("combinedBags") == true then
-			ToggleDropDownMenu(1, nil, ContainerFrameCombinedBags.FilterDropDown, self, 0, 0); -- causes taint
+			ContainerFrameCombinedBagsPortraitButton:OpenMenu()
 		elseif GetCVarBool("combinedBags") == false then 
-			ToggleDropDownMenu(1, nil, ContainerFrame1.FilterDropDown, self, 0, 0); -- causes taint
+			ContainerFrame1PortraitButton:OpenMenu();
 		else
 			return
 		end
@@ -1219,10 +1219,10 @@ function hearthbag.hearthBag_OnMouseDown(self, button)  -- controls the mouse do
 end
 -- controls the mouse up behaviour, similar to mousedown function
 function hearthbag.hearthBag_OnMouseUp()
-	local duration = GetSpellCooldown(HearthDB.SPELLID);
+	local duration = C_Spell.GetSpellCooldown(HearthDB.SPELLID);
 	local CastingHearth = select(8,UnitCastingInfo("player"));
 	if ( (HearthDB.ITEM == ITEM_LIST.defaultHearthstone) or (HearthDB.ITEM == ITEM_LIST.rubySlippers) or (HearthDB.ITEM == ITEM_LIST.scarletSlippers) ) then
-		if (GetItemCount(HearthDB.ITEM) > 0) then
+		if (C_Item.GetItemCount(HearthDB.ITEM) > 0) then
 			hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
 			if ((duration == 0) and (CastingHearth ~= HearthDB.SPELLID) and (UnitOnTaxi("player") == false) and (IsPlayerMoving() == false) and (IsFalling() == false)) then
 				hearthbag.RandomSoundButton_Up();
@@ -1244,7 +1244,7 @@ end
 -- this also sets the texture upon login
 function hearthbag.hearthDestroyed()
 	if ( (HearthDB.ITEM == ITEM_LIST.defaultHearthstone) or (HearthDB.ITEM == ITEM_LIST.rubySlippers) or (HearthDB.ITEM == ITEM_LIST.scarletSlippers) ) then
-		if (GetItemCount(HearthDB.ITEM) > 0) then
+		if (C_Item.GetItemCount(HearthDB.ITEM) > 0) then
 			hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
 		else
 			hearthbag.background:SetTexture(HearthDB.APPEARANCE.DESAT);
@@ -1261,10 +1261,10 @@ end
 
 function hearthbag.hearthMouseOver_ONENTER()
 	GameTooltip:SetOwner(hearthbag, "ANCHOR_LEFT");
-	if IsAddOnLoaded("Arkinventory") == true and HearthDB.INHERIT == true then
+	if C_AddOns.IsAddOnLoaded("Arkinventory") == true and HearthDB.INHERIT == true then
 		GameTooltip:AddLine(ArkInventory.Localise["MENU"], 1, 1, 1, true);
 
-	elseif IsAddOnLoaded("Inventorian") == true and HearthDB.INHERIT == true then
+	elseif C_AddOns.IsAddOnLoaded("Inventorian") == true and HearthDB.INHERIT == true then
 		local ItemCache = LibStub("LibItemCache-1.1")
 		GameTooltip:SetOwner(hearthbag, "ANCHOR_RIGHT");
 		GameTooltip:AddLine((GetUnitName("player", false)), 1, 1, 1, true);
@@ -1275,7 +1275,7 @@ function hearthbag.hearthMouseOver_ONENTER()
 		end
 		GameTooltip:Show();
 
-	elseif IsAddOnLoaded("Sorted") == true and HearthDB.BAG["parent"] == "SortedFramePortraitButton" then
+	elseif C_AddOns.IsAddOnLoaded("Sorted") == true and HearthDB.BAG["parent"] == "SortedFramePortraitButton" then
 		SortedTooltip.CreateLocalized(hearthbag, "ANCHOR_TOP", "TOOLTIP_CONFIG")
 
 	elseif HearthDB.INHERIT == true then
@@ -1286,9 +1286,9 @@ function hearthbag.hearthMouseOver_ONENTER()
 		GameTooltip:AddLine(string.gsub(CLICK_BAG_SETTINGS, "Click", "Right-Click"), 1, 1, 1, true);
 	end
 
-	local start, duration, enabled, modRate = GetSpellCooldown(HearthDB.SPELLID);
-	local desc = GetSpellDescription(HearthDB.SPELLID)
-	if duration ~= 0 then
+	local start, duration, enabled, modRate = C_Spell.GetSpellCooldown(HearthDB.SPELLID);
+	local desc = C_Spell.GetSpellDescription(HearthDB.SPELLID)
+	if duration ~= 0 and duration ~= nil then
 		GameTooltip:AddLine("Cooldown Remaining: " .. SecondsToClock(start+duration-GetTime()), false);
 	end
 	GameTooltip:AddLine(hearthbag.coloredText .. ": " .. desc, 1, 1, 1, true)
@@ -1356,8 +1356,8 @@ hearthbag.hearthCD:SetRotation(-2.22); -- rotates the whole cooldown rune so tha
 
  -- checks the cooldown on the hearthstone spell portion of the item
 function hearthbag.hearthCheck()
-	local start, duration = GetSpellCooldown(HearthDB.SPELLID);
-	if duration ~= 0 then
+	local start, duration = C_Spell.GetSpellCooldown(HearthDB.SPELLID);
+	if duration ~= 0 and duration ~= nil then
 		hearthbag.hearthCD:SetCooldown(start, duration);
 	end
 end
@@ -1408,7 +1408,7 @@ hearthbag.itemHolderFrameTex:SetAllPoints(hearthbag.itemHolderFrame);
 
 function hearthbag.CompleteHearthTexture()
 	if ( (HearthDB.ITEM == ITEM_LIST.defaultHearthstone) or (HearthDB.ITEM == ITEM_LIST.rubySlippers) or (HearthDB.ITEM == ITEM_LIST.scarletSlippers) ) then
-		if (GetItemCount(HearthDB.ITEM) > 0) then   -- if the item exists but doesn't fullfil above criteria
+		if (C_Item.GetItemCount(HearthDB.ITEM) > 0) then   -- if the item exists but doesn't fullfil above criteria
 			hearthbag.background:SetTexture(HearthDB.APPEARANCE.UP);
 		else                                    -- if the item does not exist or turns up nil
 			hearthbag.background:SetTexture(HearthDB.APPEARANCE.DESAT);
@@ -1466,7 +1466,7 @@ hearthbag.option0.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
 hearthbag.option0.collected.tex:SetAllPoints(hearthbag.option0.collected);
 
 function hearthbag.option0.collected:CollectionCheck()
-	if GetItemCount(ITEM_LIST.defaultHearthstone) >= 1 then
+	if C_Item.GetItemCount(ITEM_LIST.defaultHearthstone) >= 1 then
 		hearthbag.option0.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
 	else
 		hearthbag.option0.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
@@ -1769,7 +1769,7 @@ function hearthbag.rubySlippers:SetHearthTexture_ONCLICK()
 	HearthDB.APPEARANCE.DOWN = TEXTURE_LIST.hearthKaraDown
 	HearthDB.APPEARANCE.COOLDOWN = TEXTURE_LIST.hearthKaraCD
 	HearthDB.APPEARANCE.DESAT = TEXTURE_LIST.hearthKaraDesat
-	if GetItemCount(ITEM_LIST.scarletSlippers) >= 1 then
+	if C_Item.GetItemCount(ITEM_LIST.scarletSlippers) >= 1 then
 		HearthDB.ITEM = ITEM_LIST.scarletSlippers
 	else 
 		HearthDB.ITEM = ITEM_LIST.rubySlippers
@@ -1783,7 +1783,7 @@ end
 function hearthbag.rubySlippers:Tooltip_OnEnter()
 	GameTooltip_SetDefaultAnchor(GameTooltip, hearthbag.rubySlippers);
 	GameTooltip:ClearAllPoints();
-	if GetItemCount(ITEM_LIST.scarletSlippers) >= 1 then
+	if C_Item.GetItemCount(ITEM_LIST.scarletSlippers) >= 1 then
 		GameTooltip:SetItemByID(ITEM_LIST.scarletSlippers)
 	else
 		GameTooltip:SetItemByID(ITEM_LIST.rubySlippers)
@@ -1809,9 +1809,9 @@ hearthbag.rubySlippers.collected.tex:SetTexture(TEXTURE_LIST.hearthItemHolderRet
 hearthbag.rubySlippers.collected.tex:SetAllPoints(hearthbag.rubySlippers.collected);
 
 function hearthbag.rubySlippers.collected:CollectionCheck()
-	if GetItemCount(ITEM_LIST.scarletSlippers) >= 1 then
+	if C_Item.GetItemCount(ITEM_LIST.scarletSlippers) >= 1 then
 		hearthbag.rubySlippers.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
-	elseif GetItemCount(ITEM_LIST.rubySlippers) >= 1 then
+	elseif C_Item.GetItemCount(ITEM_LIST.rubySlippers) >= 1 then
 		hearthbag.rubySlippers.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedYes);
 	else
 		hearthbag.rubySlippers.collected.tex:SetTexture(TEXTURE_LIST.hearthCollectedNo);
@@ -3421,7 +3421,7 @@ hearthPanel.Version:SetFont(hearthPanel.Version:GetFont(), 12);
 hearthPanel.Version:SetTextColor(1,1,1,1);
 hearthPanel.Version:ClearAllPoints();
 hearthPanel.Version:SetPoint("TOPLEFT", hearthPanel, "TOPLEFT",400,-21);
-hearthPanel.Version:SetText("Version: " .. GetAddOnMetadata("Hearthbag", "Version"));
+hearthPanel.Version:SetText("Version: " .. C_AddOns.GetAddOnMetadata("Hearthbag", "Version"));
 
 
 ------------------------------------------------------------------------------------------------------------------
@@ -3466,7 +3466,9 @@ end);
 ------------------------------------------------------------------------------------------------------------------
 
 --final
-InterfaceOptions_AddCategory(hearthPanel);
+local category, layout = Settings.RegisterCanvasLayoutCategory(hearthPanel, hearthPanel.name, hearthPanel.name);
+category.ID = hearthPanel.name;
+Settings.RegisterAddOnCategory(category)
 
 
 ------------------------------------------------------------------------------------------------------------------
@@ -3759,57 +3761,57 @@ end)]]
 
 function hearthbag:buttonResetter()
 	hearthbag:ClearAllPoints();
-	if ( IsAddOnLoaded("AdiBags") == true ) then
+	if ( C_AddOns.IsAddOnLoaded("AdiBags") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.AdiBagsProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.AdiBagsProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.AdiBagsProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.AdiBagsProfile["position"][2]
-	elseif ( IsAddOnLoaded("Arkinventory") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("Arkinventory") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.ArkinventoryProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.ArkinventoryProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.ArkinventoryProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.ArkinventoryProfile["position"][2]
-	elseif ( IsAddOnLoaded("Inventorian") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("Inventorian") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.InventorianProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.InventorianProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.InventorianProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.InventorianProfile["position"][2]
-	elseif ( IsAddOnLoaded("Baggins") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("Baggins") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.BagginsProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.BagginsProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.BagginsProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.BagginsProfile["position"][2]
-	elseif ( IsAddOnLoaded("Combuctor") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("Combuctor") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.CombuctorProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.CombuctorProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.CombuctorProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.CombuctorProfile["position"][2]
-	elseif ( IsAddOnLoaded("Bagnon") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("Bagnon") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.BagnonProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.BagnonProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.BagnonProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.BagnonProfile["position"][2]
-	elseif ( IsAddOnLoaded("BaudBag") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("BaudBag") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.BaudbagProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.BaudbagProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.BaudbagProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.BaudbagProfile["position"][2]
-	elseif ( IsAddOnLoaded("Sorted") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("Sorted") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.SortedProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.SortedProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.SortedProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.SortedProfile["position"][2]
-	elseif ( IsAddOnLoaded("Litebag") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("Litebag") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.LitebagProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.LitebagProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.LitebagProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.LitebagProfile["position"][2]
-	elseif ( IsAddOnLoaded("ElvUI") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("ElvUI") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.ElvuiProfile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.ElvuiProfile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.ElvuiProfile["position"][1]
 		HearthDB.BAG["position"][2] = hearthCleanup.ElvuiProfile["position"][2]
-	elseif ( IsAddOnLoaded("GW2_UI") == true ) then
+	elseif ( C_AddOns.IsAddOnLoaded("GW2_UI") == true ) then
 		HearthDB.BAG["parent"] = hearthCleanup.GW2Profile["parent"]
 		HearthDB.BAG["scale"] = hearthCleanup.GW2Profile["scale"]
 		HearthDB.BAG["position"][1] = hearthCleanup.GW2Profile["position"][1]
@@ -4121,7 +4123,7 @@ anchorBuddy:RegisterEvent("ADDON_LOADED");
 anchorBuddy:RegisterEvent("USE_COMBINED_BAGS_CHANGED");
 anchorBuddy:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
-		if IsAddOnLoaded("AdiBags") == true then
+		if C_AddOns.IsAddOnLoaded("AdiBags") == true then
 			--OpenAllBags(); -- broken in dragonflight, don't use ever
 			if (AdiBagsContainer1.BagSlotButton:IsVisible() == true) then
 				anchorBuddy:SetParent(AdiBagsContainer1.BagSlotButton)

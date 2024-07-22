@@ -1,3 +1,7 @@
+# 0.3.1
+
+TOC updates for TWW, fixes to some code. migrated API to C_Item, C_Spell, and C_AddOns. Fixed a dropdown frame (sort of).
+
 # 0.3.0
 
 i forgor the textures
