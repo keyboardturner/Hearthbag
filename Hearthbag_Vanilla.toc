@@ -1,4 +1,4 @@
-## Interface: 11502
+## Interface: 11504
 ## Author: Keyboardturner
 ## Version: @project-version@
 ## Title: Hearthbag
