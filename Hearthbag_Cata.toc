@@ -1,4 +1,4 @@
-## Interface: 40401
+## Interface: 40404
 ## Author: Keyboardturner
 ## Version: @project-version@
 ## Title: Hearthbag
