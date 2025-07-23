@@ -1,4 +1,4 @@
-## Interface: 40404
+## Interface: 50500
 ## Author: Keyboardturner
 ## Version: @project-version@
 ## Title: Hearthbag
@@ -9,4 +9,4 @@
 ## X-WoWI-ID: 26240
 ## X-Wago-ID: 5bGoap60
 
-Hearthbag_Wrath.lua
+Hearthbag_Mists.lua
