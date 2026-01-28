@@ -1,5 +1,187 @@
 local addonName, Hearthbag = ...
 
+local function GetFrameByName(name)
+	if type(name) == "string" then
+		return _G[name]
+	else
+		return name
+	end
+end
+
+local hb = CreateFrame("Button", "HearthbagButton", UIParent, "SecureActionButtonTemplate")
+hb:SetSize(42, 42)
+hb:SetPoint("CENTER")
+hb:SetAttribute("type1", "item")
+hb:SetAttribute("useOnKeyDown", false) -- key thingy to make it work on mouse up instead of down
+hb:RegisterForClicks("AnyUp", "AnyDown")
+hb:SetMouseClickEnabled(true)
+hb:SetClampedToScreen(true)
+hb:Hide()
+
+hb:EnableMouseWheel(true)
+hb.baseSize = 42
+hb.sizeAmp = 1
+hb.minAmp = 0.5
+hb.maxAmp = 4.0
+
+function hb:UpdateSize()
+	if InCombatLockdown() then return end
+	
+	local newSize = self.baseSize * self.sizeAmp
+	
+	self:SetSize(newSize, newSize)
+	
+	if HearthbagCombatAnchor then
+		HearthbagCombatAnchor:SetSize(newSize, newSize)
+	end
+	
+	if HearthDB then
+		HearthDB.BagScale = newSize
+	end
+end
+
+function hb:ApplyScale()
+	if HearthDB and HearthDB.BagScale then
+		self.sizeAmp = HearthDB.BagScale / self.baseSize
+		self:UpdateSize()
+	end
+end
+
+hb.bg = hb:CreateTexture(nil, "BACKGROUND")
+hb.bg:SetAllPoints()
+hb.cooldown = CreateFrame("Cooldown", "HearthbagCD", hb, "CooldownFrameTemplate")
+hb.cooldown:SetAllPoints()
+
+Hearthbag.MainButton = hb;
+
+local combatAnchor = CreateFrame("Frame", "HearthbagCombatAnchor", UIParent)
+combatAnchor:SetSize(42, 42)
+combatAnchor:SetMovable(true)
+combatAnchor:EnableMouse(true)
+combatAnchor:RegisterForDrag("LeftButton")
+combatAnchor:Hide()
+
+combatAnchor.tex = combatAnchor:CreateTexture(nil, "BACKGROUND")
+combatAnchor.tex:SetAllPoints()
+combatAnchor.tex:SetColorTexture(1, 0, 0, 0.5)
+
+combatAnchor.text = combatAnchor:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+combatAnchor.text:SetPoint("CENTER")
+combatAnchor.text:SetText("HB Combat")
+
+combatAnchor:SetScript("OnDragStart", combatAnchor.StartMoving)
+combatAnchor:SetScript("OnDragStop", function(self)
+	self:StopMovingOrSizing()
+	local point, _, relativePoint, x, y = self:GetPoint()
+	HearthDB.CombatPos = { point, relativePoint, x, y }
+end)
+
+hb:EnableMouseWheel(true)
+hb:SetScript("OnMouseWheel", function(self, delta)
+	if IsShiftKeyDown() then
+		if HearthDB and HearthDB.AllowScaling == false then return end
+		local step = 0.05625
+
+		self.sizeAmp = self.sizeAmp + delta * step;
+		
+		if self.sizeAmp > self.maxAmp then
+			self.sizeAmp = self.maxAmp;
+		elseif self.sizeAmp < self.minAmp then
+			self.sizeAmp = self.minAmp;
+		end
+		
+		self:UpdateSize();
+	end
+end)
+
+hb:SetMovable(true)
+hb:RegisterForDrag("LeftButton")
+
+hb:SetScript("OnDragStart", function(self)
+	if IsShiftKeyDown() and not InCombatLockdown() then
+		self:StartMoving()
+	end
+end)
+
+hb:SetScript("OnDragStop", function(self)
+	self:StopMovingOrSizing()
+	
+	if InCombatLockdown() then return end
+
+	if combatAnchor:IsShown() then return end
+
+	local parent = GetFrameByName(HearthDB.BagParent)
+	if parent then
+		local myX, myY = self:GetCenter()
+		local parentX, parentY = parent:GetCenter()
+		
+		if myX and parentX then
+			local x = myX - parentX
+			local y = myY - parentY
+			
+			self:ClearAllPoints()
+			self:SetPoint("CENTER", parent, "CENTER", x, y)
+			
+			HearthDB.BagOffset = { "CENTER", "CENTER", x, y }
+		end
+	end
+end)
+
+function Hearthbag:UpdateAnchor()
+	if InCombatLockdown() then return end
+
+	hb:SetScale(HearthDB.Scale or 1)
+
+	if combatAnchor:IsShown() then
+		hb:ClearAllPoints()
+		hb:SetParent(combatAnchor)
+		hb:SetPoint("CENTER", combatAnchor, "CENTER")
+		--hb:SetFrameStrata("HIGH")
+		hb:SetFrameLevel(combatAnchor:GetFrameLevel()+500)
+		hb:Show()
+	else
+		local parent = GetFrameByName(HearthDB.BagParent)
+		if parent then
+			hb:ClearAllPoints()
+			hb:SetParent(parent)
+			local point, relPoint, x, y = unpack(HearthDB.BagOffset)
+			hb:SetPoint(point, parent, relPoint, x, y)
+			hb:SetFrameLevel(parent:GetFrameLevel()+500)
+			hb:Show()
+		else
+			print("Hearthbag Error: Could not find parent frame '" .. tostring(HearthDB.BagParent) .. "'. Resetting to UIParent.")
+			HearthDB.BagParent = "UIParent"
+			Hearthbag:UpdateAnchor()
+		end
+	end
+end
+
+local eventFrame = CreateFrame("Frame")
+eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+eventFrame:SetScript("OnEvent", function(self, event)
+	if event == "PLAYER_ENTERING_WORLD" then
+		if HearthDB and HearthDB.CombatPos then
+			local point, relPoint, x, y = unpack(HearthDB.CombatPos)
+			combatAnchor:ClearAllPoints()
+			combatAnchor:SetPoint(point, UIParent, relPoint, x, y)
+		end
+		Hearthbag:UpdateAnchor()
+		
+	elseif event == "PLAYER_REGEN_DISABLED" then
+		if HearthDB.UseCombatFrame then
+			
+			hb:SetParent(combatAnchor)
+			hb:ClearAllPoints()
+			hb:SetPoint("CENTER", combatAnchor, "CENTER")
+		end
+		
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		Hearthbag:UpdateAnchor()
+	end
+end)
 function Hearthbag:IsOwned(data)
 	if data.key == "Random" then return true end
 
@@ -36,24 +218,10 @@ function Hearthbag:GetRandomValidKey()
 	return "Default"
 end
 
-local hb = CreateFrame("Button", "HearthbagButton", UIParent, "SecureActionButtonTemplate")
-hb:SetSize(42, 42)
-hb:SetPoint("CENTER") 
-hb:RegisterForClicks("AnyUp", "AnyDown")
-hb:SetAttribute("type1", "item") 
-
-hb.bg = hb:CreateTexture(nil, "BACKGROUND")
-hb.bg:SetAllPoints()
-hb.cooldown = CreateFrame("Cooldown", "HearthbagCD", hb, "CooldownFrameTemplate")
-hb.cooldown:SetAllPoints()
-
 local HearthbagPath = Hearthbag.TexturePath
 
 function hb:UpdateSkin(key)
-	if InCombatLockdown() then 
-		print("[PH] Hearthbag: Cannot change hearthstone in combat.")
-		return 
-	end
+	if InCombatLockdown() then return end
 
 	local effectiveKey = key
 	if key == "Random" then
@@ -62,13 +230,13 @@ function hb:UpdateSkin(key)
 
 	local data = Hearthbag:GetDataByKey(effectiveKey)
 	
-	if not data or not data.itemIDs then 
-		data = Hearthbag:GetDataByKey("Default") 
+	if not data or not data.itemIDs then
+		data = Hearthbag:GetDataByKey("Default")
 	end
 
 	local texPaths = Hearthbag:GetTexturePaths(data.Texture_Old)
 	
-	HearthDB.SelectedKey = key 
+	HearthDB.SelectedKey = key
 
 	local item = Item:CreateFromItemID(data.itemIDs[1])
 	item:ContinueOnItemLoad(function()
@@ -100,8 +268,6 @@ end
 hb:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 hb:SetScript("OnEvent", hb.UpdateCooldown)
 
-Hearthbag.MainButton = hb;
-
 local neighborhoodTextures = {
 	["durotar"] = {
 		textureAtlas = "charactercreate-icon-horde",
@@ -126,8 +292,7 @@ hb:SetScript("OnMouseDown", function(self, button)
 end)
 
 Hearthbag.MenuButtons = {}
-Hearthbag.HousingList = {} 
-
+Hearthbag.HousingList = {}
 local COLUMNS = 6
 local PADDING = 5
 local SIZE = 32
@@ -159,12 +324,10 @@ function Hearthbag:RebuildMenu()
 		btn:SetScript("OnLeave", GameTooltip_Hide)
 
 		if isHousing then
-
 			local suffix = C_Housing.GetNeighborhoodTextureSuffix(data.neighborhoodGUID)
 			local texInfo = neighborhoodTextures[suffix]
-
 			btn:SetNormalTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
-			btn:SetPushedTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon) 
+			btn:SetPushedTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
 
 			if texInfo and texInfo.textureAtlas then
 				btn.status:SetSize(30, 30)
@@ -177,7 +340,6 @@ function Hearthbag:RebuildMenu()
 				C_Housing.TeleportHome(data.neighborhoodGUID, data.houseGUID, data.plotID)
 				menu:Hide()
 			end)
-
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				GameTooltip:AddLine(data.houseName or "Player House")
@@ -188,18 +350,14 @@ function Hearthbag:RebuildMenu()
 		elseif data.key == "Random" then
 			btn:SetNormalTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Up")
 			btn:SetPushedTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Down")
-			
 			btn.status:SetTexture(HearthbagPath..Hearthbag.SharedTextures.CollectedYes)
-
 			btn:SetScript("OnClick", function()
 				Hearthbag.MainButton:UpdateSkin("Random")
 				menu:Hide()
 			end)
-
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				GameTooltip:AddLine("[PH] Random Hearthstone")
-				GameTooltip:AddLine("[PH] Click to use a random hearthstone from your collection.", 1, 1, 1)
 				GameTooltip:Show()
 			end)
 
@@ -224,14 +382,12 @@ function Hearthbag:RebuildMenu()
 				Hearthbag.MainButton:UpdateSkin(data.key)
 				menu:Hide()
 			end)
-			
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				if data.itemIDs then GameTooltip:SetItemByID(data.itemIDs[1]) end
 				GameTooltip:Show()
 			end)
 		end
-
 		btnIndex = btnIndex + 1
 	end
 
@@ -258,8 +414,98 @@ end)
 
 Hearthbag:RebuildMenu()
 
+
+local FORBIDDENFRAMES = {
+	--["Minimap"] = true, -- test frame
+}
+
 local loginFrame = CreateFrame("Frame")
 loginFrame:RegisterEvent("PLAYER_LOGIN")
 loginFrame:SetScript("OnEvent", function()
 	C_Housing.GetPlayerOwnedHouses()
 end)
+
+SLASH_HEARTHBAG1 = "/hb"
+SLASH_HEARTHBAG2 = "/hearthbag"
+
+SlashCmdList["HEARTHBAG"] = function(msg)
+	local cmd, arg = msg:match("^(%S*)%s*(.-)$")
+	
+	if cmd == "combat" then
+		if InCombatLockdown() then print("Hearthbag: Cannot move in combat.") return end
+		
+		if combatAnchor:IsShown() then
+			combatAnchor:Hide()
+			hb:EnableMouse(true)
+			print("Hearthbag: Combat Frame Locked.")
+		else
+			combatAnchor:Show()
+			hb:EnableMouse(false)
+			print("Hearthbag: Combat Frame Unlocked. Drag the red box to move.")
+		end
+		Hearthbag:UpdateAnchor()
+		
+	elseif cmd == "anchor" then
+		if InCombatLockdown() then print("Hearthbag: Cannot re-anchor in combat.") return end
+		
+		local frame = GetMouseFoci()[1]
+		if not frame or frame == WorldFrame then
+			HearthDB.BagParent = "UIParent"
+			HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
+			print("Hearthbag: Reset anchor to UIParent.")
+			Hearthbag:UpdateAnchor()
+			return
+		end
+		
+		local fName = frame:GetName()
+
+		if fName then
+			if not frame:IsObjectType("Frame") then
+				print("Hearthbag: Cannot anchor to '" .. fName .. "'. It is not a Frame.")
+				return
+			end
+			
+			if FORBIDDENFRAMES[fName] then
+				print("Hearthbag: Cannot anchor to restricted frame '" .. fName .. "'.")
+				return
+			end
+
+			if frame == hb or frame == combatAnchor or frame == menu then
+				print("Hearthbag: Cannot anchor to itself.")
+				return
+			end
+			local parentCheck = frame:GetParent()
+			while parentCheck do
+				if parentCheck == hb then
+					print("Hearthbag: Cannot anchor to a child of Hearthbag.")
+					return
+				end
+				parentCheck = parentCheck:GetParent()
+			end
+			HearthDB.BagParent = fName
+			HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
+			
+			print("Hearthbag: Anchored to " .. fName)
+			Hearthbag:UpdateAnchor()
+		else
+			print("Hearthbag: Invalid frame to anchor to (frame has no name).")
+		end
+
+	elseif cmd == "nudge" then
+		local x, y = arg:match("^(%-?%d+)%s+(%-?%d+)$")
+		if x and y then
+			HearthDB.BagOffset[3] = tonumber(x)
+			HearthDB.BagOffset[4] = tonumber(y)
+			Hearthbag:UpdateAnchor()
+			print("Hearthbag: Nudged to " .. x .. ", " .. y)
+		else
+			print("Usage: /hb nudge X Y")
+		end
+
+	else
+		print("Hearthbag Commands:")
+		print("  /hb unlock - Toggle the moveable combat frame.")
+		print("  /hb anchor - Set the Bag Parent to the frame currently under your mouse.")
+		print("  /hb nudge X Y - Manually adjust the offset from the parent.")
+	end
+end

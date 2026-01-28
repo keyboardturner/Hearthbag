@@ -14,63 +14,63 @@ function Hearthbag:GetTexturePaths(baseTextureName)
 end
 
 local HearthKeys = {
-	[1] =	{ 
+	[1] =	{
 		key = "Default",
 		Texture_Old = "Hearthstone_Default",
 		itemIDs = {6948},
 		spellID = 8690,
 		type = "item",
 	},
-	[2] =	{ 
+	[2] =	{
 		key = "DarkPortal",
 		Texture_Old = "hearthbutton_darkportal",
 		itemIDs = {93672},
 		spellID = 136508,
 		type = "toy",
 	},
-	[3] =	{ 
+	[3] =	{
 		key = "Karazhan",
 		Texture_Old = "hearthbutton_karazhan",
 		itemIDs = {28585, 142298},
 		spellID = 39937,
 		type = "item",
 	},
-	[4] =	{ 
+	[4] =	{
 		key = "Daughter",
 		Texture_Old = "hearthbutton_daughter",
 		itemIDs = {64488},
 		spellID = 94719,
 		type = "toy",
 	},
-	[5] =	{ 
+	[5] =	{
 		key = "Brewfest",
 		Texture_Old = "hearthbutton_brewfest",
 		itemIDs = {166747},
 		spellID = 286353,
 		type = "toy",
 	},
-	[6] =	{ 
+	[6] =	{
 		key = "Ethereal",
 		Texture_Old = "hearthbutton_ethereal",
 		itemIDs = {54452},
 		spellID = 75136,
 		type = "toy",
 	},
-	[7] =	{ 
+	[7] =	{
 		key = "Oribos",
 		Texture_Old = "hearthbutton_oribos",
 		itemIDs = {172179},
 		spellID = 308742,
 		type = "toy",
 	},
-	[8] =	{ 
+	[8] =	{
 		key = "Midsummer",
 		Texture_Old = "hearthbutton_midsummer",
 		itemIDs = {166746},
 		spellID = 286331,
 		type = "toy",
 	},
-	[9] =	{ 
+	[9] =	{
 		key = "Crimbo",
 		Texture_Old = "hearthbutton_crimbo",
 		itemIDs = {162973},

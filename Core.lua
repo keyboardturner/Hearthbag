@@ -9,9 +9,22 @@ f:SetScript("OnEvent", function(self, event, ...)
 		if not HearthDB then HearthDB = {} end
 		if not HearthDB.SelectedKey then HearthDB.SelectedKey = "Default" end
 		
+		if not HearthDB.BagParent then HearthDB.BagParent = "ContainerFrame1" end
+		if not HearthDB.BagOffset then HearthDB.BagOffset = { "CENTER", "CENTER", -142, 30 } end
+		
+		if not HearthDB.CombatPos then HearthDB.CombatPos = { "CENTER", "CENTER", 0, 0 } end
+		if HearthDB.UseCombatFrame == nil then HearthDB.UseCombatFrame = true end
+
+		if not HearthDB.BagScale then HearthDB.BagScale = 42 end
+		if HearthDB.AllowScaling == nil then HearthDB.AllowScaling = true end
+
 	elseif event == "PLAYER_LOGIN" then
 		if Hearthbag.MainButton then
 			Hearthbag.MainButton:UpdateSkin(HearthDB.SelectedKey)
+			
+			if Hearthbag.MainButton.ApplyScale then Hearthbag.MainButton:ApplyScale() end
+
+			if Hearthbag.UpdateAnchor then Hearthbag:UpdateAnchor() end
 		end
 	end
 end)
