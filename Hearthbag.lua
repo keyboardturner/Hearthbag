@@ -292,6 +292,8 @@ function hb:UpdateSkin(key, isTemporary)
 		self.isTemporaryOverride = true
 	end
 
+	hb:SetAttribute("type1", "item")
+
 	local item = Item:CreateFromItemID(data.itemIDs[1])
 	item:ContinueOnItemLoad(function()
 		local name = item:GetItemName()
@@ -314,7 +316,8 @@ function hb:SetHousingOverride(houseData)
 	
 	self.isTemporaryOverride = true
 	
-	self:SetAttribute("type", "visithouse")
+	self:SetAttribute("type1", "visithouse")
+	self:SetAttribute("item", nil) -- clear item just in case
 	self:SetAttribute("house-neighborhood-guid", houseData.neighborhoodGUID)
 	self:SetAttribute("house-guid", houseData.houseGUID)
 	self:SetAttribute("house-plot-id", houseData.plotID)
