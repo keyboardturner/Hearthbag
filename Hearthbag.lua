@@ -13,7 +13,7 @@ hb:SetSize(42, 42)
 hb:SetPoint("CENTER")
 hb:SetAttribute("type1", "item")
 hb:SetAttribute("useOnKeyDown", false) -- key thingy to make it work on mouse up instead of down
-hb:RegisterForClicks("AnyUp", "AnyDown")
+hb:RegisterForClicks("LeftButtonUp")
 hb:SetMouseClickEnabled(true)
 hb:SetClampedToScreen(true)
 hb:Hide()
@@ -23,6 +23,8 @@ hb.baseSize = 42
 hb.sizeAmp = 1
 hb.minAmp = 0.5
 hb.maxAmp = 4.0
+
+hb.isTemporaryOverride = false
 
 function hb:UpdateSize()
 	if InCombatLockdown() then return end
@@ -49,8 +51,18 @@ end
 
 hb.bg = hb:CreateTexture(nil, "BACKGROUND")
 hb.bg:SetAllPoints()
-hb.cooldown = CreateFrame("Cooldown", "HearthbagCD", hb, "CooldownFrameTemplate")
+hb.cooldown = CreateFrame("Cooldown", "HearthbagCD", hb)
 hb.cooldown:SetAllPoints()
+
+hb.cooldown:SetUseCircularEdge(true)
+hb.cooldown:SetSwipeColor(0.2, 0.2, 0.2, 1.0)
+hb.cooldown:SetDrawEdge(true)
+hb.cooldown:SetRotation(-2.22)
+hb.cooldown:SetHideCountdownNumbers(true)
+
+if Hearthbag.TexturePath then
+    hb.cooldown:SetEdgeTexture(Hearthbag.TexturePath .. "Hearthstone_Cooldown_blip.blp", 1, 1, 1, 1)
+end
 
 Hearthbag.MainButton = hb;
 
@@ -79,7 +91,6 @@ end)
 hb:EnableMouseWheel(true)
 hb:SetScript("OnMouseWheel", function(self, delta)
 	if IsShiftKeyDown() then
-		if HearthDB and HearthDB.AllowScaling == false then return end
 		local step = 0.05625
 
 		self.sizeAmp = self.sizeAmp + delta * step;
@@ -182,6 +193,7 @@ eventFrame:SetScript("OnEvent", function(self, event)
 		Hearthbag:UpdateAnchor()
 	end
 end)
+
 function Hearthbag:IsOwned(data)
 	if data.key == "Random" then return true end
 
@@ -220,8 +232,29 @@ end
 
 local HearthbagPath = Hearthbag.TexturePath
 
-function hb:UpdateSkin(key)
+function hb:RevertToPrimary()
+	if InCombatLockdown() then
+		self.pendingRevert = true
+		return
+	end
+	
+	if self.isTemporaryOverride then
+		self.isTemporaryOverride = false
+		self.pendingRevert = false
+		self:UpdateSkin(HearthDB.PrimaryKey)
+	end
+end
+
+function hb:UpdateSkin(key, isTemporary)
 	if InCombatLockdown() then return end
+
+	if key == "Garrison" then
+        hb.cooldown:SetRotation(-5.13)
+    elseif key == "Dalaran" then
+        hb.cooldown:SetRotation(0)
+    else
+        hb.cooldown:SetRotation(-2.22)
+    end
 
 	local effectiveKey = key
 	if key == "Random" then
@@ -236,12 +269,33 @@ function hb:UpdateSkin(key)
 
 	local texPaths = Hearthbag:GetTexturePaths(data.Texture_Old)
 	
+	--[[ debug
+	print("Hearthbag: UpdateSkin")
+	print("Key:", key)
+	if texPaths then
+		print("Texture Up:", texPaths.Up)
+		print("Texture Cooldown:", texPaths.Cooldown)
+	else
+		print("Texture Paths: NIL")
+	end
+	if data then
+		print("SpellID:", data.spellID)
+	end
+	--]]
+
 	HearthDB.SelectedKey = key
+	
+	if not isTemporary then
+		HearthDB.PrimaryKey = key
+		self.isTemporaryOverride = false
+	else
+		self.isTemporaryOverride = true
+	end
 
 	local item = Item:CreateFromItemID(data.itemIDs[1])
 	item:ContinueOnItemLoad(function()
 		local name = item:GetItemName()
-		hb:SetAttribute("item", name)
+		hb:SetAttribute("item", "item:" .. data.itemIDs[1])
 	end)
 
 	if texPaths then
@@ -255,9 +309,40 @@ function hb:UpdateSkin(key)
 	hb:UpdateCooldown()
 end
 
+function hb:SetHousingOverride(houseData)
+	if InCombatLockdown() then return end
+	
+	self.isTemporaryOverride = true
+	
+	self:SetAttribute("type", "visithouse")
+	self:SetAttribute("house-neighborhood-guid", houseData.neighborhoodGUID)
+	self:SetAttribute("house-guid", houseData.houseGUID)
+	self:SetAttribute("house-plot-id", houseData.plotID)
+	
+	local suffix = C_Housing.GetNeighborhoodTextureSuffix(houseData.neighborhoodGUID)
+	self:SetNormalTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
+	self:SetPushedTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
+	self.bg:SetTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
+	
+	self.cooldown:Clear()
+	self.currentSpellID = nil
+end
+
 function hb:UpdateCooldown()
 	if not self.currentSpellID then return end
-	local start, duration = C_Spell.GetSpellCooldown(self.currentSpellID)
+	
+	local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)
+	local start = spellCooldownInfo.startTime
+	local duration = spellCooldownInfo.duration
+	
+	--[[ debug
+	if start and duration and duration > 0 then
+		print("Hearthbag: Cooldown Active")
+		print("  SpellID:", self.currentSpellID)
+		print("  Start:", start)
+		print("  Duration:", duration)
+	end
+	--]]
 	if start and duration and duration > 0 then
 		self.cooldown:SetCooldown(start, duration)
 	else
@@ -266,7 +351,40 @@ function hb:UpdateCooldown()
 end
 
 hb:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-hb:SetScript("OnEvent", hb.UpdateCooldown)
+hb:RegisterEvent("SPELL_UPDATE_USABLE")
+hb:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+hb:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+hb:SetScript("OnEvent", function(self, event, ...)
+	if event == "SPELL_UPDATE_COOLDOWN" then
+		self:UpdateCooldown()
+	elseif event == "SPELL_UPDATE_USABLE" then
+		self:UpdateCooldown()
+	elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
+		local unit, _, spellID = ...
+		if unit == "player" then
+			local currentData = Hearthbag:GetDataByKey(HearthDB.SelectedKey)
+			if self.isTemporaryOverride or (currentData and currentData.secondary) then
+				C_Timer.After(0.5, function()
+					self:RevertToPrimary()
+				end)
+			end
+		end
+	end
+end)
+
+eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+local originalRegenEnabled = eventFrame:GetScript("OnEvent")
+eventFrame:SetScript("OnEvent", function(self, event, ...)
+	if event == "PLAYER_REGEN_ENABLED" then
+		if hb.pendingRevert then
+			hb:RevertToPrimary()
+		end
+	end
+	if originalRegenEnabled then
+		originalRegenEnabled(self, event, ...)
+	end
+end)
 
 local neighborhoodTextures = {
 	["durotar"] = {
@@ -280,9 +398,10 @@ local neighborhoodTextures = {
 local menu = CreateFrame("Frame", "HearthbagMenu", hb)
 menu:SetSize(250, 300)
 menu:SetPoint("TOP", hb, "BOTTOM", 0, -10)
---menu.bg = menu:CreateTexture(nil, "BACKGROUND")
---menu.bg:SetAllPoints()
---menu.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.ItemHolderRet)
+menu.bg = menu:CreateTexture(nil, "BACKGROUND")
+menu.bg:SetAllPoints()
+menu.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.ItemHolderRet)
+menu.bg:SetTexCoord(.2,.8, 0, 1)
 menu:Hide();
 
 hb:SetScript("OnMouseDown", function(self, button)
@@ -336,14 +455,14 @@ function Hearthbag:RebuildMenu()
 			end
 
 			btn:SetScript("OnClick", function()
-				print("[PH] Teleporting to " .. (data.houseName or "House"))
-				C_Housing.TeleportHome(data.neighborhoodGUID, data.houseGUID, data.plotID)
+				Hearthbag.MainButton:SetHousingOverride(data)
 				menu:Hide()
 			end)
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				GameTooltip:AddLine(data.houseName or "Player House")
 				GameTooltip:AddLine(data.neighborhoodName, 1, 1, 1)
+				GameTooltip:AddLine("|cff00ff00Temporary teleport|r", 0.7, 0.7, 0.7)
 				GameTooltip:Show()
 			end)
 
@@ -352,12 +471,13 @@ function Hearthbag:RebuildMenu()
 			btn:SetPushedTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Down")
 			btn.status:SetTexture(HearthbagPath..Hearthbag.SharedTextures.CollectedYes)
 			btn:SetScript("OnClick", function()
-				Hearthbag.MainButton:UpdateSkin("Random")
+				Hearthbag.MainButton:UpdateSkin("Random", false)
 				menu:Hide()
 			end)
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-				GameTooltip:AddLine("[PH] Random Hearthstone")
+				GameTooltip:AddLine("Random Hearthstone")
+				GameTooltip:AddLine("Randomly selects from owned hearthstones", 1, 1, 1)
 				GameTooltip:Show()
 			end)
 
@@ -369,6 +489,8 @@ function Hearthbag:RebuildMenu()
 			end
 
 			local isOwned = Hearthbag:IsOwned(data)
+			local isSecondary = data.secondary
+			
 			if isOwned then
 				btn.status:SetTexture(HearthbagPath..Hearthbag.SharedTextures.CollectedYes)
 			else
@@ -379,12 +501,15 @@ function Hearthbag:RebuildMenu()
 
 			btn:SetScript("OnClick", function()
 				if not isOwned then return end
-				Hearthbag.MainButton:UpdateSkin(data.key)
+				Hearthbag.MainButton:UpdateSkin(data.key, isSecondary)
 				menu:Hide()
 			end)
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				if data.itemIDs then GameTooltip:SetItemByID(data.itemIDs[1]) end
+				if isSecondary then
+					GameTooltip:AddLine("|cff00ff00Temporary teleport|r", 0.7, 0.7, 0.7)
+				end
 				GameTooltip:Show()
 			end)
 		end
@@ -502,10 +627,16 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			print("Usage: /hb nudge X Y")
 		end
 
+	elseif cmd == "reset" then
+		if InCombatLockdown() then print("Hearthbag: Cannot reset in combat.") return end
+		hb:RevertToPrimary()
+		print("Hearthbag: Reset to primary hearthstone.")
+
 	else
 		print("Hearthbag Commands:")
-		print("  /hb unlock - Toggle the moveable combat frame.")
+		print("  /hb combat - Toggle the moveable combat frame.")
 		print("  /hb anchor - Set the Bag Parent to the frame currently under your mouse.")
 		print("  /hb nudge X Y - Manually adjust the offset from the parent.")
+		print("  /hb reset - Reset to your primary hearthstone.")
 	end
 end
