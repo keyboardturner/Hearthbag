@@ -613,9 +613,13 @@ local function OnTooltipUpdate(self)
 
 	if self.currentSpellID then
 		GameTooltip:SetSpellByID(self.currentSpellID)
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddDoubleLine("Right-Click:", "Open Settings", 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine("Shift-Scroll:", "Resize", 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine("Shift-Drag:", "Drag Frame", 1, 1, 1, 1, 1, 1, true)
 		
-		local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)
 		--[[ -- this info is shown in the spell tooltip anyway
+		local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)
 		if spellCooldownInfo then
 			local start = spellCooldownInfo.startTime
 			local duration = spellCooldownInfo.duration
