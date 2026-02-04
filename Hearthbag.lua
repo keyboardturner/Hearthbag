@@ -61,7 +61,7 @@ hb.cooldown:SetRotation(-2.22)
 hb.cooldown:SetHideCountdownNumbers(true)
 
 if Hearthbag.TexturePath then
-    hb.cooldown:SetEdgeTexture(Hearthbag.TexturePath .. "Hearthstone_Cooldown_blip.blp", 1, 1, 1, 1)
+	hb.cooldown:SetEdgeTexture(Hearthbag.TexturePath .. "Hearthstone_Cooldown_blip.blp", 1, 1, 1, 1)
 end
 
 Hearthbag.MainButton = hb;
@@ -213,9 +213,12 @@ function Hearthbag:IsOwned(data)
 		end
 	end
 
+	if data.key == "Garrison" then -- review this later, garrison shows as collected but player may not have garrison unlocked
+		if C_Garrison.GetGarrisonInfo(2) then return true else return false end
+	end
+
 	return false
 end
-
 function Hearthbag:GetRandomValidKey()
 	local validKeys = {}
 	for _, data in ipairs(Hearthbag.HearthKeys) do
@@ -249,12 +252,12 @@ function hb:UpdateSkin(key, isTemporary)
 	if InCombatLockdown() then return end
 
 	if key == "Garrison" then
-        hb.cooldown:SetRotation(-5.13)
-    elseif key == "Dalaran" then
-        hb.cooldown:SetRotation(0)
-    else
-        hb.cooldown:SetRotation(-2.22)
-    end
+		hb.cooldown:SetRotation(-5.13)
+	elseif key == "Dalaran" then
+		hb.cooldown:SetRotation(0)
+	else
+		hb.cooldown:SetRotation(-2.22)
+	end
 
 	local effectiveKey = key
 	if key == "Random" then
@@ -406,6 +409,38 @@ menu.bg:SetAllPoints()
 menu.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.ItemHolderRet)
 menu.bg:SetTexCoord(.2,.8, 0, 1)
 menu:Hide();
+
+hb:SetScript("OnEnter", function(self) -- make tooltip update when shown soon
+	GameTooltip:SetOwner(self, "ANCHOR_TOP")
+	
+	if self.isTemporaryOverride and self:GetAttribute("type1") == "visithouse" then
+		GameTooltip:SetText("Player House")
+		GameTooltip:AddLine("Temporary teleport", 0.7, 0.7, 0.7)
+		GameTooltip:Show()
+		return
+	end
+
+	if self.currentSpellID then
+		GameTooltip:SetSpellByID(self.currentSpellID)
+		
+		local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)
+		if spellCooldownInfo then
+			local start = spellCooldownInfo.startTime
+			local duration = spellCooldownInfo.duration
+			
+			if start and duration and duration > 0 then
+				local remaining = (start + duration) - GetTime()
+				if remaining > 0 then
+					GameTooltip:AddLine(" ")
+					GameTooltip:AddLine("Cooldown: " .. SecondsToTime(remaining), 1, 1, 1)
+				end
+			end
+		end
+		
+		GameTooltip:Show()
+	end
+end)
+hb:SetScript("OnLeave", GameTooltip_Hide)
 
 hb:SetScript("OnMouseDown", function(self, button)
 	if button == "RightButton" then
