@@ -244,7 +244,7 @@ function hb:RevertToPrimary()
 	if self.isTemporaryOverride then
 		self.isTemporaryOverride = false
 		self.pendingRevert = false
-		self:UpdateSkin(HearthDB.PrimaryKey)
+		self:UpdateSkin(Hearthbag.GetCharDB().PrimaryKey)
 	end
 end
 
@@ -272,6 +272,16 @@ function hb:UpdateSkin(key, isTemporary)
 
 	local texPaths = Hearthbag:GetTexturePaths(data.Texture_Old)
 	
+	local charDB = Hearthbag.GetCharDB()
+	charDB.SelectedKey = key
+	
+	if not isTemporary then
+		charDB.PrimaryKey = key
+		self.isTemporaryOverride = false
+	else
+		self.isTemporaryOverride = true
+	end
+	
 	--[[ debug
 	print("Hearthbag: UpdateSkin")
 	print("Key:", key)
@@ -286,14 +296,14 @@ function hb:UpdateSkin(key, isTemporary)
 	end
 	--]]
 
-	HearthDB.SelectedKey = key
-	
-	if not isTemporary then
-		HearthDB.PrimaryKey = key
-		self.isTemporaryOverride = false
-	else
-		self.isTemporaryOverride = true
-	end
+	--HearthDB.SelectedKey = key
+	--
+	--if not isTemporary then
+	--	HearthDB.PrimaryKey = key
+	--	self.isTemporaryOverride = false
+	--else
+	--	self.isTemporaryOverride = true
+	--end
 
 	hb:SetAttribute("type1", "item")
 
@@ -369,7 +379,7 @@ hb:SetScript("OnEvent", function(self, event, ...)
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
 		local unit, _, spellID = ...
 		if unit == "player" then
-			local currentData = Hearthbag:GetDataByKey(HearthDB.SelectedKey)
+			local currentData = Hearthbag:GetDataByKey(Hearthbag.GetCharDB().SelectedKey)
 			if self.isTemporaryOverride or (currentData and currentData.secondary) then
 				C_Timer.After(0.5, function()
 					self:RevertToPrimary()
@@ -410,7 +420,7 @@ menu.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.ItemHolderRet)
 menu.bg:SetTexCoord(.2,.8, 0, 1)
 menu:Hide();
 
-hb:SetScript("OnEnter", function(self) -- make tooltip update when shown soon
+local function OnTooltipUpdate(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
 	
 	if self.isTemporaryOverride and self:GetAttribute("type1") == "visithouse" then
@@ -424,6 +434,7 @@ hb:SetScript("OnEnter", function(self) -- make tooltip update when shown soon
 		GameTooltip:SetSpellByID(self.currentSpellID)
 		
 		local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)
+		--[[ -- this info is shown in the spell tooltip anyway
 		if spellCooldownInfo then
 			local start = spellCooldownInfo.startTime
 			local duration = spellCooldownInfo.duration
@@ -436,16 +447,33 @@ hb:SetScript("OnEnter", function(self) -- make tooltip update when shown soon
 				end
 			end
 		end
+		]]
 		
 		GameTooltip:Show()
 	end
+end
+
+hb:SetScript("OnEnter", function(self)
+	OnTooltipUpdate(self)
+	self:SetScript("OnUpdate", OnTooltipUpdate)
 end)
-hb:SetScript("OnLeave", GameTooltip_Hide)
+
+hb:SetScript("OnLeave", function(self)
+	self:SetScript("OnUpdate", nil)
+	GameTooltip_Hide()
+end)
 
 hb:SetScript("OnMouseDown", function(self, button)
 	if button == "RightButton" then
 		if menu:IsShown() then menu:Hide() else menu:Show() end
 	end
+
+	local num = math.random(1, 4)
+	PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\ButtonDown"..num..".ogg", "SFX")
+end)
+hb:SetScript("OnMouseUp", function(self, button)
+	local num = math.random(1, 4)
+	PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\Button"..num..".ogg", "SFX")
 end)
 
 Hearthbag.MenuButtons = {}
@@ -580,6 +608,7 @@ Hearthbag:RebuildMenu()
 
 local FORBIDDENFRAMES = {
 	--["Minimap"] = true, -- test frame
+	["ContainerFrameCombinedBagsPortraitButton"] = true,
 }
 
 local loginFrame = CreateFrame("Frame")
