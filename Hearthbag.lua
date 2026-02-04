@@ -868,16 +868,29 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 	elseif cmd == "anchor" then
 		if InCombatLockdown() then print("Hearthbag: Cannot re-anchor in combat.") return end
 		
-		local frame = GetMouseFoci()[1]
-		if not frame or frame == WorldFrame then
-			HearthDB.BagParent = "UIParent"
-			HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
-			print("Hearthbag: Reset anchor to UIParent.")
-			Hearthbag:UpdateAnchor()
-			return
-		end
+		local frame
+		local fName
 		
-		local fName = frame:GetName()
+		if arg and arg ~= "" then
+			fName = arg
+			frame = _G[fName]
+			
+			if not frame then
+				print("Hearthbag: Frame '" .. fName .. "' not found.")
+				return
+			end
+		else
+			frame = GetMouseFoci()[1]
+			if not frame or frame == WorldFrame then
+				HearthDB.BagParent = "UIParent"
+				HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
+				print("Hearthbag: Reset anchor to UIParent.")
+				Hearthbag:UpdateAnchor()
+				return
+			end
+			
+			fName = frame:GetName()
+		end
 
 		if fName then
 			if not frame:IsObjectType("Frame") then
@@ -914,12 +927,16 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 	elseif cmd == "reset" then
 		if InCombatLockdown() then print("Hearthbag: Cannot reset in combat.") return end
 		hb:RevertToPrimary()
-		print("Hearthbag: Reset to primary hearthstone.")
+		
+		HearthDB.BagParent = "UIParent"
+		HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
+		Hearthbag:UpdateAnchor()
+		print("Hearthbag: Reset to primary hearthstone and centered position.")
 
 	else
 		print("Hearthbag Commands:")
 		print("  /hb combat - Toggle the moveable combat frame.")
-		print("  /hb anchor - Set the Bag Parent to the frame currently under your mouse.")
-		print("  /hb reset - Reset to your primary hearthstone.")
+		print("  /hb anchor [framename] - Set the Bag Parent to the frame under your mouse or to the specified frame name.")
+		print("  /hb reset - Reset to your primary hearthstone and center position.")
 	end
 end
