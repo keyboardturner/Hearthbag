@@ -76,11 +76,16 @@ combatAnchor:SetClampedToScreen(true)
 combatAnchor:RegisterForDrag("LeftButton")
 combatAnchor:Hide()
 
-combatAnchor.tex = combatAnchor:CreateTexture(nil, "BACKGROUND")
+combatAnchor.overlay = CreateFrame("Frame", nil, combatAnchor)
+combatAnchor.overlay:SetAllPoints()
+combatAnchor.overlay:SetFrameLevel(9000)
+combatAnchor.overlay:EnableMouse(false)
+
+combatAnchor.tex = combatAnchor.overlay:CreateTexture(nil, "BACKGROUND")
 combatAnchor.tex:SetAllPoints()
 combatAnchor.tex:SetColorTexture(1, 0, 0, 0.5)
 
-combatAnchor.text = combatAnchor:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+combatAnchor.text = combatAnchor.overlay:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 combatAnchor.text:SetPoint("CENTER")
 combatAnchor.text:SetText("HB Combat")
 
@@ -93,6 +98,36 @@ combatAnchor:SetScript("OnDragStop", function(self)
 	self:StopMovingOrSizing()
 	local point, _, relativePoint, x, y = self:GetPoint()
 	HearthDB.CombatPos = { point, relativePoint, x, y }
+end)
+
+local function UpdateOverlayVisibility()
+	if not InCombatLockdown() then -- needs to be the inverse because this check in combat is too late
+		if combatAnchor:IsShown() then
+			combatAnchor.overlay:Show()
+		else
+			combatAnchor.overlay:Hide()
+			hb:Show()
+		end
+	else
+		combatAnchor.overlay:Hide()
+		
+		if not combatAnchor:IsShown() then
+			hb:Hide()
+		end
+	end
+	hb:ClearAllPoints()
+	hb:SetParent(UIParent)
+end
+
+local combatEventFrame = CreateFrame("Frame")
+combatEventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+combatEventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+combatEventFrame:SetScript("OnEvent", function(self, event)
+	if event == "PLAYER_REGEN_DISABLED" then
+		UpdateOverlayVisibility()
+	elseif event == "PLAYER_REGEN_ENABLED" then
+		UpdateOverlayVisibility()
+	end
 end)
 
 hb:EnableMouseWheel(true)
@@ -165,7 +200,9 @@ function Hearthbag:UpdateAnchor()
 			local point, relPoint, x, y = unpack(HearthDB.BagOffset)
 			hb:SetPoint(point, parent, relPoint, x, y)
 			hb:SetFrameLevel(parent:GetFrameLevel()+500)
-			hb:Show()
+			if not InCombatLockdown() then
+				hb:Show()
+			end
 		else
 			print("Hearthbag Error: Could not find parent frame '" .. tostring(HearthDB.BagParent) .. "'. Resetting to UIParent.")
 			HearthDB.BagParent = "UIParent"
@@ -296,12 +333,15 @@ unlockCheck:SetScript("OnClick", function(self)
 	
 	if combatAnchor:IsShown() then
 		combatAnchor:Hide()
+		hb:EnableMouse(true)
 		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonDown.ogg", "SFX")
 	else
 		combatAnchor:Show()
+		hb:EnableMouse(false)
 		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonUp.ogg", "SFX")
 	end
 	
+	UpdateOverlayVisibility()
 	Hearthbag:UpdateAnchor()
 	self:UpdateState()
 	
@@ -329,6 +369,7 @@ eventFrame:SetScript("OnEvent", function(self, event)
 		
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		menu:Hide()
+		combatAnchor:Hide()
 		if HearthDB.UseCombatFrame then
 			combatAnchor:Show()
 			
@@ -340,6 +381,7 @@ eventFrame:SetScript("OnEvent", function(self, event)
 		end
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		combatAnchor:Hide()
+		hb:EnableMouse(true)
 		Hearthbag:UpdateAnchor()
 	end
 end)
@@ -776,8 +818,9 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			hb:EnableMouse(false)
 			print("Hearthbag: Combat Frame Unlocked. Drag the red box to move.")
 		end
+		UpdateOverlayVisibility()
 		Hearthbag:UpdateAnchor()
-
+		
 		if unlockCheck and unlockCheck:IsVisible() then
 			unlockCheck:UpdateState()
 		end
