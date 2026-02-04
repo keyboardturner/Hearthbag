@@ -8,6 +8,8 @@ local function GetFrameByName(name)
 	end
 end
 
+local HearthbagPath = Hearthbag.TexturePath
+
 local hb = CreateFrame("Button", "HearthbagButton", UIParent, "SecureActionButtonTemplate")
 hb:SetSize(42, 42)
 hb:SetPoint("CENTER")
@@ -70,6 +72,7 @@ local combatAnchor = CreateFrame("Frame", "HearthbagCombatAnchor", UIParent)
 combatAnchor:SetSize(42, 42)
 combatAnchor:SetMovable(true)
 combatAnchor:EnableMouse(true)
+combatAnchor:SetClampedToScreen(true)
 combatAnchor:RegisterForDrag("LeftButton")
 combatAnchor:Hide()
 
@@ -81,8 +84,12 @@ combatAnchor.text = combatAnchor:CreateFontString(nil, "OVERLAY", "GameFontNorma
 combatAnchor.text:SetPoint("CENTER")
 combatAnchor.text:SetText("HB Combat")
 
-combatAnchor:SetScript("OnDragStart", combatAnchor.StartMoving)
+combatAnchor:SetScript("OnDragStart", function(self)
+	if InCombatLockdown() then return end
+	self:StartMoving()
+end)
 combatAnchor:SetScript("OnDragStop", function(self)
+	if InCombatLockdown() then return end
 	self:StopMovingOrSizing()
 	local point, _, relativePoint, x, y = self:GetPoint()
 	HearthDB.CombatPos = { point, relativePoint, x, y }
@@ -115,10 +122,10 @@ hb:SetScript("OnDragStart", function(self)
 end)
 
 hb:SetScript("OnDragStop", function(self)
-	self:StopMovingOrSizing()
-	
 	if InCombatLockdown() then return end
 
+	self:StopMovingOrSizing()
+	
 	if combatAnchor:IsShown() then return end
 
 	local parent = GetFrameByName(HearthDB.BagParent)
@@ -167,6 +174,145 @@ function Hearthbag:UpdateAnchor()
 	end
 end
 
+local menu = CreateFrame("Frame", "HearthbagMenu", hb)
+menu:SetSize(250, 300)
+menu:SetPoint("TOP", hb, "BOTTOM", 0, -30)
+menu.bg = menu:CreateTexture(nil, "BACKGROUND")
+menu.bg:SetPoint("TOPLEFT", menu, "TOPLEFT", -90, 10)
+menu.bg:SetPoint("BOTTOMRIGHT", menu, "BOTTOMRIGHT", 80, 0)
+menu.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.ItemHolderRet)
+--menu.bg:SetTexCoord(.2,.8, 0, 1)
+menu:Hide();
+
+local nudgeConfig = {
+	{ key = "ArrowUN", push = "ArrowUP", hl = "ArrowUHL", point = "BOTTOM", rel = "TOP", x = 0, y = 2, xDiff = 0, yDiff = 1 },
+	{ key = "ArrowDN", push = "ArrowDP", hl = "ArrowDHL", point = "TOP", rel = "BOTTOM", x = 0, y = -2, xDiff = 0, yDiff = -1 },
+	{ key = "ArrowLN", push = "ArrowLP", hl = "ArrowLHL", point = "RIGHT", rel = "LEFT", x = -2, y = 0, xDiff = -1, yDiff = 0 },
+	{ key = "ArrowRN", push = "ArrowRP", hl = "ArrowRHL", point = "LEFT", rel = "RIGHT", x = 2, y = 0, xDiff = 1, yDiff = 0 },
+};
+
+for _, cfg in ipairs(nudgeConfig) do
+	local btn = CreateFrame("Button", nil, menu)
+	btn:SetSize(20, 20)
+	btn:SetPoint(cfg.point, hb, cfg.rel, cfg.x, cfg.y)
+	
+	btn:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures[cfg.key])
+	btn:SetPushedTexture(HearthbagPath .. Hearthbag.SharedTextures[cfg.push])
+	btn:SetHighlightTexture(HearthbagPath .. Hearthbag.SharedTextures[cfg.hl])
+	
+	btn:SetScript("OnClick", function()
+		if InCombatLockdown() then return end
+		if not HearthDB.BagOffset then return end
+		
+		HearthDB.BagOffset[3] = HearthDB.BagOffset[3] + cfg.xDiff
+		HearthDB.BagOffset[4] = HearthDB.BagOffset[4] + cfg.yDiff
+		
+		Hearthbag:UpdateAnchor()
+	end)
+end
+
+local settingsBar = CreateFrame("Frame", "HearthbagSettingsBar", menu)
+settingsBar:SetSize(420, 40)
+settingsBar:SetPoint("TOP", menu, "TOP", 0, 15)
+settingsBar.bg = settingsBar:CreateTexture(nil, "BACKGROUND")
+settingsBar.bg:SetAllPoints()
+settingsBar.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.TitleBar)
+
+local combatCheck = CreateFrame("Button", nil, settingsBar)
+combatCheck:SetSize(24, 24)
+combatCheck:SetPoint("CENTER", settingsBar, "CENTER", -24, 3)
+
+function combatCheck:UpdateState()
+	if HearthDB.UseCombatFrame then
+		combatCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckUp)
+	else
+		combatCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckOff)
+	end
+end
+
+local function UpdateCombatCheckTooltip(self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOP")
+	GameTooltip:SetText("Show Combat Frame during Combat")
+	
+	if HearthDB.UseCombatFrame then
+		GameTooltip:AddLine(VIDEO_OPTIONS_ENABLED, 0, 1, 0)
+	else
+		GameTooltip:AddLine(VIDEO_OPTIONS_DISABLED, 1, 0, 0)
+	end
+	
+	GameTooltip:Show()
+end
+
+combatCheck:SetScript("OnEnter", UpdateCombatCheckTooltip)
+combatCheck:SetScript("OnLeave", GameTooltip_Hide)
+
+combatCheck:SetScript("OnClick", function(self)
+	HearthDB.UseCombatFrame = not HearthDB.UseCombatFrame
+	self:UpdateState()
+	
+	if GameTooltip:GetOwner() == self then
+		UpdateCombatCheckTooltip(self)
+	end
+	if HearthDB.UseCombatFrame then
+		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonDown.ogg", "SFX")
+	else
+		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonUp.ogg", "SFX")
+	end
+end)
+
+combatCheck:SetScript("OnShow", function(self)
+	self:UpdateState()
+end)
+
+local unlockCheck = CreateFrame("Button", nil, settingsBar)
+unlockCheck:SetSize(24, 24)
+unlockCheck:SetPoint("CENTER", settingsBar, "CENTER", 24, 3)
+
+function unlockCheck:UpdateState()
+	if combatAnchor:IsShown() then
+		unlockCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckUp)
+	else
+		unlockCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckOff)
+	end
+end
+
+unlockCheck:SetScript("OnEnter", function(self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOP")
+	GameTooltip:SetText("Unlock Combat Anchor Frame")
+	if combatAnchor:IsShown() then
+		GameTooltip:AddLine("Unlocked", 0, 1, 0)
+	else
+		GameTooltip:AddLine("Locked", 1, 0, 0)
+	end
+	GameTooltip:Show()
+end)
+unlockCheck:SetScript("OnLeave", GameTooltip_Hide)
+
+unlockCheck:SetScript("OnClick", function(self)
+	if InCombatLockdown() then 
+		print("Hearthbag: Cannot toggle anchor in combat.") 
+		return 
+	end
+	
+	if combatAnchor:IsShown() then
+		combatAnchor:Hide()
+		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonDown.ogg", "SFX")
+	else
+		combatAnchor:Show()
+		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonUp.ogg", "SFX")
+	end
+	
+	Hearthbag:UpdateAnchor()
+	self:UpdateState()
+	
+	if GameTooltip:GetOwner() == self then 
+		local onEnter = self:GetScript("OnEnter")
+		if onEnter then onEnter(self) end
+	end
+end)
+
+unlockCheck:SetScript("OnShow", function(self) self:UpdateState() end)
+
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 eventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -182,14 +328,18 @@ eventFrame:SetScript("OnEvent", function(self, event)
 		Hearthbag:UpdateAnchor()
 		
 	elseif event == "PLAYER_REGEN_DISABLED" then
+		menu:Hide()
 		if HearthDB.UseCombatFrame then
+			combatAnchor:Show()
 			
 			hb:SetParent(combatAnchor)
 			hb:ClearAllPoints()
 			hb:SetPoint("CENTER", combatAnchor, "CENTER")
+			
+			hb:Show()
 		end
-		
 	elseif event == "PLAYER_REGEN_ENABLED" then
+		combatAnchor:Hide()
 		Hearthbag:UpdateAnchor()
 	end
 end)
@@ -232,8 +382,6 @@ function Hearthbag:GetRandomValidKey()
 	end
 	return "Default"
 end
-
-local HearthbagPath = Hearthbag.TexturePath
 
 function hb:RevertToPrimary()
 	if InCombatLockdown() then
@@ -359,7 +507,7 @@ function hb:UpdateCooldown()
 		print("  Duration:", duration)
 	end
 	--]]
-	if start and duration and duration > 0 then
+	if start and duration then
 		self.cooldown:SetCooldown(start, duration)
 	else
 		self.cooldown:Clear()
@@ -411,15 +559,6 @@ local neighborhoodTextures = {
 	},
 };
 
-local menu = CreateFrame("Frame", "HearthbagMenu", hb)
-menu:SetSize(250, 300)
-menu:SetPoint("TOP", hb, "BOTTOM", 0, -10)
-menu.bg = menu:CreateTexture(nil, "BACKGROUND")
-menu.bg:SetAllPoints()
-menu.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.ItemHolderRet)
-menu.bg:SetTexCoord(.2,.8, 0, 1)
-menu:Hide();
-
 local function OnTooltipUpdate(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
 	
@@ -465,7 +604,9 @@ end)
 
 hb:SetScript("OnMouseDown", function(self, button)
 	if button == "RightButton" then
-		if menu:IsShown() then menu:Hide() else menu:Show() end
+		if not InCombatLockdown() then
+			if menu:IsShown() then menu:Hide() else menu:Show() end
+		end
 	end
 
 	local num = math.random(1, 4)
@@ -636,6 +777,10 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			print("Hearthbag: Combat Frame Unlocked. Drag the red box to move.")
 		end
 		Hearthbag:UpdateAnchor()
+
+		if unlockCheck and unlockCheck:IsVisible() then
+			unlockCheck:UpdateState()
+		end
 		
 	elseif cmd == "anchor" then
 		if InCombatLockdown() then print("Hearthbag: Cannot re-anchor in combat.") return end
