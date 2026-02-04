@@ -605,7 +605,22 @@ local function OnTooltipUpdate(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
 	
 	if self.isTemporaryOverride and self:GetAttribute("type1") == "visithouse" then
-		GameTooltip:SetText("Player House")
+		local houseGUID = self:GetAttribute("house-guid")
+		
+		local houseName = "Player House"
+		local neighborhoodName = ""
+		for _, houseData in ipairs(Hearthbag.HousingList) do
+			if houseData.houseGUID == houseGUID then
+				houseName = houseData.houseName or "Player House"
+				neighborhoodName = houseData.neighborhoodName or ""
+				break
+			end
+		end
+		
+		GameTooltip:SetText(houseName)
+		if neighborhoodName ~= "" then
+			GameTooltip:AddLine(neighborhoodName, 1, 1, 1)
+		end
 		GameTooltip:AddLine("Temporary teleport", 0.7, 0.7, 0.7)
 		GameTooltip:Show()
 		return
@@ -875,17 +890,6 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			print("Hearthbag: Invalid frame to anchor to (frame has no name).")
 		end
 
-	elseif cmd == "nudge" then
-		local x, y = arg:match("^(%-?%d+)%s+(%-?%d+)$")
-		if x and y then
-			HearthDB.BagOffset[3] = tonumber(x)
-			HearthDB.BagOffset[4] = tonumber(y)
-			Hearthbag:UpdateAnchor()
-			print("Hearthbag: Nudged to " .. x .. ", " .. y)
-		else
-			print("Usage: /hb nudge X Y")
-		end
-
 	elseif cmd == "reset" then
 		if InCombatLockdown() then print("Hearthbag: Cannot reset in combat.") return end
 		hb:RevertToPrimary()
@@ -895,7 +899,6 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 		print("Hearthbag Commands:")
 		print("  /hb combat - Toggle the moveable combat frame.")
 		print("  /hb anchor - Set the Bag Parent to the frame currently under your mouse.")
-		print("  /hb nudge X Y - Manually adjust the offset from the parent.")
 		print("  /hb reset - Reset to your primary hearthstone.")
 	end
 end
