@@ -9,6 +9,7 @@ local function GetFrameByName(name)
 end
 
 local HearthbagPath = Hearthbag.TexturePath
+local HOUSING_SPELLID = 1233637
 
 local hb = CreateFrame("Button", "HearthbagButton", UIParent, "SecureActionButtonTemplate")
 hb:SetSize(42, 42)
@@ -559,6 +560,7 @@ end
 hb:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 hb:RegisterEvent("SPELL_UPDATE_USABLE")
 hb:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+hb:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 hb:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 hb:SetScript("OnEvent", function(self, event, ...)
@@ -566,15 +568,21 @@ hb:SetScript("OnEvent", function(self, event, ...)
 		self:UpdateCooldown()
 	elseif event == "SPELL_UPDATE_USABLE" then
 		self:UpdateCooldown()
-	elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
+	elseif event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_INTERRUPTED" then
 		local unit, _, spellID = ...
-		if unit == "player" then
-			local currentData = Hearthbag:GetDataByKey(Hearthbag.GetCharDB().SelectedKey)
-			if self.isTemporaryOverride or (currentData and currentData.secondary) then
-				C_Timer.After(0.5, function()
+		if unit == "player" and self.isTemporaryOverride then
+			if spellID == HOUSING_SPELLID then -- player house teleport spell
+				self:RevertToPrimary()
+			else
+				local currentData = Hearthbag:GetDataByKey(Hearthbag.GetCharDB().SelectedKey)
+				if currentData and currentData.secondary and currentData.spellID == spellID then
 					self:RevertToPrimary()
-				end)
+				end
 			end
+		end
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		if self.isTemporaryOverride then
+			self:RevertToPrimary()
 		end
 	end
 end)
@@ -605,23 +613,29 @@ local function OnTooltipUpdate(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
 	
 	if self.isTemporaryOverride and self:GetAttribute("type1") == "visithouse" then
+		GameTooltip:SetSpellByID(HOUSING_SPELLID)
+
 		local houseGUID = self:GetAttribute("house-guid")
 		
 		local houseName = "Player House"
-		local neighborhoodName = ""
+		--local neighborhoodName = ""
 		for _, houseData in ipairs(Hearthbag.HousingList) do
 			if houseData.houseGUID == houseGUID then
 				houseName = houseData.houseName or "Player House"
-				neighborhoodName = houseData.neighborhoodName or ""
+				--neighborhoodName = houseData.neighborhoodName or ""
 				break
 			end
 		end
 		
-		GameTooltip:SetText(houseName)
-		if neighborhoodName ~= "" then
-			GameTooltip:AddLine(neighborhoodName, 1, 1, 1)
-		end
+		GameTooltip:AddLine(houseName)
+		--if neighborhoodName ~= "" then
+		--	GameTooltip:AddLine(neighborhoodName, 1, 1, 1)
+		--end
 		GameTooltip:AddLine("Temporary teleport", 0.7, 0.7, 0.7)
+		GameTooltip:AddLine(" ")
+		GameTooltip:AddDoubleLine("Right-Click:", "Open Settings", 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine("Shift-Scroll:", "Resize", 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine("Shift-Drag:", "Drag Frame", 1, 1, 1, 1, 1, 1, true)
 		GameTooltip:Show()
 		return
 	end
@@ -729,7 +743,7 @@ function Hearthbag:RebuildMenu()
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				GameTooltip:AddLine(data.houseName or "Player House")
-				GameTooltip:AddLine(data.neighborhoodName, 1, 1, 1)
+				--GameTooltip:AddLine(data.neighborhoodName, 1, 1, 1)
 				GameTooltip:AddLine("|cff00ff00Temporary teleport|r", 0.7, 0.7, 0.7)
 				GameTooltip:Show()
 			end)
