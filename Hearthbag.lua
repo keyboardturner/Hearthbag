@@ -821,6 +821,13 @@ end)
 
 Hearthbag:RebuildMenu()
 
+local itemUpdateFrame = CreateFrame("Frame")
+itemUpdateFrame:RegisterEvent("BAG_UPDATE")
+itemUpdateFrame:RegisterEvent("TOYS_UPDATED")
+itemUpdateFrame:SetScript("OnEvent", function(self, event, ...)
+	Hearthbag:RebuildMenu()
+end)
+
 
 local FORBIDDENFRAMES = {
 	--["Minimap"] = true, -- test frame
