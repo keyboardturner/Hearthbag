@@ -391,10 +391,16 @@ end)
 
 function Hearthbag:IsOwned(data)
 	if data.key == "Random" then return true end
-	
+
 	if data.key == "Garrison" then
 		if not C_Garrison.GetGarrisonInfo(2) then 
 			return false 
+		end
+	end
+
+	if data.key == "Dalaran" then
+		if not (C_QuestLog.IsQuestFlaggedCompleted(44184) or C_QuestLog.IsQuestFlaggedCompleted(44663)) then
+			return false
 		end
 	end
 
@@ -829,6 +835,7 @@ Hearthbag:RebuildMenu()
 local itemUpdateFrame = CreateFrame("Frame")
 itemUpdateFrame:RegisterEvent("BAG_UPDATE")
 itemUpdateFrame:RegisterEvent("TOYS_UPDATED")
+itemUpdateFrame:RegisterEvent("QUEST_TURNED_IN")
 itemUpdateFrame:SetScript("OnEvent", function(self, event, ...)
 	Hearthbag:RebuildMenu()
 end)
