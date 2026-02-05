@@ -1,5 +1,7 @@
 local addonName, Hearthbag = ...
 
+L = Hearthbag.L;
+
 local function GetFrameByName(name)
 	if type(name) == "string" then
 		return _G[name]
@@ -205,7 +207,7 @@ function Hearthbag:UpdateAnchor()
 				hb:Show()
 			end
 		else
-			print("Hearthbag Error: Could not find parent frame '" .. tostring(HearthDB.BagParent) .. "'. Resetting to UIParent.")
+			print(string.format(L["HearthbagError"],L["CantFindParent"],tostring(HearthDB.BagParent)))
 			HearthDB.BagParent = "UIParent"
 			Hearthbag:UpdateAnchor()
 		end
@@ -270,7 +272,7 @@ end
 
 local function UpdateCombatCheckTooltip(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
-	GameTooltip:SetText("Show Combat Frame during Combat")
+	GameTooltip:SetText(L["ShowCFInCombat"])
 	
 	if HearthDB.UseCombatFrame then
 		GameTooltip:AddLine(VIDEO_OPTIONS_ENABLED, 0, 1, 0)
@@ -316,11 +318,11 @@ end
 
 unlockCheck:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
-	GameTooltip:SetText("Unlock Combat Anchor Frame")
+	GameTooltip:SetText(L["UnlockCombatFrame"])
 	if combatAnchor:IsShown() then
-		GameTooltip:AddLine("Unlocked", 0, 1, 0)
+		GameTooltip:AddLine(L["Unlock"], 0, 1, 0)
 	else
-		GameTooltip:AddLine("Locked", 1, 0, 0)
+		GameTooltip:AddLine(L["Locked"], 1, 0, 0)
 	end
 	GameTooltip:Show()
 end)
@@ -328,7 +330,7 @@ unlockCheck:SetScript("OnLeave", GameTooltip_Hide)
 
 unlockCheck:SetScript("OnClick", function(self)
 	if InCombatLockdown() then 
-		print("Hearthbag: Cannot toggle anchor in combat.") 
+		print(string.format(L["Hearthbag"], L["CantAnchorInCombat"])) 
 		return 
 	end
 	
@@ -631,11 +633,11 @@ local function OnTooltipUpdate(self)
 		--if neighborhoodName ~= "" then
 		--	GameTooltip:AddLine(neighborhoodName, 1, 1, 1)
 		--end
-		GameTooltip:AddLine("Temporary teleport", 0.7, 0.7, 0.7)
+		GameTooltip:AddLine(L["TempTele"], 0.7, 0.7, 0.7)
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddDoubleLine("Right-Click:", "Open Settings", 1, 1, 1, 1, 1, 1, true)
-		GameTooltip:AddDoubleLine("Shift-Scroll:", "Resize", 1, 1, 1, 1, 1, 1, true)
-		GameTooltip:AddDoubleLine("Shift-Drag:", "Drag Frame", 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine(L["RightClick"], L["OpenSettings"], 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine(L["ShiftScroll"], L["Resize"], 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine(L["ShiftDrag"], L["DragFrame"], 1, 1, 1, 1, 1, 1, true)
 		GameTooltip:Show()
 		return
 	end
@@ -643,9 +645,9 @@ local function OnTooltipUpdate(self)
 	if self.currentSpellID then
 		GameTooltip:SetSpellByID(self.currentSpellID)
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddDoubleLine("Right-Click:", "Open Settings", 1, 1, 1, 1, 1, 1, true)
-		GameTooltip:AddDoubleLine("Shift-Scroll:", "Resize", 1, 1, 1, 1, 1, 1, true)
-		GameTooltip:AddDoubleLine("Shift-Drag:", "Drag Frame", 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine(L["RightClick"], L["OpenSettings"], 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine(L["ShiftScroll"], L["Resize"], 1, 1, 1, 1, 1, 1, true)
+		GameTooltip:AddDoubleLine(L["ShiftDrag"], L["DragFrame"], 1, 1, 1, 1, 1, 1, true)
 		
 		--[[ -- this info is shown in the spell tooltip anyway
 		local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)
@@ -744,7 +746,7 @@ function Hearthbag:RebuildMenu()
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				GameTooltip:AddLine(data.houseName or "Player House")
 				--GameTooltip:AddLine(data.neighborhoodName, 1, 1, 1)
-				GameTooltip:AddLine("|cff00ff00Temporary teleport|r", 0.7, 0.7, 0.7)
+				GameTooltip:AddLine(L["TempTele"], 1, 1, 1)
 				GameTooltip:Show()
 			end)
 
@@ -758,8 +760,8 @@ function Hearthbag:RebuildMenu()
 			end)
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-				GameTooltip:AddLine("Random Hearthstone")
-				GameTooltip:AddLine("Randomly selects from owned hearthstones", 1, 1, 1)
+				GameTooltip:AddLine(L["RandomHearthstone"])
+				GameTooltip:AddLine(L["RandomHearthstoneTT"], 1, 1, 1)
 				GameTooltip:Show()
 			end)
 
@@ -790,7 +792,7 @@ function Hearthbag:RebuildMenu()
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 				if data.itemIDs then GameTooltip:SetItemByID(data.itemIDs[1]) end
 				if isSecondary then
-					GameTooltip:AddLine("|cff00ff00Temporary teleport|r", 0.7, 0.7, 0.7)
+					GameTooltip:AddLine(L["TempTele"], 1, 1, 1)
 				end
 				GameTooltip:Show()
 			end)
@@ -832,6 +834,7 @@ end)
 local FORBIDDENFRAMES = {
 	--["Minimap"] = true, -- test frame
 	["ContainerFrameCombinedBagsPortraitButton"] = true,
+	["WorldFrame"] = true,
 }
 
 local loginFrame = CreateFrame("Frame")
@@ -840,23 +843,23 @@ loginFrame:SetScript("OnEvent", function()
 	C_Housing.GetPlayerOwnedHouses()
 end)
 
-SLASH_HEARTHBAG1 = "/hb"
-SLASH_HEARTHBAG2 = "/hearthbag"
+SLASH_HEARTHBAG1 = L["SLASH_HB1"]
+SLASH_HEARTHBAG2 = L["SLASH_HB2"]
+SLASH_HEARTHBAG3 = L["SLASH_HB3"]
+SLASH_HEARTHBAG4 = L["SLASH_HB4"]
 
 SlashCmdList["HEARTHBAG"] = function(msg)
 	local cmd, arg = msg:match("^(%S*)%s*(.-)$")
 	
-	if cmd == "combat" then
-		if InCombatLockdown() then print("Hearthbag: Cannot move in combat.") return end
+	if cmd == L["HB_Slash_Combat1"] or cmd == L["HB_Slash_Combat2"] then
+		if InCombatLockdown() then print(string.format(L["Hearthbag"], L["CantMoveInCombat"])) return end
 		
 		if combatAnchor:IsShown() then
 			combatAnchor:Hide()
 			hb:EnableMouse(true)
-			print("Hearthbag: Combat Frame Locked.")
 		else
 			combatAnchor:Show()
 			hb:EnableMouse(false)
-			print("Hearthbag: Combat Frame Unlocked. Drag the red box to move.")
 		end
 		UpdateOverlayVisibility()
 		Hearthbag:UpdateAnchor()
@@ -864,9 +867,8 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 		if unlockCheck and unlockCheck:IsVisible() then
 			unlockCheck:UpdateState()
 		end
-		
-	elseif cmd == "anchor" then
-		if InCombatLockdown() then print("Hearthbag: Cannot re-anchor in combat.") return end
+	elseif cmd == L["HB_Slash_Anchor1"] or cmd == L["HB_Slash_Anchor2"] then
+		if InCombatLockdown() then print(string.format(L["Hearthbag"],L["CantAnchorInCombat"])) return end
 		
 		local frame
 		local fName
@@ -876,7 +878,7 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			frame = _G[fName]
 			
 			if not frame then
-				print("Hearthbag: Frame '" .. fName .. "' not found.")
+				print(string.format(L["Hearthbag"],L["FrameNotFound"], fName))
 				return
 			end
 		else
@@ -884,7 +886,7 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			if not frame or frame == WorldFrame then
 				HearthDB.BagParent = "UIParent"
 				HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
-				print("Hearthbag: Reset anchor to UIParent.")
+				print(string.format(L["Hearthbag"],L["ResetToUIParent"]))
 				Hearthbag:UpdateAnchor()
 				return
 			end
@@ -894,23 +896,23 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 
 		if fName then
 			if not frame:IsObjectType("Frame") then
-				print("Hearthbag: Cannot anchor to '" .. fName .. "'. It is not a Frame.")
+				print(string.format(L["Hearthbag"],L["NotAFrame"],fName))
 				return
 			end
 			
 			if FORBIDDENFRAMES[fName] then
-				print("Hearthbag: Cannot anchor to restricted frame '" .. fName .. "'.")
+				print(string.format(L["Hearthbag"],L["RestrictedFrame"],fName))
 				return
 			end
 
 			if frame == hb or frame == combatAnchor or frame == menu then
-				print("Hearthbag: Cannot anchor to itself.")
+				print(string.format(L["Hearthbag"],L["CantAnchorToSelf"]))
 				return
 			end
 			local parentCheck = frame:GetParent()
 			while parentCheck do
 				if parentCheck == hb then
-					print("Hearthbag: Cannot anchor to a child of Hearthbag.")
+					print(string.format(L["Hearthbag"],L["CantAnchorToSelf"]))
 					return
 				end
 				parentCheck = parentCheck:GetParent()
@@ -918,25 +920,23 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			HearthDB.BagParent = fName
 			HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
 			
-			print("Hearthbag: Anchored to " .. fName)
+			print(string.format(L["Hearthbag"],L["AnchoredToFrame"],fName))
 			Hearthbag:UpdateAnchor()
 		else
-			print("Hearthbag: Invalid frame to anchor to (frame has no name).")
+			print(string.format(L["Hearthbag"],L["FrameNoName"]))
 		end
-
-	elseif cmd == "reset" then
-		if InCombatLockdown() then print("Hearthbag: Cannot reset in combat.") return end
+	elseif cmd == L["HB_Slash_Reset1"] or cmd == L["HB_Slash_Reset2"] then
+		if InCombatLockdown() then print(string.format(L["Hearthbag"],L["CantMoveInCombat"])) return end
 		hb:RevertToPrimary()
 		
 		HearthDB.BagParent = "UIParent"
 		HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
 		Hearthbag:UpdateAnchor()
-		print("Hearthbag: Reset to primary hearthstone and centered position.")
-
+		print(string.format(L["Hearthbag"],L["ResetHearthstone"]))
 	else
-		print("Hearthbag Commands:")
-		print("  /hb combat - Toggle the moveable combat frame.")
-		print("  /hb anchor [framename] - Set the Bag Parent to the frame under your mouse or to the specified frame name.")
-		print("  /hb reset - Reset to your primary hearthstone and center position.")
+		print(L["HBCommands"])
+		print(["HBCMD_combat"])
+		print(["HBCMD_anchor"])
+		print(["HBCMD_reset"])
 	end
 end

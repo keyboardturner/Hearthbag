@@ -1,10 +1,10 @@
-## Interface: 110207, 120000
+## Interface: 120000, 120001
 ## Author: Keyboardturner
 ## Version: @project-version@
 ## Title: Hearthbag
-## Notes: Places a clickable hearthstone over the bag icon of the default backpack.
+## Notes: Adds a customizable hearthstone button
 ## IconTexture: Interface/Addons/Hearthbag/Textures/Hearthstone_Default.blp
-## SavedVariablesPerCharacter: HearthDB
+## SavedVariables: HearthDB
 ## OptionalDeps: ElvUI, GW2_UI, AdiBags, Inventorian, Baggins, Combuctor, Arkinventory, Bagnon, BaudBag, Sorted
 ## X-Curse-Project-ID: 464996
 ## X-WoWI-ID: 26240
@@ -22,4 +22,7 @@
 ## Category-zhCN: 物品栏
 ## Category-zhTW: 物品欄
 
+Localization.lua
+Assets.lua
+Core.lua
 Hearthbag.lua
