@@ -935,8 +935,8 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 		print(string.format(L["Hearthbag"],L["ResetHearthstone"]))
 	else
 		print(L["HBCommands"])
-		print(["HBCMD_combat"])
-		print(["HBCMD_anchor"])
-		print(["HBCMD_reset"])
+		print(L["HBCMD_combat"])
+		print(L["HBCMD_anchor"])
+		print(L["HBCMD_reset"])
 	end
 end

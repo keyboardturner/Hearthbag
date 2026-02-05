@@ -57,9 +57,9 @@ if LOCALE == "enUS" then
 	L["HB_Slash_Anchor2"] = "anchor" -- localized
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "reset" -- localized
-	["HBCMD_combat"] = "/hearthbag combat - Toggle the moveable combat frame."
-	["HBCMD_anchor"] = "/hearthbag anchor [framename] - Set the Hearthbag Parent to the frame under your mouse or to the specified frame name."
-	["HBCMD_reset"] = "/hearthbag reset - Reset to your Hearthbag to centered position."
+	L["HBCMD_combat"] = "/hearthbag combat - Toggle the moveable combat frame."
+	L["HBCMD_anchor"] = "/hearthbag anchor [framename] - Set the Hearthbag Parent to the frame under your mouse or to the specified frame name."
+	L["HBCMD_reset"] = "/hearthbag reset - Reset to your Hearthbag to centered position."
 
 return end
 
