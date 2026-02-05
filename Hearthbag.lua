@@ -391,6 +391,12 @@ end)
 
 function Hearthbag:IsOwned(data)
 	if data.key == "Random" then return true end
+	
+	if data.key == "Garrison" then
+		if not C_Garrison.GetGarrisonInfo(2) then 
+			return false 
+		end
+	end
 
 	if data.raceIDs then
 		local _, _, playerRaceID = UnitRace("player")
@@ -408,12 +414,9 @@ function Hearthbag:IsOwned(data)
 		end
 	end
 
-	if data.key == "Garrison" then -- review this later, garrison shows as collected but player may not have garrison unlocked
-		if C_Garrison.GetGarrisonInfo(2) then return true else return false end
-	end
-
 	return false
 end
+
 function Hearthbag:GetRandomValidKey()
 	local validKeys = {}
 	for _, data in ipairs(Hearthbag.HearthKeys) do
