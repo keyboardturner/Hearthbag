@@ -461,19 +461,20 @@ function hb:UpdateSkin(key, isTemporary)
 		hb.cooldown:SetRotation(-2.22)
 	end
 
-	local effectiveKey = key
+	local texBaseName
+	local attrKey
+
 	if key == "Random" then
-		effectiveKey = Hearthbag:GetRandomValidKey()
+		self.isRandomMode = true
+		texBaseName = "hearthbutton_random"
+		attrKey = Hearthbag:GetRandomValidKey()
+	else
+		self.isRandomMode = false
+		attrKey = key
+		local data = Hearthbag:GetDataByKey(key)
+		texBaseName = data and data.Texture_Old or "Hearthstone_Default"
 	end
 
-	local data = Hearthbag:GetDataByKey(effectiveKey)
-	
-	if not data or not data.itemIDs then
-		data = Hearthbag:GetDataByKey("Default")
-	end
-
-	local texPaths = Hearthbag:GetTexturePaths(data.Texture_Old)
-	
 	local charDB = Hearthbag.GetCharDB()
 	charDB.SelectedKey = key
 	
@@ -482,6 +483,12 @@ function hb:UpdateSkin(key, isTemporary)
 		self.isTemporaryOverride = false
 	else
 		self.isTemporaryOverride = true
+	end
+
+	local data = Hearthbag:GetDataByKey(attrKey)
+
+	if not data or not data.itemIDs then
+		data = Hearthbag:GetDataByKey("Default")
 	end
 	
 	--[[ debug
@@ -511,17 +518,17 @@ function hb:UpdateSkin(key, isTemporary)
 
 	local item = Item:CreateFromItemID(data.itemIDs[1])
 	item:ContinueOnItemLoad(function()
-		local name = item:GetItemName()
 		hb:SetAttribute("item", "item:" .. data.itemIDs[1])
 	end)
 
+	local texPaths = Hearthbag:GetTexturePaths(texBaseName)
 	if texPaths then
 		hb:SetNormalTexture(texPaths.Up)
 		hb:SetPushedTexture(texPaths.Down)
 		hb.bg:SetTexture(texPaths.Up)
 		hb.cooldown:SetSwipeTexture(texPaths.Cooldown)
 	end
-	
+
 	hb.currentSpellID = data.spellID
 	hb:UpdateCooldown()
 end
@@ -703,6 +710,12 @@ hb:SetScript("OnMouseUp", function(self, button)
 	PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\Button"..num..".ogg", "SFX")
 end)
 
+hb:SetScript("PostClick", function(self)
+	if not InCombatLockdown() and self.isRandomMode then
+		self:UpdateSkin("Random", self.isTemporaryOverride)
+	end
+end)
+
 Hearthbag.MenuButtons = {}
 Hearthbag.HousingList = {}
 local COLUMNS = 6
@@ -758,22 +771,6 @@ function Hearthbag:RebuildMenu()
 				GameTooltip:AddLine(L["TempTele"], 1, 1, 1)
 				GameTooltip:Show()
 			end)
-
-		elseif data.key == "Random" then
-			btn:SetNormalTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Up")
-			btn:SetPushedTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Down")
-			btn.status:SetTexture(HearthbagPath..Hearthbag.SharedTextures.CollectedYes)
-			btn:SetScript("OnClick", function()
-				Hearthbag.MainButton:UpdateSkin("Random", false)
-				menu:Hide()
-			end)
-			btn:SetScript("OnEnter", function(self)
-				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-				GameTooltip:AddLine(L["RandomHearthstone"])
-				GameTooltip:AddLine(L["RandomHearthstoneTT"], 1, 1, 1)
-				GameTooltip:Show()
-			end)
-
 		else
 			local texPaths = Hearthbag:GetTexturePaths(data.Texture_Old)
 			if texPaths then
@@ -799,7 +796,13 @@ function Hearthbag:RebuildMenu()
 			end)
 			btn:SetScript("OnEnter", function(self)
 				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-				if data.itemIDs then GameTooltip:SetItemByID(data.itemIDs[1]) end
+				if data.key == "Random" then
+					GameTooltip:AddLine(L["RandomHearthstone"])
+					GameTooltip:AddLine(L["RandomHearthstoneTT"], 1, 1, 1)
+				elseif data.itemIDs then
+					GameTooltip:SetItemByID(data.itemIDs[1]) 
+				end
+				
 				if isSecondary then
 					GameTooltip:AddLine(L["TempTele"], 1, 1, 1)
 				end

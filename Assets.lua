@@ -236,7 +236,7 @@ local HearthKeys = {
 	},
 	[32] =	{
 		key = "Random",
-		Texture_Old = nil,
+		Texture_Old = "hearthbutton_random",
 	},
 };
 
