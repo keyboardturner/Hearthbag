@@ -18,9 +18,10 @@ Garrison and Dalaran hearthstones are now temporary teleports.
 
 The settings menu is now accessible via right clicking the Hearthbag button:
  - Nudge buttons have been moved to each side of the Hearthbag frame, and will now only display when the menu is open.
- - 2 Settings are now accessible:
+ - 3 Settings are now accessible:
    - Shows combat frame during combat (necessary to display Hearthbag in combat, attempting to prevent taint on frames that it's anchored to such as as the bag frame)
    - Unlock Combat Anchor Frame (move the combat frame, only when outside of combat)
+   - Display chat commands in Hearthbag tooltip
 
 The Hearthbag button may now be resized via Shift+Scroll.
 
