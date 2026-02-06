@@ -529,11 +529,11 @@ function hb:UpdateSkin(key, isTemporary)
 	end
 
 	local charDB = Hearthbag.GetCharDB()
-	charDB.SelectedKey = key
+	Hearthbag.SelectedKey = key
 	
 	if not isTemporary then
 		charDB.PrimaryKey = key
-		self.isTemporaryOverride = false
+        self.isTemporaryOverride = false
 	else
 		self.isTemporaryOverride = true
 	end
@@ -558,7 +558,7 @@ function hb:UpdateSkin(key, isTemporary)
 	end
 	--]]
 
-	--Hearthbag_DB.SelectedKey = key
+	--Hearthbag.SelectedKey = key
 	--
 	--if not isTemporary then
 	--	Hearthbag_DB.PrimaryKey = key
@@ -645,10 +645,10 @@ hb:SetScript("OnEvent", function(self, event, ...)
 			if spellID == HOUSING_SPELLID then -- player house teleport spell
 				self:RevertToPrimary()
 			else
-				local currentData = Hearthbag:GetDataByKey(Hearthbag.GetCharDB().SelectedKey)
+				local currentData = Hearthbag:GetDataByKey(Hearthbag.SelectedKey)
 				if currentData and currentData.secondary and currentData.spellID == spellID then
-					self:RevertToPrimary()
-				end
+                    self:RevertToPrimary()
+                end
 			end
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then

@@ -29,13 +29,12 @@ f:SetScript("OnEvent", function(self, event, ...)
 		end
 		
 		local charDB = Hearthbag.GetCharDB()
-		if not charDB.SelectedKey then charDB.SelectedKey = "Default" end
 		if not charDB.PrimaryKey then charDB.PrimaryKey = "Default" end
 
 	elseif event == "PLAYER_LOGIN" then
 		if Hearthbag.MainButton then
 			local charDB = Hearthbag.GetCharDB()
-			Hearthbag.MainButton:UpdateSkin(charDB.SelectedKey)
+			Hearthbag.MainButton:UpdateSkin(charDB.PrimaryKey)
 			
 			if Hearthbag.MainButton.ApplyScale then Hearthbag.MainButton:ApplyScale() end
 			if Hearthbag.UpdateAnchor then Hearthbag:UpdateAnchor() end
