@@ -59,8 +59,6 @@ function hb:ApplyScale()
 	end
 end
 
-hb.bg = hb:CreateTexture(nil, "BACKGROUND")
-hb.bg:SetAllPoints()
 hb.cooldown = CreateFrame("Cooldown", "HearthbagCD", hb)
 hb.cooldown:SetAllPoints()
 
@@ -580,7 +578,6 @@ function hb:UpdateSkin(key, isTemporary)
 	if texPaths then
 		hb:SetNormalTexture(texPaths.Up)
 		hb:SetPushedTexture(texPaths.Down)
-		hb.bg:SetTexture(texPaths.Up)
 		hb.cooldown:SetSwipeTexture(texPaths.Cooldown)
 	end
 
