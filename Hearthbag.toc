@@ -1,14 +1,37 @@
-## Interface: 110207, 120000
+## Interface: 120000, 120001
 ## Author: Keyboardturner
 ## Version: @project-version@
 ## Title: Hearthbag
-## Notes: Places a clickable hearthstone over the bag icon of the default backpack.
+## Notes: Adds a customizable hearthstone button
 ## IconTexture: Interface/Addons/Hearthbag/Textures/Hearthstone_Default.blp
-## SavedVariablesPerCharacter: HearthDB
-## OptionalDeps: ElvUI, GW2_UI, AdiBags, Inventorian, Baggins, Combuctor, Arkinventory, Bagnon, BaudBag, Sorted
+## SavedVariables: Hearthbag_DB
+## OptionalDeps: ElvUI, GW2_UI, AdiBags, Inventorian, Baggins, Combuctor, Arkinventory, Bagnon, BaudBag, Sorted, Baganator, BetterBags
 ## X-Curse-Project-ID: 464996
 ## X-WoWI-ID: 26240
 ## X-Wago-ID: 5bGoap60
+
+## Title-enUS: Hearthbag
+## Notes-enUS: Adds a customizable hearthstone button
+## Title-esMX: Hearthbag
+## Notes-esMX: Añade un botón de piedra de hogar personalizable
+## Title-esES: Hearthbag
+## Notes-esES: Añade un botón de piedra de hogar personalizable
+## Title-deDE: Hearthbag
+## Notes-deDE: Fügt einen anpassbaren Ruhestein-Button hinzu
+## Title-frFR: Hearthbag
+## Notes-frFR: Ajoute un bouton de pierre de foyer personnalisable
+## Title-itIT: Hearthbag
+## Notes-itIT: Aggiunge un pulsante Pietra del Ritorno personalizzabile
+## Title-ptBR: Hearthbag
+## Notes-ptBR: Adiciona um botão de Pedra de Regresso personalizável
+## Title-ruRU: Hearthbag
+## Notes-ruRU: Добавляет настраиваемую кнопку камня возвращения
+## Title-koKR: Hearthbag
+## Notes-koKR: 사용자 설정 귀환석 버튼을 추가합니다
+## Title-zhCN: Hearthbag
+## Notes-zhCN: 添加可自定义的炉石按钮
+## Title-zhTW: Hearthbag
+## Notes-zhTW: 新增可自訂的爐石按鈕
 
 ## Category-enUS: Inventory
 ## Category-deDE: Inventar
@@ -22,4 +45,7 @@
 ## Category-zhCN: 物品栏
 ## Category-zhTW: 物品欄
 
+Localization.lua
+Assets.lua
+Core.lua
 Hearthbag.lua

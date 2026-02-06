@@ -1,3 +1,47 @@
+# 1.0.0
+
+Large redesign to addon functionality and efficiency for retail
+
+Reworked how saved data is handled:
+ - Position / anchor data is now account-wide data
+ - Chosen hearthstone style remains as character-specific data
+
+As a result, the previous addon data format is now incompatible and will no longer be used (you will have to set up the addon again).
+
+Certain hearthstones are now flagged as "Temporary Teleports", where your primary hearthstone will be chosen once the cast is finished.
+
+Added 2 new buttons to select from:
+ - Random Hearthstone: Randomly selects from your collection of hearthstones that you've collected. Does not include temporary teleports.
+ - Housing Teleport: Allows teleporting to your house in your respective neighborhood. This acts as a temporary teleport.
+
+Garrison and Dalaran hearthstones are now temporary teleports.
+
+The settings menu is now accessible via right clicking the Hearthbag button:
+ - Nudge buttons have been moved to each side of the Hearthbag frame, and will now only display when the menu is open.
+ - 3 Settings are now accessible:
+   - Shows combat frame during combat (necessary to display Hearthbag in combat, attempting to prevent taint on frames that it's anchored to such as as the bag frame)
+   - Unlock Combat Anchor Frame (move the combat frame, only when outside of combat)
+   - Display chat commands in Hearthbag tooltip
+
+The Hearthbag button may now be resized via Shift+Scroll.
+
+The Hearthbag button may now be moved via Shift+Drag.
+
+New chat commands are now available, via /hearthbag anchor:
+ - `/hearthbag anchor [FrameName]` - allows you to choose a specified frame, such as `/hearthbag anchor Minimap`. This will keep the button tied to the specified frame (for example, `BagItemSearchBox` for the bag frame, which will hide if you close your bags, and show when the bags are open.)
+ - `/hearthbag anchor` - Will attempt to choose the frame under your current mouse focus location. Not all frames are eligible, and some may break, so this is a bit experimental. Any problematic frames can be reported to add to a list of forbidden frames.
+
+Some chat commands are now reworked:
+ - `/hearthbag reset` - No longer clears the appearance of your chosen hearthstone. It only resets the positioning to the screen center.
+ - `/hearthbag combat` - Functions the same as the menu settings button to temporarily display the movable combat button location.
+
+The checkbox setting to inherit right click functions of certain bag addon frames has been removed for now, as this is no longer a current functionality and interferes with the left / right click functionality of the addon. This may be added back in at a later date.
+
+The checkbox setting to allow rescaling the Hearthbag button frame has been removed, as this is now handled by the Shift+Scroll functionality.
+
+An update to the rest of the newer hearthstones is planned for a later update.
+
+
 # 0.4.1
 
 12.0.0 toc update
