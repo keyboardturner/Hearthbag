@@ -12,6 +12,7 @@ f:SetScript("OnEvent", function(self, event, ...)
 		if not Hearthbag_DB.BagOffset then Hearthbag_DB.BagOffset = { "CENTER", "CENTER", 0, 0 } end
 		if not Hearthbag_DB.CombatPos then Hearthbag_DB.CombatPos = { "CENTER", "CENTER", 0, 0 } end
 		if Hearthbag_DB.UseCombatFrame == nil then Hearthbag_DB.UseCombatFrame = true end
+		if Hearthbag_DB.ShowHelpTips == nil then Hearthbag_DB.ShowHelpTips = true end
 		if not Hearthbag_DB.BagScale then Hearthbag_DB.BagScale = 42 end
 
 		if not Hearthbag_DB.Characters then Hearthbag_DB.Characters = {} end

@@ -58,8 +58,10 @@ if LOCALE == "enUS" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "reset" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat - Toggle the moveable combat frame."
-	L["HBCMD_anchor"] = "/hearthbag anchor [framename] - Set the Hearthbag Parent to the frame under your mouse or to the specified frame name."
+	L["HBCMD_anchor"] = "/hearthbag anchor [framename] - Set the Hearthbag Parent to the frame under your mouse or to the specified frame name (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset - Reset to your Hearthbag to centered position."
+	L["ShowHelpTips"] = "Show Chat Command in Tooltip"
+	L["ChatCommandsTT"] = string.join("\n   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -106,8 +108,10 @@ if LOCALE == "esMX" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "reiniciar" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/hearthbag combate) - Alterna el marco de combate movible."
-	L["HBCMD_anchor"] = "/hearthbag anchor [marco]  (/hearthbag anclar) - Establece el padre al marco bajo el cursor o al nombre indicado."
+	L["HBCMD_anchor"] = "/hearthbag anchor [marco]  (/hearthbag anclar) - Establece el padre al marco bajo el cursor o al nombre indicado (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reiniciar) - Restablece Hearthbag al centro."
+	L["ShowHelpTips"] = "Mostrar comando de chat en la información emergente"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -154,8 +158,10 @@ if LOCALE == "esES" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "reiniciar" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/hearthbag combate) - Alterna el marco de combate movible."
-	L["HBCMD_anchor"] = "/hearthbag anchor [marco]  (/hearthbag anclar) - Establece el padre al marco bajo el cursor o al nombre indicado."
+	L["HBCMD_anchor"] = "/hearthbag anchor [marco]  (/hearthbag anclar) - Establece el padre al marco bajo el cursor o al nombre indicado (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reiniciar) - Restablece Hearthbag al centro."
+	L["ShowHelpTips"] = "Mostrar comando de chat en la información emergente"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -202,8 +208,10 @@ if LOCALE == "deDE" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "reset" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/hearthbag kampf) - Bewegliches Kampffenster umschalten."
-	L["HBCMD_anchor"] = "/hearthbag anchor [Fenstername]  (/hearthbag anker) - Parent auf Frame unter Maus setzen."
+	L["HBCMD_anchor"] = "/hearthbag anchor [Fenstername]  (/hearthbag anker) - Parent auf Frame unter Maus setzen (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reset) - Hearthbag zentrieren."
+	L["ShowHelpTips"] = "Chatbefehl im Tooltip anzeigen"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -250,8 +258,10 @@ if LOCALE == "frFR" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "reinit" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/hearthbag combat) - Active/désactive la fenêtre de combat mobile."
-	L["HBCMD_anchor"] = "/hearthbag anchor [fenêtre]  (/hearthbag ancrer) - Définit la fenêtre parente."
+	L["HBCMD_anchor"] = "/hearthbag anchor [fenêtre]  (/hearthbag ancrer) - Définit la fenêtre parente (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reinit) - Réinitialise la position."
+	L["ShowHelpTips"] = "Afficher la commande de discussion dans l’infobulle"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -298,8 +308,10 @@ if LOCALE == "itIT" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "reset" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/hearthbag combat) - Attiva/disattiva il riquadro di combattimento mobile."
-	L["HBCMD_anchor"] = "/hearthbag anchor [nomeframe]  (/hearthbag ancora) - Imposta il genitore al frame sotto il mouse o a quello indicato."
+	L["HBCMD_anchor"] = "/hearthbag anchor [nomeframe]  (/hearthbag ancora) - Imposta il genitore al frame sotto il mouse o a quello indicato (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reset) - Reimposta Hearthbag al centro."
+	L["ShowHelpTips"] = "Mostra comando chat nel suggerimento"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -346,8 +358,10 @@ if LOCALE == "ptBR" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "reset" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/hearthbag combate) - Alterna o quadro de combate móvel."
-	L["HBCMD_anchor"] = "/hearthbag anchor [frame]  (/hearthbag ancorar) - Define o quadro pai."
+	L["HBCMD_anchor"] = "/hearthbag anchor [frame]  (/hearthbag ancorar) - Define o quadro pai (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reset) - Redefine a posição."
+	L["ShowHelpTips"] = "Mostrar comando de chat na dica de ferramenta"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 -- Note that the EU Portuguese WoW client also
 -- uses the Brazilian Portuguese locale code.
@@ -396,8 +410,10 @@ if LOCALE == "ruRU" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "сброс" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/очаг бой) - Переключить подвижное боевое окно."
-	L["HBCMD_anchor"] = "/hearthbag anchor [имя]  (/очаг якорь) - Установить родительский фрейм."
+	L["HBCMD_anchor"] = "/hearthbag anchor [имя]  (/очаг якорь) - Установить родительский фрейм (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset  (/очаг сброс) - Сбросить позицию."
+	L["ShowHelpTips"] = "Показывать команду чата во всплывающей подсказке"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB1"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -444,8 +460,10 @@ if LOCALE == "koKR" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "초기화" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/귀환 전투) - 이동 가능한 전투 프레임 전환."
-	L["HBCMD_anchor"] = "/hearthbag anchor [프레임]  (/귀환 앵커) - 부모 프레임 설정."
+	L["HBCMD_anchor"] = "/hearthbag anchor [프레임]  (/귀환 앵커) - 부모 프레임 설정 (BagItemSearchBox, Minimap, PlayerFrame)."
 	L["HBCMD_reset"] = "/hearthbag reset  (/귀환 초기화) - 위치 초기화."
+	L["ShowHelpTips"] = "툴팁에 채팅 명령 표시"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB1"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -492,8 +510,10 @@ if LOCALE == "zhCN" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "重置" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/炉石 战斗) - 切换可移动战斗框体。"
-	L["HBCMD_anchor"] = "/hearthbag anchor [框体名]  (/炉石 锚定) - 设置父框体。"
+	L["HBCMD_anchor"] = "/hearthbag anchor [框体名]  (/炉石 锚定) - 设置父框体 (BagItemSearchBox, Minimap, PlayerFrame)。"
 	L["HBCMD_reset"] = "/hearthbag reset  (/炉石 重置) - 重置位置。"
+	L["ShowHelpTips"] = "在鼠标提示中显示聊天命令"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB1"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end
 
@@ -540,7 +560,9 @@ if LOCALE == "zhTW" then
 	L["HB_Slash_Reset1"] = "reset" -- english
 	L["HB_Slash_Reset2"] = "重設" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat  (/爐石 戰鬥) - 切換可移動戰鬥框架。"
-	L["HBCMD_anchor"] = "/hearthbag anchor [框架名]  (/爐石 錨定) - 設定父框架。"
+	L["HBCMD_anchor"] = "/hearthbag anchor [框架名]  (/爐石 錨定) - 設定父框架 (BagItemSearchBox, Minimap, PlayerFrame)。"
 	L["HBCMD_reset"] = "/hearthbag reset  (/爐石 重設) - 重設位置。"
+	L["ShowHelpTips"] = "在滑鼠提示中顯示聊天指令"
+	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB1"], L["SLASH_HB3"], L["SLASH_HB4"])
 
 return end

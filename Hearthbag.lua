@@ -265,7 +265,7 @@ settingsBar.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.TitleBar)
 
 local combatCheck = CreateFrame("Button", nil, settingsBar)
 combatCheck:SetSize(24, 24)
-combatCheck:SetPoint("CENTER", settingsBar, "CENTER", -24, 3)
+combatCheck:SetPoint("CENTER", settingsBar, "CENTER", -50, 3)
 
 function combatCheck:UpdateState()
 	if Hearthbag_DB.UseCombatFrame then
@@ -309,9 +309,57 @@ combatCheck:SetScript("OnShow", function(self)
 	self:UpdateState()
 end)
 
+local helpCheck = CreateFrame("Button", nil, settingsBar)
+helpCheck:SetSize(24, 24)
+helpCheck:SetPoint("CENTER", settingsBar, "CENTER", 0, 3)
+
+function helpCheck:UpdateState()
+	if Hearthbag_DB.ShowHelpTips then
+		helpCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckUp)
+	else
+		helpCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckOff)
+	end
+end
+
+local function UpdateHelpCheckTooltip(self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOP")
+	GameTooltip:SetText(L["ShowHelpTips"])
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddLine(L["ChatCommandsTT"], 1, 1, 1, true)
+	
+	if Hearthbag_DB.ShowHelpTips then
+		GameTooltip:AddLine(VIDEO_OPTIONS_ENABLED, 0, 1, 0)
+	else
+		GameTooltip:AddLine(VIDEO_OPTIONS_DISABLED, 1, 0, 0)
+	end
+	
+	GameTooltip:Show()
+end
+
+helpCheck:SetScript("OnEnter", UpdateHelpCheckTooltip)
+helpCheck:SetScript("OnLeave", GameTooltip_Hide)
+
+helpCheck:SetScript("OnClick", function(self)
+	Hearthbag_DB.ShowHelpTips = not Hearthbag_DB.ShowHelpTips
+	self:UpdateState()
+	
+	if GameTooltip:GetOwner() == self then
+		UpdateHelpCheckTooltip(self)
+	end
+	if Hearthbag_DB.ShowHelpTips then
+		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonDown.ogg", "SFX")
+	else
+		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonUp.ogg", "SFX")
+	end
+end)
+
+helpCheck:SetScript("OnShow", function(self)
+	self:UpdateState()
+end)
+
 local unlockCheck = CreateFrame("Button", nil, settingsBar)
 unlockCheck:SetSize(24, 24)
-unlockCheck:SetPoint("CENTER", settingsBar, "CENTER", 24, 3)
+unlockCheck:SetPoint("CENTER", settingsBar, "CENTER", 50, 3)
 
 function unlockCheck:UpdateState()
 	if combatAnchor:IsShown() then
@@ -659,6 +707,12 @@ local function OnTooltipUpdate(self)
 		GameTooltip:AddDoubleLine(L["RightClick"], L["OpenSettings"], 1, 1, 1, 1, 1, 1, true)
 		GameTooltip:AddDoubleLine(L["ShiftScroll"], L["Resize"], 1, 1, 1, 1, 1, 1, true)
 		GameTooltip:AddDoubleLine(L["ShiftDrag"], L["DragFrame"], 1, 1, 1, 1, 1, 1, true)
+
+		if Hearthbag_DB.ShowHelpTips then
+			GameTooltip:AddLine(" ")
+			GameTooltip:AddLine(L["ChatCommandsTT"], 1, 1, 1, true)
+		end
+
 		GameTooltip:Show()
 		return
 	end
@@ -669,6 +723,11 @@ local function OnTooltipUpdate(self)
 		GameTooltip:AddDoubleLine(L["RightClick"], L["OpenSettings"], 1, 1, 1, 1, 1, 1, true)
 		GameTooltip:AddDoubleLine(L["ShiftScroll"], L["Resize"], 1, 1, 1, 1, 1, 1, true)
 		GameTooltip:AddDoubleLine(L["ShiftDrag"], L["DragFrame"], 1, 1, 1, 1, 1, 1, true)
+
+		if Hearthbag_DB.ShowHelpTips then
+			GameTooltip:AddLine(" ")
+			GameTooltip:AddLine(L["ChatCommandsTT"], 1, 1, 1, true)
+		end
 		
 		--[[ -- this info is shown in the spell tooltip anyway
 		local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)
