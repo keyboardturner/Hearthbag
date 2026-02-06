@@ -1,3 +1,7 @@
+# 1.0.1
+
+Combat frame will now be disabled by default. If you installed the previous update before this you'll have to manually turn it off
+
 # 1.0.0
 
 Large redesign to addon functionality and efficiency for retail
