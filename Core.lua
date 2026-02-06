@@ -6,25 +6,25 @@ f:RegisterEvent("PLAYER_LOGIN")
 
 f:SetScript("OnEvent", function(self, event, ...)
 	if event == "ADDON_LOADED" and ... == addonName then
-		if not HearthDB then HearthDB = {} end
+		if not Hearthbag_DB then Hearthbag_DB = {} end
 		
-		if not HearthDB.BagParent then HearthDB.BagParent = "ContainerFrame1" end
-		if not HearthDB.BagOffset then HearthDB.BagOffset = { "CENTER", "CENTER", -142, 30 } end
-		if not HearthDB.CombatPos then HearthDB.CombatPos = { "CENTER", "CENTER", 0, 0 } end
-		if HearthDB.UseCombatFrame == nil then HearthDB.UseCombatFrame = true end
-		if not HearthDB.BagScale then HearthDB.BagScale = 42 end
+		if not Hearthbag_DB.BagParent then Hearthbag_DB.BagParent = "UIParent" end
+		if not Hearthbag_DB.BagOffset then Hearthbag_DB.BagOffset = { "CENTER", "CENTER", 0, 0 } end
+		if not Hearthbag_DB.CombatPos then Hearthbag_DB.CombatPos = { "CENTER", "CENTER", 0, 0 } end
+		if Hearthbag_DB.UseCombatFrame == nil then Hearthbag_DB.UseCombatFrame = true end
+		if not Hearthbag_DB.BagScale then Hearthbag_DB.BagScale = 42 end
 
-		if not HearthDB.Characters then HearthDB.Characters = {} end
+		if not Hearthbag_DB.Characters then Hearthbag_DB.Characters = {} end
 		
 		local charKey = UnitName("player") .. " - " .. GetRealmName()
 		Hearthbag.CharKey = charKey
 		
-		if not HearthDB.Characters[charKey] then
-			HearthDB.Characters[charKey] = {}
+		if not Hearthbag_DB.Characters[charKey] then
+			Hearthbag_DB.Characters[charKey] = {}
 		end
 
 		Hearthbag.GetCharDB = function()
-			return HearthDB.Characters[Hearthbag.CharKey]
+			return Hearthbag_DB.Characters[Hearthbag.CharKey]
 		end
 		
 		local charDB = Hearthbag.GetCharDB()

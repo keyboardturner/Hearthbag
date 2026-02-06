@@ -47,14 +47,14 @@ function hb:UpdateSize()
 		HearthbagCombatAnchor:SetSize(newSize, newSize)
 	end
 	
-	if HearthDB then
-		HearthDB.BagScale = newSize
+	if Hearthbag_DB then
+		Hearthbag_DB.BagScale = newSize
 	end
 end
 
 function hb:ApplyScale()
-	if HearthDB and HearthDB.BagScale then
-		self.sizeAmp = HearthDB.BagScale / self.baseSize
+	if Hearthbag_DB and Hearthbag_DB.BagScale then
+		self.sizeAmp = Hearthbag_DB.BagScale / self.baseSize
 		self:UpdateSize()
 	end
 end
@@ -105,7 +105,7 @@ combatAnchor:SetScript("OnDragStop", function(self)
 	if InCombatLockdown() then return end
 	self:StopMovingOrSizing()
 	local point, _, relativePoint, x, y = self:GetPoint()
-	HearthDB.CombatPos = { point, relativePoint, x, y }
+	Hearthbag_DB.CombatPos = { point, relativePoint, x, y }
 end)
 
 local function UpdateOverlayVisibility()
@@ -171,7 +171,7 @@ hb:SetScript("OnDragStop", function(self)
 	
 	if combatAnchor:IsShown() then return end
 
-	local parent = GetFrameByName(HearthDB.BagParent)
+	local parent = GetFrameByName(Hearthbag_DB.BagParent)
 	if parent then
 		local myX, myY = self:GetCenter()
 		local parentX, parentY = parent:GetCenter()
@@ -183,7 +183,7 @@ hb:SetScript("OnDragStop", function(self)
 			self:ClearAllPoints()
 			self:SetPoint("CENTER", parent, "CENTER", x, y)
 			
-			HearthDB.BagOffset = { "CENTER", "CENTER", x, y }
+			Hearthbag_DB.BagOffset = { "CENTER", "CENTER", x, y }
 		end
 	end
 end)
@@ -191,7 +191,7 @@ end)
 function Hearthbag:UpdateAnchor()
 	if InCombatLockdown() then return end
 
-	hb:SetScale(HearthDB.Scale or 1)
+	hb:SetScale(Hearthbag_DB.Scale or 1)
 
 	if combatAnchor:IsShown() then
 		hb:ClearAllPoints()
@@ -201,19 +201,19 @@ function Hearthbag:UpdateAnchor()
 		hb:SetFrameLevel(combatAnchor:GetFrameLevel()+500)
 		hb:Show()
 	else
-		local parent = GetFrameByName(HearthDB.BagParent)
+		local parent = GetFrameByName(Hearthbag_DB.BagParent)
 		if parent then
 			hb:ClearAllPoints()
 			hb:SetParent(parent)
-			local point, relPoint, x, y = unpack(HearthDB.BagOffset)
+			local point, relPoint, x, y = unpack(Hearthbag_DB.BagOffset)
 			hb:SetPoint(point, parent, relPoint, x, y)
 			hb:SetFrameLevel(parent:GetFrameLevel()+500)
 			if not InCombatLockdown() then
 				hb:Show()
 			end
 		else
-			Print(string.format(L["CantFindParent"],tostring(HearthDB.BagParent)))
-			HearthDB.BagParent = "UIParent"
+			Print(string.format(L["CantFindParent"],tostring(Hearthbag_DB.BagParent)))
+			Hearthbag_DB.BagParent = "UIParent"
 			Hearthbag:UpdateAnchor()
 		end
 	end
@@ -247,10 +247,10 @@ for _, cfg in ipairs(nudgeConfig) do
 	
 	btn:SetScript("OnClick", function()
 		if InCombatLockdown() then return end
-		if not HearthDB.BagOffset then return end
+		if not Hearthbag_DB.BagOffset then return end
 		
-		HearthDB.BagOffset[3] = HearthDB.BagOffset[3] + cfg.xDiff
-		HearthDB.BagOffset[4] = HearthDB.BagOffset[4] + cfg.yDiff
+		Hearthbag_DB.BagOffset[3] = Hearthbag_DB.BagOffset[3] + cfg.xDiff
+		Hearthbag_DB.BagOffset[4] = Hearthbag_DB.BagOffset[4] + cfg.yDiff
 		
 		Hearthbag:UpdateAnchor()
 	end)
@@ -268,7 +268,7 @@ combatCheck:SetSize(24, 24)
 combatCheck:SetPoint("CENTER", settingsBar, "CENTER", -24, 3)
 
 function combatCheck:UpdateState()
-	if HearthDB.UseCombatFrame then
+	if Hearthbag_DB.UseCombatFrame then
 		combatCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckUp)
 	else
 		combatCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckOff)
@@ -279,7 +279,7 @@ local function UpdateCombatCheckTooltip(self)
 	GameTooltip:SetOwner(self, "ANCHOR_TOP")
 	GameTooltip:SetText(L["ShowCFInCombat"])
 	
-	if HearthDB.UseCombatFrame then
+	if Hearthbag_DB.UseCombatFrame then
 		GameTooltip:AddLine(VIDEO_OPTIONS_ENABLED, 0, 1, 0)
 	else
 		GameTooltip:AddLine(VIDEO_OPTIONS_DISABLED, 1, 0, 0)
@@ -292,13 +292,13 @@ combatCheck:SetScript("OnEnter", UpdateCombatCheckTooltip)
 combatCheck:SetScript("OnLeave", GameTooltip_Hide)
 
 combatCheck:SetScript("OnClick", function(self)
-	HearthDB.UseCombatFrame = not HearthDB.UseCombatFrame
+	Hearthbag_DB.UseCombatFrame = not Hearthbag_DB.UseCombatFrame
 	self:UpdateState()
 	
 	if GameTooltip:GetOwner() == self then
 		UpdateCombatCheckTooltip(self)
 	end
-	if HearthDB.UseCombatFrame then
+	if Hearthbag_DB.UseCombatFrame then
 		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonDown.ogg", "SFX")
 	else
 		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonUp.ogg", "SFX")
@@ -368,8 +368,8 @@ eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 eventFrame:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
-		if HearthDB and HearthDB.CombatPos then
-			local point, relPoint, x, y = unpack(HearthDB.CombatPos)
+		if Hearthbag_DB and Hearthbag_DB.CombatPos then
+			local point, relPoint, x, y = unpack(Hearthbag_DB.CombatPos)
 			combatAnchor:ClearAllPoints()
 			combatAnchor:SetPoint(point, UIParent, relPoint, x, y)
 		end
@@ -378,7 +378,7 @@ eventFrame:SetScript("OnEvent", function(self, event)
 	elseif event == "PLAYER_REGEN_DISABLED" then
 		menu:Hide()
 		combatAnchor:Hide()
-		if HearthDB.UseCombatFrame then
+		if Hearthbag_DB.UseCombatFrame then
 			combatAnchor:Show()
 			
 			hb:SetParent(combatAnchor)
@@ -510,10 +510,10 @@ function hb:UpdateSkin(key, isTemporary)
 	end
 	--]]
 
-	--HearthDB.SelectedKey = key
+	--Hearthbag_DB.SelectedKey = key
 	--
 	--if not isTemporary then
-	--	HearthDB.PrimaryKey = key
+	--	Hearthbag_DB.PrimaryKey = key
 	--	self.isTemporaryOverride = false
 	--else
 	--	self.isTemporaryOverride = true
@@ -902,8 +902,8 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 		else
 			frame = GetMouseFoci()[1]
 			if not frame or frame == WorldFrame then
-				HearthDB.BagParent = "UIParent"
-				HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
+				Hearthbag_DB.BagParent = "UIParent"
+				Hearthbag_DB.BagOffset = { "CENTER", "CENTER", 0, 0 }
 				Print(L["ResetToUIParent"])
 				Hearthbag:UpdateAnchor()
 				return
@@ -935,8 +935,8 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 				end
 				parentCheck = parentCheck:GetParent()
 			end
-			HearthDB.BagParent = fName
-			HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
+			Hearthbag_DB.BagParent = fName
+			Hearthbag_DB.BagOffset = { "CENTER", "CENTER", 0, 0 }
 			
 			Print(string.format(L["AnchoredToFrame"],fName))
 			Hearthbag:UpdateAnchor()
@@ -947,8 +947,8 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 		if InCombatLockdown() then Print(L["CantMoveInCombat"]) return end
 		hb:RevertToPrimary()
 		
-		HearthDB.BagParent = "UIParent"
-		HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
+		Hearthbag_DB.BagParent = "UIParent"
+		Hearthbag_DB.BagOffset = { "CENTER", "CENTER", 0, 0 }
 		Hearthbag:UpdateAnchor()
 		Print(L["ResetHearthstone"])
 	else

@@ -4,7 +4,7 @@
 ## Title: Hearthbag
 ## Notes: Adds a customizable hearthstone button
 ## IconTexture: Interface/Addons/Hearthbag/Textures/Hearthstone_Default.blp
-## SavedVariables: HearthDB
+## SavedVariables: Hearthbag_DB
 ## OptionalDeps: ElvUI, GW2_UI, AdiBags, Inventorian, Baggins, Combuctor, Arkinventory, Bagnon, BaudBag, Sorted, Baganator, BetterBags
 ## X-Curse-Project-ID: 464996
 ## X-WoWI-ID: 26240

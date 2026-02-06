@@ -242,7 +242,7 @@ local HearthKeys = {
 
 Hearthbag.HearthKeys = HearthKeys;
 
--- HearthDB.APPEARANCE.UP convert to ID
+-- Hearthbag_DB.APPEARANCE.UP convert to ID
 
 
 local SharedTextures = {
