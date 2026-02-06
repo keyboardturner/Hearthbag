@@ -133,8 +133,10 @@ combatEventFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 combatEventFrame:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_REGEN_DISABLED" then
 		UpdateOverlayVisibility()
+		hb:UpdateCooldown()
 	elseif event == "PLAYER_REGEN_ENABLED" then
 		UpdateOverlayVisibility()
+		hb:UpdateCooldown()
 	end
 end)
 
@@ -607,6 +609,10 @@ function hb:SetHousingOverride(houseData)
 end
 
 function hb:UpdateCooldown()
+	if InCombatLockdown() then
+		self.cooldown:Hide()
+		return
+	end
 	if not self.currentSpellID then return end
 	
 	local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)

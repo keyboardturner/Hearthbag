@@ -1,3 +1,7 @@
+# 1.0.2
+
+Hide cooldown progress texture in combat
+
 # 1.0.1
 
 Combat frame will now be disabled by default. If you installed the previous update before this you'll have to manually turn it off
