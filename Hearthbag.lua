@@ -10,6 +10,11 @@ local function GetFrameByName(name)
 	end
 end
 
+local function Print(...)
+	local prefix = WrapTextInColorCode(L["Hearthbag"], "FF4FE6FC");
+	DEFAULT_CHAT_FRAME:AddMessage(string.format(prefix, WrapTextInColorCode(..., "FFFFFFFF")));
+end
+
 local HearthbagPath = Hearthbag.TexturePath
 local HOUSING_SPELLID = 1233637
 
@@ -207,7 +212,7 @@ function Hearthbag:UpdateAnchor()
 				hb:Show()
 			end
 		else
-			print(string.format(L["HearthbagError"],L["CantFindParent"],tostring(HearthDB.BagParent)))
+			Print(string.format(L["CantFindParent"],tostring(HearthDB.BagParent)))
 			HearthDB.BagParent = "UIParent"
 			Hearthbag:UpdateAnchor()
 		end
@@ -329,9 +334,9 @@ end)
 unlockCheck:SetScript("OnLeave", GameTooltip_Hide)
 
 unlockCheck:SetScript("OnClick", function(self)
-	if InCombatLockdown() then 
-		print(string.format(L["Hearthbag"], L["CantAnchorInCombat"])) 
-		return 
+	if InCombatLockdown() then
+		Print(L["CantAnchorInCombat"])
+		return
 	end
 	
 	if combatAnchor:IsShown() then
@@ -348,7 +353,7 @@ unlockCheck:SetScript("OnClick", function(self)
 	Hearthbag:UpdateAnchor()
 	self:UpdateState()
 	
-	if GameTooltip:GetOwner() == self then 
+	if GameTooltip:GetOwner() == self then
 		local onEnter = self:GetScript("OnEnter")
 		if onEnter then onEnter(self) end
 	end
@@ -393,8 +398,8 @@ function Hearthbag:IsOwned(data)
 	if data.key == "Random" then return true end
 
 	if data.key == "Garrison" then
-		if not C_Garrison.GetGarrisonInfo(2) then 
-			return false 
+		if not C_Garrison.GetGarrisonInfo(2) then
+			return false
 		end
 	end
 
@@ -800,7 +805,7 @@ function Hearthbag:RebuildMenu()
 					GameTooltip:AddLine(L["RandomHearthstone"])
 					GameTooltip:AddLine(L["RandomHearthstoneTT"], 1, 1, 1)
 				elseif data.itemIDs then
-					GameTooltip:SetItemByID(data.itemIDs[1]) 
+					GameTooltip:SetItemByID(data.itemIDs[1])
 				end
 				
 				if isSecondary then
@@ -865,7 +870,7 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 	local cmd, arg = msg:match("^(%S*)%s*(.-)$")
 	
 	if cmd == L["HB_Slash_Combat1"] or cmd == L["HB_Slash_Combat2"] then
-		if InCombatLockdown() then print(string.format(L["Hearthbag"], L["CantMoveInCombat"])) return end
+		if InCombatLockdown() then Print(L["CantMoveInCombat"]) return end
 		
 		if combatAnchor:IsShown() then
 			combatAnchor:Hide()
@@ -881,7 +886,7 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			unlockCheck:UpdateState()
 		end
 	elseif cmd == L["HB_Slash_Anchor1"] or cmd == L["HB_Slash_Anchor2"] then
-		if InCombatLockdown() then print(string.format(L["Hearthbag"],L["CantAnchorInCombat"])) return end
+		if InCombatLockdown() then Print(L["CantAnchorInCombat"]) return end
 		
 		local frame
 		local fName
@@ -891,7 +896,7 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			frame = _G[fName]
 			
 			if not frame then
-				print(string.format(L["Hearthbag"],L["FrameNotFound"], fName))
+				Print(string.format(L["FrameNotFound"], fName))
 				return
 			end
 		else
@@ -899,7 +904,7 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			if not frame or frame == WorldFrame then
 				HearthDB.BagParent = "UIParent"
 				HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
-				print(string.format(L["Hearthbag"],L["ResetToUIParent"]))
+				Print(L["ResetToUIParent"])
 				Hearthbag:UpdateAnchor()
 				return
 			end
@@ -909,23 +914,23 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 
 		if fName then
 			if not frame:IsObjectType("Frame") then
-				print(string.format(L["Hearthbag"],L["NotAFrame"],fName))
+				Print(string.format(L["NotAFrame"],fName))
 				return
 			end
 			
 			if FORBIDDENFRAMES[fName] then
-				print(string.format(L["Hearthbag"],L["RestrictedFrame"],fName))
+				Print(string.format(L["RestrictedFrame"],fName))
 				return
 			end
 
 			if frame == hb or frame == combatAnchor or frame == menu then
-				print(string.format(L["Hearthbag"],L["CantAnchorToSelf"]))
+				Print(L["CantAnchorToSelf"])
 				return
 			end
 			local parentCheck = frame:GetParent()
 			while parentCheck do
 				if parentCheck == hb then
-					print(string.format(L["Hearthbag"],L["CantAnchorToSelf"]))
+					Print(L["CantAnchorToSelf"])
 					return
 				end
 				parentCheck = parentCheck:GetParent()
@@ -933,23 +938,23 @@ SlashCmdList["HEARTHBAG"] = function(msg)
 			HearthDB.BagParent = fName
 			HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
 			
-			print(string.format(L["Hearthbag"],L["AnchoredToFrame"],fName))
+			Print(string.format(L["AnchoredToFrame"],fName))
 			Hearthbag:UpdateAnchor()
 		else
-			print(string.format(L["Hearthbag"],L["FrameNoName"]))
+			Print(string.format(L["Hearthbag"],L["FrameNoName"]))
 		end
 	elseif cmd == L["HB_Slash_Reset1"] or cmd == L["HB_Slash_Reset2"] then
-		if InCombatLockdown() then print(string.format(L["Hearthbag"],L["CantMoveInCombat"])) return end
+		if InCombatLockdown() then Print(L["CantMoveInCombat"]) return end
 		hb:RevertToPrimary()
 		
 		HearthDB.BagParent = "UIParent"
 		HearthDB.BagOffset = { "CENTER", "CENTER", 0, 0 }
 		Hearthbag:UpdateAnchor()
-		print(string.format(L["Hearthbag"],L["ResetHearthstone"]))
+		Print(L["ResetHearthstone"])
 	else
-		print(L["HBCommands"])
-		print(L["HBCMD_combat"])
-		print(L["HBCMD_anchor"])
-		print(L["HBCMD_reset"])
+		Print(L["HBCommands"])
+		Print(L["HBCMD_combat"])
+		Print(L["HBCMD_anchor"])
+		Print(L["HBCMD_reset"])
 	end
 end
