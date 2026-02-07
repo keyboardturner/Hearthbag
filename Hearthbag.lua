@@ -1,6 +1,6 @@
 local addonName, Hearthbag = ...
 
-L = Hearthbag.L;
+local L = Hearthbag.L;
 
 local function GetFrameByName(name)
 	if type(name) == "string" then

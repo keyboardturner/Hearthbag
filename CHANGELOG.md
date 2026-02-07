@@ -1,3 +1,7 @@
+# 1.0.3
+
+Prevent calamity that leaked localizaations into a global L variable
+
 # 1.0.2
 
 Hide cooldown progress texture in combat
