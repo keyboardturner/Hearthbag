@@ -599,7 +599,6 @@ function hb:SetHousingOverride(houseData)
 	local suffix = C_Housing.GetNeighborhoodTextureSuffix(houseData.neighborhoodGUID)
 	self:SetNormalTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
 	self:SetPushedTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
-	self.bg:SetTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
 	
 	self.cooldown:Clear()
 	self.currentSpellID = nil

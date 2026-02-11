@@ -1,3 +1,7 @@
+# 1.0.4
+
+Fix error involving bg texture
+
 # 1.0.3
 
 Prevent calamity that leaked localizaations into a global L variable
