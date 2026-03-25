@@ -1,3 +1,7 @@
+# 1.0.5
+
+Maybe fixed the cooldown error in instanced combat lockdown
+
 # 1.0.4
 
 Fix error involving bg texture
