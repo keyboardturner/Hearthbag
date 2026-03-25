@@ -611,10 +611,7 @@ function hb:UpdateCooldown()
 	end
 	if not self.currentSpellID then return end
 	
-	local spellCooldownInfo = C_Spell.GetSpellCooldown(self.currentSpellID)
-	local start = spellCooldownInfo.startTime
-	local duration = spellCooldownInfo.duration
-	
+	local spellDuration = C_Spell.GetSpellCooldownDuration(self.currentSpellID)
 	--[[ debug
 	if start and duration and duration > 0 then
 		print("Hearthbag: Cooldown Active")
@@ -623,8 +620,8 @@ function hb:UpdateCooldown()
 		print("  Duration:", duration)
 	end
 	--]]
-	if start and duration then
-		self.cooldown:SetCooldown(start, duration)
+	if spellDuration then
+		self.cooldown:SetCooldownFromDurationObject(spellDuration, true)
 	else
 		self.cooldown:Clear()
 	end
