@@ -230,7 +230,7 @@ function Hearthbag:UpdateAnchor()
 end
 
 local menu = CreateFrame("Frame", "HearthbagMenu", hb)
-menu:SetSize(250, 300)
+menu:SetSize(250, 340)
 menu:SetPoint("TOP", hb, "BOTTOM", 0, -30)
 menu.bg = menu:CreateTexture(nil, "BACKGROUND")
 menu.bg:SetPoint("TOPLEFT", menu, "TOPLEFT", -90, 10)
