@@ -1,3 +1,7 @@
+# 1.0.6
+
+Added temporary fallback icons based on the item icons when custom artwork is not available for certain hearthstones. Future updates will add proper artwork when time allows
+
 # 1.0.5
 
 Maybe fixed the cooldown error in instanced combat lockdown

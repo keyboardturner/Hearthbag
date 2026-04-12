@@ -28,6 +28,16 @@ hb:SetMouseClickEnabled(true)
 hb:SetClampedToScreen(true)
 hb:Hide()
 
+hb.mask = hb:CreateMaskTexture()
+hb.mask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask")
+hb.mask:SetAllPoints()
+
+hb.ring = hb:CreateTexture(nil, "OVERLAY")
+hb.ring:SetTexture(HearthbagPath .. "Hearthstone_DefaultRing.png")
+hb.ring:SetPoint("TOPLEFT", hb, "TOPLEFT", -3, 3)
+hb.ring:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 3, -3)
+hb.ring:Hide()
+
 hb:EnableMouseWheel(true)
 hb.baseSize = 42
 hb.sizeAmp = 1
@@ -574,11 +584,37 @@ function hb:UpdateSkin(key, isTemporary)
 		hb:SetAttribute("item", "item:" .. data.itemIDs[1])
 	end)
 
-	local texPaths = Hearthbag:GetTexturePaths(texBaseName)
-	if texPaths then
-		hb:SetNormalTexture(texPaths.Up)
-		hb:SetPushedTexture(texPaths.Down)
-		hb.cooldown:SetSwipeTexture(texPaths.Cooldown)
+	if data and not data.Texture_Old and data.itemIDs then
+		local itemIcon = C_Item.GetItemIconByID(data.itemIDs[1])
+		if itemIcon then
+			hb:SetNormalTexture(itemIcon);
+			hb:SetPushedTexture(itemIcon);
+			
+			if hb:GetNormalTexture() then hb:GetNormalTexture():AddMaskTexture(hb.mask) end
+			if hb:GetPushedTexture() then hb:GetPushedTexture():AddMaskTexture(hb.mask) end
+			hb.ring:Show()
+			
+			hb.cooldown:SetSwipeTexture("") 
+			hb.cooldown:SetEdgeTexture("") 
+			hb.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+		end
+	else
+		local texPaths = Hearthbag:GetTexturePaths(texBaseName);
+		if texPaths then
+			hb:SetNormalTexture(texPaths.Up);
+			hb:SetPushedTexture(texPaths.Down);
+			
+			if hb:GetNormalTexture() then hb:GetNormalTexture():RemoveMaskTexture(hb.mask) end
+			if hb:GetPushedTexture() then hb:GetPushedTexture():RemoveMaskTexture(hb.mask) end
+			hb.ring:Hide()
+			
+			hb.cooldown:SetSwipeTexture(texPaths.Cooldown);
+			hb.cooldown:SetSwipeColor(0.2, 0.2, 0.2, 1.0)
+			
+			if Hearthbag.TexturePath then
+				hb.cooldown:SetEdgeTexture(Hearthbag.TexturePath .. "Hearthstone_Cooldown_blip.blp", 1, 1, 1, 1)
+			end
+		end
 	end
 
 	hb.currentSpellID = data.spellID
@@ -599,6 +635,10 @@ function hb:SetHousingOverride(houseData)
 	local suffix = C_Housing.GetNeighborhoodTextureSuffix(houseData.neighborhoodGUID)
 	self:SetNormalTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
 	self:SetPushedTexture(HearthbagPath..Hearthbag.SharedTextures.HomestoneIcon)
+	
+	if self:GetNormalTexture() then self:GetNormalTexture():RemoveMaskTexture(self.mask) end
+	if self:GetPushedTexture() then self:GetPushedTexture():RemoveMaskTexture(self.mask) end
+	if self.ring then self.ring:Hide() end
 	
 	self.cooldown:Clear()
 	self.currentSpellID = nil
@@ -793,6 +833,17 @@ function Hearthbag:RebuildMenu()
 		if not btn then
 			btn = CreateFrame("Button", nil, menu)
 			btn:SetSize(SIZE, SIZE)
+			
+			btn.mask = btn:CreateMaskTexture()
+			btn.mask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask")
+			btn.mask:SetAllPoints()
+			
+			btn.ring = btn:CreateTexture(nil, "OVERLAY")
+			btn.ring:SetTexture(HearthbagPath .. "Hearthstone_DefaultRing.png")
+			btn.ring:SetPoint("TOPLEFT", btn, "TOPLEFT", -3, 3)
+			btn.ring:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 3, -3)
+			btn.ring:Hide()
+
 			btn.status = btn:CreateTexture(nil, "OVERLAY")
 			btn.status:SetSize(12, 12)
 			btn.status:SetPoint("BOTTOMRIGHT")
@@ -835,10 +886,27 @@ function Hearthbag:RebuildMenu()
 				GameTooltip:Show()
 			end)
 		else
-			local texPaths = Hearthbag:GetTexturePaths(data.Texture_Old)
-			if texPaths then
-				btn:SetNormalTexture(texPaths.Up)
-				btn:SetPushedTexture(texPaths.Down)
+			if data.Texture_Old then
+				local texPaths = Hearthbag:GetTexturePaths(data.Texture_Old);
+				if texPaths then
+					btn:SetNormalTexture(texPaths.Up);
+					btn:SetPushedTexture(texPaths.Down);
+				end
+				
+				if btn:GetNormalTexture() then btn:GetNormalTexture():RemoveMaskTexture(btn.mask) end
+				if btn:GetPushedTexture() then btn:GetPushedTexture():RemoveMaskTexture(btn.mask) end
+				btn.ring:Hide()
+				
+			elseif data.itemIDs then
+				local itemIcon = C_Item.GetItemIconByID(data.itemIDs[1]);
+				if itemIcon then
+					btn:SetNormalTexture(itemIcon);
+					btn:SetPushedTexture(itemIcon);
+				end
+
+				if btn:GetNormalTexture() then btn:GetNormalTexture():AddMaskTexture(btn.mask) end
+				if btn:GetPushedTexture() then btn:GetPushedTexture():AddMaskTexture(btn.mask) end
+				btn.ring:Show()
 			end
 
 			local isOwned = Hearthbag:IsOwned(data)

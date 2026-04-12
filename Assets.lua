@@ -242,6 +242,28 @@ local HearthKeys = {
 
 Hearthbag.HearthKeys = HearthKeys;
 
+local HearthItemsAndSpell = {
+	[228940] = 463481,
+	--[260221] = 1265709, -- MoP Classic only?
+	[235016] = 1217281,
+	[236687] = 1220729,
+	[245970] = 1240219,
+	[246565] = 1242509,
+	[263933] = 1270814,
+	[265100] = 1273401,
+};
+
+Hearthbag.HearthItemsAndSpell = HearthItemsAndSpell;
+
+for itemID, spellID in pairs(HearthItemsAndSpell) do
+	table.insert(Hearthbag.HearthKeys, {
+		key = "Item_" .. itemID,
+		itemIDs = {itemID},
+		spellID = spellID,
+		type = "toy",
+	});
+end
+
 -- Hearthbag_DB.APPEARANCE.UP convert to ID
 
 
