@@ -251,6 +251,7 @@ local HearthItemsAndSpell = {
 	[246565] = 1242509,
 	[263933] = 1270814,
 	[265100] = 1273401,
+	[257736] = 1261979,
 };
 
 Hearthbag.HearthItemsAndSpell = HearthItemsAndSpell;
