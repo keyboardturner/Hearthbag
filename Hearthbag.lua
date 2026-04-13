@@ -827,7 +827,53 @@ local COLUMNS = 6
 local PADDING = 5
 local SIZE = 32
 
+local dragProxy = CreateFrame("Frame", "HearthbagDragProxy", UIParent)
+dragProxy:SetSize(32, 32)
+dragProxy:SetFrameStrata("TOOLTIP")
+dragProxy:Hide()
+dragProxy.tex = dragProxy:CreateTexture(nil, "ARTWORK")
+dragProxy.tex:SetAllPoints()
+
+dragProxy.mask = dragProxy:CreateMaskTexture()
+dragProxy.mask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask")
+dragProxy.mask:SetAllPoints()
+
+function Hearthbag:MoveItemInOrder(draggedKey, targetKey)
+	if not Hearthbag_DB.CustomOrder then Hearthbag_DB.CustomOrder = {} end
+
+	local list = {}
+	for _, item in ipairs(Hearthbag.CurrentSortedItems) do
+		local key = item.data.key or (item.data.houseGUID and tostring(item.data.houseGUID))
+		table.insert(list, {key = key, item = item})
+	end
+
+	local dragIdx, targetIdx
+	for i, v in ipairs(list) do
+		if v.key == draggedKey then dragIdx = i end
+		if v.key == targetKey then targetIdx = i end
+	end
+
+	if dragIdx and targetIdx then
+		local draggedItem = table.remove(list, dragIdx)
+		
+		if dragIdx < targetIdx then
+			targetIdx = targetIdx - 1
+		end
+		
+		table.insert(list, targetIdx, draggedItem)
+
+		for i, v in ipairs(list) do
+			Hearthbag_DB.CustomOrder[v.key] = i
+		end
+
+		Hearthbag:RebuildMenu()
+	end
+end
+
 function Hearthbag:RebuildMenu()
+	if Hearthbag_DB and not Hearthbag_DB.Favorites then Hearthbag_DB.Favorites = {} end
+	if Hearthbag_DB and not Hearthbag_DB.CustomOrder then Hearthbag_DB.CustomOrder = {} end
+
 	local btnIndex = 1
 
 	local function ConfigureButton(data, isHousing)
@@ -849,20 +895,89 @@ function Hearthbag:RebuildMenu()
 			btn.status = btn:CreateTexture(nil, "OVERLAY")
 			btn.status:SetSize(12, 12)
 			btn.status:SetPoint("BOTTOMRIGHT")
+
+			btn.favoriteStar = btn:CreateTexture(nil, "OVERLAY")
+			btn.favoriteStar:SetAtlas("collections-icon-favorites")
+			btn.favoriteStar:SetSize(25, 25)
+			btn.favoriteStar:SetPoint("TOPRIGHT", 7, 7)
+
 			Hearthbag.MenuButtons[btnIndex] = btn
 		end
+		
+		btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+		btn:RegisterForDrag("LeftButton")
 		
 		btn:Show()
 		btn:SetAlpha(1)
 		if btn:GetNormalTexture() then btn:GetNormalTexture():SetDesaturated(false) end
 
+		btn.status:SetSize(12, 12)
+		btn.status:ClearAllPoints()
+		btn.status:SetPoint("BOTTOMRIGHT")
+		btn.status:SetTexture(nil)
+
 		local col = (btnIndex - 1) % COLUMNS
 		local row = math.floor((btnIndex - 1) / COLUMNS)
 		btn:SetPoint("TOPLEFT", menu, "TOPLEFT", (col * (SIZE + PADDING)) + 15, -(row * (SIZE + PADDING)) - 15)
 
+		local itemKey = data.key or (data.houseGUID and tostring(data.houseGUID))
+		btn.itemKey = itemKey
+
 		btn:SetScript("OnClick", nil)
 		btn:SetScript("OnEnter", nil)
 		btn:SetScript("OnLeave", GameTooltip_Hide)
+
+		btn:SetScript("OnDragStart", function(self)
+			if InCombatLockdown() then return end
+			Hearthbag.DraggedItemKey = self.itemKey
+			self:SetAlpha(0.3)
+
+			local texObj = self:GetNormalTexture()
+			if texObj then
+				local texFile = texObj:GetTextureFileID() or texObj:GetTexture()
+				dragProxy.tex:SetTexture(texFile)
+				
+				if self.ring and self.ring:IsShown() then
+					dragProxy.tex:AddMaskTexture(dragProxy.mask)
+				else
+					dragProxy.tex:RemoveMaskTexture(dragProxy.mask)
+				end
+			end
+
+			dragProxy:Show()
+			dragProxy:SetScript("OnUpdate", function(proxy)
+				local x, y = GetCursorPosition()
+				local scale = proxy:GetEffectiveScale()
+				proxy:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x/scale, y/scale)
+			end)
+		end)
+
+		btn:SetScript("OnDragStop", function(self)
+			if InCombatLockdown() or not Hearthbag.DraggedItemKey then return end
+			self:SetAlpha(1)
+			dragProxy:Hide()
+			dragProxy:SetScript("OnUpdate", nil)
+
+			local targetKey = nil
+			for i = 1, #Hearthbag.MenuButtons do
+				local tBtn = Hearthbag.MenuButtons[i]
+				if tBtn:IsVisible() and tBtn:IsMouseOver() and tBtn.itemKey ~= Hearthbag.DraggedItemKey then
+					targetKey = tBtn.itemKey
+					break
+				end
+			end
+
+			if targetKey then
+				Hearthbag:MoveItemInOrder(Hearthbag.DraggedItemKey, targetKey)
+			end
+			Hearthbag.DraggedItemKey = nil
+		end)
+
+		if Hearthbag_DB and Hearthbag_DB.Favorites[itemKey] then
+			btn.favoriteStar:Show()
+		else
+			btn.favoriteStar:Hide()
+		end
 
 		if isHousing then
 			local suffix = C_Housing.GetNeighborhoodTextureSuffix(data.neighborhoodGUID)
@@ -872,11 +987,18 @@ function Hearthbag:RebuildMenu()
 
 			if texInfo and texInfo.textureAtlas then
 				btn.status:SetSize(30, 30)
+				btn.status:ClearAllPoints()
 				btn.status:SetPoint("BOTTOMRIGHT", 8, -8)
 				btn.status:SetAtlas(texInfo.textureAtlas)
 			end
 
-			btn:SetScript("OnClick", function()
+			btn:SetScript("OnClick", function(self, button)
+				if button == "RightButton" then
+					Hearthbag_DB.Favorites[itemKey] = not Hearthbag_DB.Favorites[itemKey] and true or nil
+					Hearthbag:RebuildMenu()
+					return
+				end
+
 				Hearthbag.MainButton:SetHousingOverride(data)
 				menu:Hide()
 			end)
@@ -922,7 +1044,13 @@ function Hearthbag:RebuildMenu()
 				btn:GetNormalTexture():SetDesaturated(true)
 			end
 
-			btn:SetScript("OnClick", function()
+			btn:SetScript("OnClick", function(self, button)
+				if button == "RightButton" then
+					Hearthbag_DB.Favorites[itemKey] = not Hearthbag_DB.Favorites[itemKey] and true or nil
+					Hearthbag:RebuildMenu()
+					return
+				end
+
 				if not isOwned then return end
 				Hearthbag.MainButton:UpdateSkin(data.key, isSecondary)
 				menu:Hide()
@@ -945,12 +1073,43 @@ function Hearthbag:RebuildMenu()
 		btnIndex = btnIndex + 1
 	end
 
+	local allItems = {}
+	local orderIndex = 1
+
 	for _, data in ipairs(Hearthbag.HearthKeys) do
-		ConfigureButton(data, false)
+		table.insert(allItems, {data = data, isHousing = false, index = orderIndex})
+		orderIndex = orderIndex + 1
 	end
 
 	for _, data in ipairs(Hearthbag.HousingList) do
-		ConfigureButton(data, true)
+		table.insert(allItems, {data = data, isHousing = true, index = orderIndex})
+		orderIndex = orderIndex + 1
+	end
+
+	table.sort(allItems, function(a, b)
+		local aKey = a.data.key or (a.data.houseGUID and tostring(a.data.houseGUID))
+		local bKey = b.data.key or (b.data.houseGUID and tostring(b.data.houseGUID))
+		
+		local aFav = Hearthbag_DB and Hearthbag_DB.Favorites[aKey]
+		local bFav = Hearthbag_DB and Hearthbag_DB.Favorites[bKey]
+		
+		if aFav and not bFav then return true end
+		if not aFav and bFav then return false end
+		
+		local aOrder = Hearthbag_DB and Hearthbag_DB.CustomOrder[aKey] or a.index
+		local bOrder = Hearthbag_DB and Hearthbag_DB.CustomOrder[bKey] or b.index
+
+		if aOrder ~= bOrder then
+			return aOrder < bOrder
+		end
+
+		return a.index < b.index
+	end)
+
+	Hearthbag.CurrentSortedItems = allItems
+
+	for _, item in ipairs(allItems) do
+		ConfigureButton(item.data, item.isHousing)
 	end
 
 	for i = btnIndex, #Hearthbag.MenuButtons do

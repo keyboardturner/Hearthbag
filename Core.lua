@@ -14,6 +14,8 @@ f:SetScript("OnEvent", function(self, event, ...)
 		if Hearthbag_DB.UseCombatFrame == nil then Hearthbag_DB.UseCombatFrame = false end
 		if Hearthbag_DB.ShowHelpTips == nil then Hearthbag_DB.ShowHelpTips = true end
 		if not Hearthbag_DB.BagScale then Hearthbag_DB.BagScale = 42 end
+		if not Hearthbag_DB.Favorites then Hearthbag_DB.Favorites = {} end
+		if not Hearthbag_DB.CustomOrder then Hearthbag_DB.CustomOrder = {} end
 
 		if not Hearthbag_DB.Characters then Hearthbag_DB.Characters = {} end
 		
