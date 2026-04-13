@@ -516,14 +516,6 @@ end
 function hb:UpdateSkin(key, isTemporary)
 	if InCombatLockdown() then return end
 
-	if key == "Garrison" then
-		hb.cooldown:SetRotation(-5.13)
-	elseif key == "Dalaran" then
-		hb.cooldown:SetRotation(0)
-	else
-		hb.cooldown:SetRotation(-2.22)
-	end
-
 	local texBaseName
 	local attrKey
 
@@ -543,7 +535,7 @@ function hb:UpdateSkin(key, isTemporary)
 	
 	if not isTemporary then
 		charDB.PrimaryKey = key
-        self.isTemporaryOverride = false
+		self.isTemporaryOverride = false
 	else
 		self.isTemporaryOverride = true
 	end
@@ -577,6 +569,16 @@ function hb:UpdateSkin(key, isTemporary)
 	--	self.isTemporaryOverride = true
 	--end
 
+	if key == "Garrison" then
+		hb.cooldown:SetRotation(-5.13)
+	elseif key == "Dalaran" then
+		hb.cooldown:SetRotation(0)
+	elseif data and not data.Texture_Old then
+		hb.cooldown:SetRotation(0)
+	else
+		hb.cooldown:SetRotation(-2.22)
+	end
+
 	hb:SetAttribute("type1", "item")
 
 	local item = Item:CreateFromItemID(data.itemIDs[1])
@@ -594,7 +596,7 @@ function hb:UpdateSkin(key, isTemporary)
 			if hb:GetPushedTexture() then hb:GetPushedTexture():AddMaskTexture(hb.mask) end
 			hb.ring:Show()
 			
-			hb.cooldown:SetSwipeTexture("") 
+			hb.cooldown:SetSwipeTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask") 
 			hb.cooldown:SetEdgeTexture("") 
 			hb.cooldown:SetSwipeColor(0, 0, 0, 0.8)
 		end
@@ -686,8 +688,8 @@ hb:SetScript("OnEvent", function(self, event, ...)
 			else
 				local currentData = Hearthbag:GetDataByKey(Hearthbag.SelectedKey)
 				if currentData and currentData.secondary and currentData.spellID == spellID then
-                    self:RevertToPrimary()
-                end
+					self:RevertToPrimary()
+				end
 			end
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" then
