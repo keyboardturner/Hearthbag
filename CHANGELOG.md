@@ -1,3 +1,11 @@
+# 1.0.7
+
+Added option to favorite hearthstone toy items in the selection menu
+
+Added functionality to rearrange hearthstone order in the selection menu
+
+Added option to hide unusable hearthstones
+
 # 1.0.6
 
 Added temporary fallback icons based on the item icons when custom artwork is not available for certain hearthstones. Future updates will add proper artwork when time allows
