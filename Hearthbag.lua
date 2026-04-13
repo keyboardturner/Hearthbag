@@ -275,7 +275,7 @@ settingsBar.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.TitleBar)
 
 local combatCheck = CreateFrame("Button", nil, settingsBar)
 combatCheck:SetSize(24, 24)
-combatCheck:SetPoint("CENTER", settingsBar, "CENTER", -50, 3)
+combatCheck:SetPoint("CENTER", settingsBar, "CENTER", -75, 3)
 
 function combatCheck:UpdateState()
 	if Hearthbag_DB.UseCombatFrame then
@@ -321,7 +321,7 @@ end)
 
 local helpCheck = CreateFrame("Button", nil, settingsBar)
 helpCheck:SetSize(24, 24)
-helpCheck:SetPoint("CENTER", settingsBar, "CENTER", 0, 3)
+helpCheck:SetPoint("CENTER", settingsBar, "CENTER", -25, 3)
 
 function helpCheck:UpdateState()
 	if Hearthbag_DB.ShowHelpTips then
@@ -369,7 +369,7 @@ end)
 
 local unlockCheck = CreateFrame("Button", nil, settingsBar)
 unlockCheck:SetSize(24, 24)
-unlockCheck:SetPoint("CENTER", settingsBar, "CENTER", 50, 3)
+unlockCheck:SetPoint("CENTER", settingsBar, "CENTER", 25, 3)
 
 function unlockCheck:UpdateState()
 	if combatAnchor:IsShown() then
@@ -418,6 +418,55 @@ unlockCheck:SetScript("OnClick", function(self)
 end)
 
 unlockCheck:SetScript("OnShow", function(self) self:UpdateState() end)
+
+local hideCheck = CreateFrame("Button", nil, settingsBar)
+hideCheck:SetSize(24, 24)
+hideCheck:SetPoint("CENTER", settingsBar, "CENTER", 75, 3)
+
+function hideCheck:UpdateState()
+	if Hearthbag_DB and Hearthbag_DB.HideUncollected then
+		hideCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckUp)
+	else
+		hideCheck:SetNormalTexture(HearthbagPath .. Hearthbag.SharedTextures.CheckOff)
+	end
+end
+
+local function UpdateHideCheckTooltip(self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOP")
+	GameTooltip:SetText(L["HideUncollected"])
+	
+	if Hearthbag_DB and Hearthbag_DB.HideUncollected then
+		GameTooltip:AddLine(VIDEO_OPTIONS_ENABLED, 0, 1, 0)
+	else
+		GameTooltip:AddLine(VIDEO_OPTIONS_DISABLED, 1, 0, 0)
+	end
+	
+	GameTooltip:Show()
+end
+
+hideCheck:SetScript("OnEnter", UpdateHideCheckTooltip)
+hideCheck:SetScript("OnLeave", GameTooltip_Hide)
+
+hideCheck:SetScript("OnClick", function(self)
+	if not Hearthbag_DB then return end
+	
+	Hearthbag_DB.HideUncollected = not Hearthbag_DB.HideUncollected
+	self:UpdateState()
+	
+	if GameTooltip:GetOwner() == self then
+		UpdateHideCheckTooltip(self)
+	end
+	
+	if Hearthbag_DB.HideUncollected then
+		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonDown.ogg", "SFX")
+	else
+		PlaySoundFile("Interface\\AddOns\\Hearthbag\\Sounds\\TinyButtonUp.ogg", "SFX")
+	end
+	
+	Hearthbag:RebuildMenu()
+end)
+
+hideCheck:SetScript("OnShow", function(self) self:UpdateState() end)
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -1077,8 +1126,13 @@ function Hearthbag:RebuildMenu()
 	local orderIndex = 1
 
 	for _, data in ipairs(Hearthbag.HearthKeys) do
-		table.insert(allItems, {data = data, isHousing = false, index = orderIndex})
-		orderIndex = orderIndex + 1
+		local hideUncollected = Hearthbag_DB and Hearthbag_DB.HideUncollected
+		local isOwned = Hearthbag:IsOwned(data)
+		
+		if not hideUncollected or isOwned or data.key == "Random" then
+			table.insert(allItems, {data = data, isHousing = false, index = orderIndex})
+			orderIndex = orderIndex + 1
+		end
 	end
 
 	for _, data in ipairs(Hearthbag.HousingList) do
@@ -1115,6 +1169,15 @@ function Hearthbag:RebuildMenu()
 	for i = btnIndex, #Hearthbag.MenuButtons do
 		Hearthbag.MenuButtons[i]:Hide()
 	end
+
+	local visibleCount = #allItems
+	local rows = math.ceil(visibleCount / COLUMNS)
+
+	if rows < 1 then rows = 1 end
+
+	local newHeight = 20 + (rows * (SIZE + PADDING)) + 20
+
+	menu:SetSize(250, newHeight)
 end
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_HOUSE_LIST_UPDATED", function(owner, ...)

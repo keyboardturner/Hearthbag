@@ -59,9 +59,10 @@ if LOCALE == "enUS" then
 	L["HB_Slash_Reset2"] = "reset" -- localized
 	L["HBCMD_combat"] = "/hearthbag combat - Toggle the moveable combat frame."
 	L["HBCMD_anchor"] = "/hearthbag anchor [framename] - Set the Hearthbag Parent to the frame under your mouse or to the specified frame name (BagItemSearchBox, Minimap, PlayerFrame)."
-	L["HBCMD_reset"] = "/hearthbag reset - Reset to your Hearthbag to centered position."
+	L["HBCMD_reset"] = "/hearthbag reset - Reset Hearthbag to centered position."
 	L["ShowHelpTips"] = "Show Chat Command in Tooltip"
 	L["ChatCommandsTT"] = string.join("\n   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -112,6 +113,7 @@ if LOCALE == "esMX" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reiniciar) - Restablece Hearthbag al centro."
 	L["ShowHelpTips"] = "Mostrar comando de chat en la información emergente"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -162,6 +164,7 @@ if LOCALE == "esES" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reiniciar) - Restablece Hearthbag al centro."
 	L["ShowHelpTips"] = "Mostrar comando de chat en la información emergente"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -212,6 +215,7 @@ if LOCALE == "deDE" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reset) - Hearthbag zentrieren."
 	L["ShowHelpTips"] = "Chatbefehl im Tooltip anzeigen"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -262,6 +266,7 @@ if LOCALE == "frFR" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reinit) - Réinitialise la position."
 	L["ShowHelpTips"] = "Afficher la commande de discussion dans l’infobulle"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -312,6 +317,7 @@ if LOCALE == "itIT" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reset) - Reimposta Hearthbag al centro."
 	L["ShowHelpTips"] = "Mostra comando chat nel suggerimento"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -362,6 +368,7 @@ if LOCALE == "ptBR" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/hearthbag reset) - Redefine a posição."
 	L["ShowHelpTips"] = "Mostrar comando de chat na dica de ferramenta"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 -- Note that the EU Portuguese WoW client also
 -- uses the Brazilian Portuguese locale code.
@@ -414,6 +421,7 @@ if LOCALE == "ruRU" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/очаг сброс) - Сбросить позицию."
 	L["ShowHelpTips"] = "Показывать команду чата во всплывающей подсказке"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB1"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -464,6 +472,7 @@ if LOCALE == "koKR" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/귀환 초기화) - 위치 초기화."
 	L["ShowHelpTips"] = "툴팁에 채팅 명령 표시"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB1"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -514,6 +523,7 @@ if LOCALE == "zhCN" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/炉石 重置) - 重置位置。"
 	L["ShowHelpTips"] = "在鼠标提示中显示聊天命令"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB1"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
 
@@ -564,5 +574,6 @@ if LOCALE == "zhTW" then
 	L["HBCMD_reset"] = "/hearthbag reset  (/爐石 重設) - 重設位置。"
 	L["ShowHelpTips"] = "在滑鼠提示中顯示聊天指令"
 	L["ChatCommandsTT"] = string.join("   ", L["HBCommands"], L["SLASH_HB1"], L["SLASH_HB3"], L["SLASH_HB4"])
+	L["HideUncollected"] = PET_JOURNAL_FILTER_USABLE_ONLY
 
 return end
