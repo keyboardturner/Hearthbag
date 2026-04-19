@@ -1,3 +1,7 @@
+# 1.0.8
+
+12.0.5 toc update
+
 # 1.0.7
 
 Added option to favorite hearthstone toy items in the selection menu
