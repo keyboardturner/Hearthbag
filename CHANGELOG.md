@@ -1,3 +1,7 @@
+# 1.1.1
+
+fixes for a lot of stuff - textures are now re-rotated around, the cooldown frame shouldn't appear as a white spinny box (????)
+
 # 1.1.0
 
 12.1.0 toc update

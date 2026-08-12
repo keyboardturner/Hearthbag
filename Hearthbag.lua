@@ -75,12 +75,8 @@ hb.cooldown:SetAllPoints()
 hb.cooldown:SetUseCircularEdge(true)
 hb.cooldown:SetSwipeColor(0.2, 0.2, 0.2, 1.0)
 hb.cooldown:SetDrawEdge(true)
-hb.cooldown:SetRotation(-2.22)
+hb.cooldown:SetRotation(2.22)
 hb.cooldown:SetHideCountdownNumbers(true)
-
-if Hearthbag.TexturePath then
-	hb.cooldown:SetEdgeTexture(Hearthbag.TexturePath .. "Hearthstone_Cooldown_blip.blp", 1, 1, 1, 1)
-end
 
 Hearthbag.MainButton = hb;
 
@@ -618,58 +614,60 @@ function hb:UpdateSkin(key, isTemporary)
 	--	self.isTemporaryOverride = true
 	--end
 
-	if key == "Garrison" then
-		hb.cooldown:SetRotation(-5.13)
-	elseif key == "Dalaran" then
-		hb.cooldown:SetRotation(0)
-	elseif data and not data.Texture_Old then
-		hb.cooldown:SetRotation(0)
-	else
-		hb.cooldown:SetRotation(-2.22)
+	local texPaths = nil;
+	if not (data and not data.Texture_Old and data.itemIDs) then
+		texPaths = Hearthbag:GetTexturePaths(texBaseName);
 	end
 
-	hb:SetAttribute("type1", "item")
+	local targetRotation = 2.22;
+	
+	if data and data.rotation then
+		targetRotation = data.rotation;
+	elseif texPaths and texPaths.Rotation then
+		targetRotation = texPaths.Rotation;
+	elseif key == "Garrison" then
+		targetRotation = -2.22;
+	elseif key == "Dalaran" or (data and not data.Texture_Old) then
+		targetRotation = 0;
+	end
 
-	local item = Item:CreateFromItemID(data.itemIDs[1])
+	hb.cooldown:SetRotation(targetRotation);
+	hb:SetAttribute("type1", "item");
+
+	local item = Item:CreateFromItemID(data.itemIDs[1]);
 	item:ContinueOnItemLoad(function()
-		hb:SetAttribute("item", "item:" .. data.itemIDs[1])
+		hb:SetAttribute("item", "item:" .. data.itemIDs[1]);
 	end)
 
 	if data and not data.Texture_Old and data.itemIDs then
-		local itemIcon = C_Item.GetItemIconByID(data.itemIDs[1])
+		local itemIcon = C_Item.GetItemIconByID(data.itemIDs[1]);
 		if itemIcon then
 			hb:SetNormalTexture(itemIcon);
 			hb:SetPushedTexture(itemIcon);
 			
-			if hb:GetNormalTexture() then hb:GetNormalTexture():AddMaskTexture(hb.mask) end
-			if hb:GetPushedTexture() then hb:GetPushedTexture():AddMaskTexture(hb.mask) end
-			hb.ring:Show()
+			if hb:GetNormalTexture() then hb:GetNormalTexture():AddMaskTexture(hb.mask); end
+			if hb:GetPushedTexture() then hb:GetPushedTexture():AddMaskTexture(hb.mask); end
+			hb.ring:Show();
 			
-			hb.cooldown:SetSwipeTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask") 
-			hb.cooldown:SetEdgeTexture("") 
-			hb.cooldown:SetSwipeColor(0, 0, 0, 0.8)
+			hb.cooldown:SetDrawEdge(false);
+			hb.cooldown:SetSwipeTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask", 0, 0, 0, 0.8);
 		end
 	else
-		local texPaths = Hearthbag:GetTexturePaths(texBaseName);
 		if texPaths then
 			hb:SetNormalTexture(texPaths.Up);
 			hb:SetPushedTexture(texPaths.Down);
 			
-			if hb:GetNormalTexture() then hb:GetNormalTexture():RemoveMaskTexture(hb.mask) end
-			if hb:GetPushedTexture() then hb:GetPushedTexture():RemoveMaskTexture(hb.mask) end
+			if hb:GetNormalTexture() then hb:GetNormalTexture():RemoveMaskTexture(hb.mask); end
+			if hb:GetPushedTexture() then hb:GetPushedTexture():RemoveMaskTexture(hb.mask); end
 			hb.ring:Hide()
 			
-			hb.cooldown:SetSwipeTexture(texPaths.Cooldown);
-			hb.cooldown:SetSwipeColor(0.2, 0.2, 0.2, 1.0)
-			
-			if Hearthbag.TexturePath then
-				hb.cooldown:SetEdgeTexture(Hearthbag.TexturePath .. "Hearthstone_Cooldown_blip.blp", 1, 1, 1, 1)
-			end
+			hb.cooldown:SetSwipeTexture(texPaths.Cooldown, 0.2, 0.2, 0.2, 1.0);
+			hb.cooldown:SetDrawEdge(true);
 		end
 	end
 
-	hb.currentSpellID = data.spellID
-	hb:UpdateCooldown()
+	hb.currentSpellID = data.spellID;
+	hb:UpdateCooldown();
 end
 
 function hb:SetHousingOverride(houseData)
