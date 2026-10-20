@@ -235,6 +235,10 @@ menu.bg:SetTexture(HearthbagPath .. Hearthbag.SharedTextures.ItemHolderRet)
 --menu.bg:SetTexCoord(.2,.8, 0, 1)
 menu:Hide();
 
+if Hearthbag.isForever then
+	menu.bg:Hide()
+end
+
 local nudgeConfig = {
 	{ key = "ArrowUN", push = "ArrowUP", hl = "ArrowUHL", point = "BOTTOM", rel = "TOP", x = 0, y = 2, xDiff = 0, yDiff = 1 },
 	{ key = "ArrowDN", push = "ArrowDP", hl = "ArrowDHL", point = "TOP", rel = "BOTTOM", x = 0, y = -2, xDiff = 0, yDiff = -1 },
@@ -463,6 +467,9 @@ hideCheck:SetScript("OnClick", function(self)
 end)
 
 hideCheck:SetScript("OnShow", function(self) self:UpdateState() end)
+if Hearthbag.isForever then
+	hideCheck:Hide()
+end
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -918,6 +925,10 @@ function Hearthbag:MoveItemInOrder(draggedKey, targetKey)
 end
 
 function Hearthbag:RebuildMenu()
+	if Hearthbag.isForever then
+		menu:SetSize(210, 20)
+		return
+	end
 	if Hearthbag_DB and not Hearthbag_DB.Favorites then Hearthbag_DB.Favorites = {} end
 	if Hearthbag_DB and not Hearthbag_DB.CustomOrder then Hearthbag_DB.CustomOrder = {} end
 
@@ -1178,13 +1189,15 @@ function Hearthbag:RebuildMenu()
 	menu:SetSize(250, newHeight)
 end
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_HOUSE_LIST_UPDATED", function(owner, ...)
-	local houses = ...
-	if houses then
-		Hearthbag.HousingList = houses
-		Hearthbag:RebuildMenu()
-	end
-end)
+if not Hearthbag.isForever then
+	EventRegistry:RegisterFrameEventAndCallback("PLAYER_HOUSE_LIST_UPDATED", function(owner, ...)
+		local houses = ...;
+		if houses then
+			Hearthbag.HousingList = houses;
+			Hearthbag:RebuildMenu();
+		end
+	end);
+end
 
 Hearthbag:RebuildMenu()
 
@@ -1206,6 +1219,7 @@ local FORBIDDENFRAMES = {
 local loginFrame = CreateFrame("Frame")
 loginFrame:RegisterEvent("PLAYER_LOGIN")
 loginFrame:SetScript("OnEvent", function()
+	if Hearthbag.isForever then return; end
 	C_Housing.GetPlayerOwnedHouses()
 end)
 

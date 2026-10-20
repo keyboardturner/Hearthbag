@@ -33,6 +33,9 @@ f:SetScript("OnEvent", function(self, event, ...)
 		
 		local charDB = Hearthbag.GetCharDB()
 		if not charDB.PrimaryKey then charDB.PrimaryKey = "Default" end
+		if Hearthbag.isForever then
+			charDB.PrimaryKey = "Default";
+		end
 
 	elseif event == "PLAYER_LOGIN" then
 		if Hearthbag.MainButton then

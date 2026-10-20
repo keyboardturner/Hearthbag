@@ -2,6 +2,7 @@ local addonName, Hearthbag = ...;
 
 local HearthbagPath = "Interface\\AddOns\\Hearthbag\\Textures\\";
 Hearthbag.TexturePath = HearthbagPath;
+Hearthbag.isForever = (WOW_PROJECT_ID == WOW_PROJECT_CAMELOT);
 
 function Hearthbag:GetTexturePaths(baseTextureName)
 	if not baseTextureName then return nil end
@@ -264,6 +265,14 @@ for itemID, spellID in pairs(HearthItemsAndSpell) do
 		spellID = spellID,
 		type = "toy",
 	});
+end
+
+if Hearthbag.isForever then
+	for i = #HearthKeys, 1, -1 do
+		if HearthKeys[i].key ~= "Default" then
+			table.remove(HearthKeys, i);
+		end
+	end
 end
 
 -- Hearthbag_DB.APPEARANCE.UP convert to ID
